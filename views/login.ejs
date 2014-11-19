@@ -1,0 +1,109 @@
+<%include header%>
+<!-- Main Container Starts -->
+<div id="main-container" class="container">
+    <!-- Breadcrumb Starts -->
+    <ol class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active">登录/注册</li>
+    </ol>
+    <!-- Breadcrumb Ends -->
+    <!-- Main Heading Starts -->
+    <h2 class="main-heading text-center">
+        登录/注册
+    </h2>
+    <!-- Main Heading Ends -->
+    <!-- Login Form Section Starts -->
+    <section class="login-area">
+        <div class="row">
+            <div class="col-sm-6">
+                <!-- Login Panel Starts -->
+                <div class="panel panel-smart">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">登录</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>
+                            请输入用户名和密码
+                        </p>
+                        <!-- Login Form Starts -->
+                        <form class="form-form-horizontal" role="form" action="/doLogin" method="post" id="loginForm">
+                            <div class="form-group">
+                                <label class="sr-only" for="mobile">用户名</label>
+                                <input type="text" class="form-control" id="mobile" name="mobile" placeholder="用户名">
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="passwd">密码</label>
+                                <input type="password" class="form-control" id="passwd" name="passwd" placeholder="密码">
+                            </div>
+                            <div class="form-group">
+                                <span class="text-danger lgn_msg"><%=lgn_msg%></span>
+                            </div>
+                            <button type="submit" class="btn btn-warning">
+                                登录
+                            </button>
+                            <a class="btn btn-link" href="https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=1103427128&redirect_uri=<%=encodeURIComponent("http://www.meitrip.net")%>&state=mei">
+                                <img src="/images/qq_connect.png" alt="product" class="img-responsive" />
+                            </a>
+                        </form>
+                        <!-- Login Form Ends -->
+                    </div>
+                </div>
+                <!-- Login Panel Ends -->
+            </div>
+            <div class="col-sm-6">
+                <!-- Login Panel Starts -->
+                <div class="panel panel-smart">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">注册</h3>
+                    </div>
+                    <div class="panel-body">
+                        <!-- Login Form Starts -->
+                        <form class="form-form-horizontal" role="form" action="/register" method="post" id="registerForm">
+                            <div class="form-group">
+                                <label class="sr-only" for="mobile">手机号</label>
+                                <input type="text" class="form-control" id="reg_mobile" name="reg_mobile" placeholder="手机号">
+
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="passwd">密码</label>
+                                <input type="password" class="form-control" id="reg_passwd" name="reg_passwd" placeholder="密码">
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="passwd">重复密码</label>
+                                <input type="password" class="form-control" id="reg_repasswd" name="reg_repasswd" placeholder="重复密码">
+                            </div>
+                            <div class="form-group">
+                                <span class="text-danger reg_msg"><%=reg_msg%></span>
+                            </div>
+                            <button type="submit" class="btn btn-warning">
+                                注册
+                            </button>
+                        </form>
+                        <!-- Login Form Ends -->
+                    </div>
+                </div>
+                <!-- Login Panel Ends -->
+            </div>
+        </div>
+    </section>
+    <!-- Login Form Section Ends -->
+</div>
+<!-- Main Container Ends -->
+<%include footer%>
+<script>
+    $(function(){
+        $('#registerForm').submit(function(event){
+            if($('#reg_passwd').val()!=$('#reg_repasswd').val()){
+                $('.reg_msg').text('两次输入密码不一致');
+                event.preventDefault();
+            } else {
+                $("#reg_passwd").val(faultylabs.MD5($("#reg_passwd").val()));
+                $("#reg_repasswd").val(faultylabs.MD5($("#reg_repasswd").val()));
+            }
+        });
+
+        $('#loginForm').submit(function(event){
+            $("#passwd").val(faultylabs.MD5($("#passwd").val()));
+        });
+    });
+</script>

@@ -1,0 +1,298 @@
+<%include header%>
+<!-- Main Container Starts -->
+<div id="main-container" class="container">
+<!-- Breadcrumb Starts -->
+<ol class="breadcrumb">
+    <li><a href="/">首页</a></li>
+    <li class="active">结算</li>
+</ol>
+<!-- Breadcrumb Ends -->
+<!-- Main Heading Starts -->
+<h2 class="main-heading text-center">
+    结算
+</h2>
+<!-- Main Heading Ends -->
+<!-- Shopping Cart Table Starts -->
+<div class="table-responsive shopping-cart-table">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <td class="text-center">
+                产品
+            </td>
+            <td class="text-center">
+                使用日期
+            </td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="text-center">
+                <%=product.name%>*<%=orderInfo.qty%>
+            </td>
+            <td class="text-center">
+                <%=orderInfo.startDate?orderInfo.startDate:''%>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!-- Shopping Cart Table Ends -->
+<!-- Shipping Section Starts -->
+<section class="registration-area">
+<form class="form-horizontal" role="form" action="/saveOrder" method="post">
+<input type="hidden" name="startDate" value="<%=orderInfo.startDate?orderInfo.startDate:''%>">
+<input type="hidden" name="quantity" value="<%=orderInfo.qty%>">
+<input type="hidden" name="product" value="<%=product._id%>">
+<input type="hidden" name="priceID" value="<%=price._id%>">
+<div class="row">
+<!-- 左边 Starts -->
+<div class="col-sm-6">
+    <!-- 收货地址 Starts -->
+    <div class="panel panel-smart <%=product.productType==3?'':'hidden'%>">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                收货地址
+            </h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="province" class="col-sm-3 control-label">省:</label>
+                <div class="col-sm-9">
+                    <select class="form-control" id="province" name="province">
+                        <option value="">- 请选择 -</option>
+                        <%provinces.forEach(function(p){%>
+                        <option value="<%=p.pid%>"><%=p.provinceName%></option>
+                        <%});%>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputCity" class="col-sm-3 control-label">市:</label>
+                <div class="col-sm-9">
+                    <select class="form-control" id="city" name="city">
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="district" class="col-sm-3 control-label">区:</label>
+                <div class="col-sm-9">
+                    <select class="form-control" id="district" name="district">
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="address" class="col-sm-3 control-label">地址:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="address" name="address" placeholder="地址">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 收货地址 Ends -->
+
+    <!-- 联系信息 Starts -->
+    <div class="panel panel-smart">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                联系信息
+            </h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="contactName" class="col-sm-3 control-label">联系人:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="contactName" name="contactName" placeholder="联系人" value="<%=user.name%>">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="contactMobile" class="col-sm-3 control-label">联系电话:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="contactMobile" name="contactMobile" placeholder="联系电话" value="<%=user.mobile%>">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 联系信息 Ends -->
+
+    <!-- 支付方式 Starts -->
+    <div class="panel panel-smart">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                支付方式
+            </h3>
+        </div>
+        <div class="panel-body">
+            <div class="radio">
+                <label>
+                    <input type="radio" name="payway" value="3" checked>
+                    <img src="/images/zfb.png" alt="支付宝" class="img-responsive" />
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="payway" value="4">
+                    <img src="/images/wx.png" alt="微信支付" class="img-responsive" />
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="payway" value="2">
+                    账户内支付
+                </label>
+            </div>
+        </div>
+    </div>
+    <!-- 支付方式 Ends -->
+
+</div>
+<!-- 左边 Ends -->
+<!-- 右边 Starts -->
+<div class="col-sm-6">
+    <!-- 优惠券 Starts -->
+    <div class="panel panel-smart hidden">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                优惠券
+            </h3>
+        </div>
+        <div class="panel-body">
+            <!-- Form Starts -->
+                <div class="form-group">
+                    <label for="inputCouponCode" class="col-sm-3 control-label">优惠券:</label>
+                    <div class="col-sm-9">
+                        <select id="inputCouponCode" class="form-control">
+                            <option>--请选择--</option>
+                        </select>
+                    </div>
+                </div>
+            <!-- Form Ends -->
+        </div>
+    </div>
+    <!-- 优惠券 Ends -->
+
+    <!-- 发票 Starts -->
+    <div class="panel panel-smart">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                发票信息
+            </h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="inputCountry" class="col-sm-3 control-label">发票:</label>
+                <div class="col-sm-9">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="ckb_invoice" name="ckb_invoice">
+                            &nbsp;
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group hidden invoice">
+                <label for="invoiceType" class="col-sm-3 control-label">类型:</label>
+                <div class="col-sm-9">
+                    <select class="form-control" id="invoiceType" name="invoiceType">
+                        <option value="0">个人</option>
+                        <option value="1">公司</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group hidden invoice">
+                <label for="invoiceTitle" class="col-sm-3 control-label">抬头:</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" id="invoiceTitle" name="invoiceTitle" placeholder="抬头">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 发票 Ends -->
+
+    <!-- Total Panel Starts -->
+    <div class="panel panel-smart">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                合计
+            </h3>
+        </div>
+        <div class="panel-body">
+            <dl class="dl-horizontal">
+                <dt>单价:</dt>
+                <dd>￥<%=price.price%></dd>
+                <dt>数量:</dt>
+                <dd><%=orderInfo.qty%></dd>
+                <dt>折扣:</dt>
+                <dd>￥0</dd>
+            </dl>
+            <hr />
+            <dl class="dl-horizontal total">
+                <dt>合计 :</dt>
+                <dd>￥<%=price.price*orderInfo.qty%></dd>
+            </dl>
+            <hr />
+            <div class="text-uppercase clearfix">
+                <button class="btn btn-success pull-right">
+                    结算
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Total Panel Ends -->
+</div>
+<!-- 右边 Ends -->
+</div>
+</form>
+</section>
+<!-- Shipping Section Ends -->
+</div>
+<!-- Main Container Ends -->
+<%include footer%>
+<script>
+    $(function(){
+        $('#ckb_invoice').click(function(){
+            if($(this).attr('checked')){
+                $('.invoice').removeClass('hidden');
+            } else {
+                $('.invoice').addClass('hidden');
+            }
+        });
+
+        $("#province").change(function(){
+            $('#city').html('');
+            $('#district').html('');
+            $.ajax({
+                'url':'/ajax/getCities',
+                'method':'get',
+                'data':{'pid':$(this).val()}
+            }).done(function(msg){
+                $('#city').append('<option>- 请选择 -</option>');
+                if(msg.error==1){
+                    alert("网络异常");
+                } else{
+                    msg.data.forEach(function(city){
+                        $('#city').append('<option value="'+city.cid+'">'+city.cityName+'</option>');
+                    });
+                }
+            });
+        });
+
+        $('#city').change(function(){
+            $('#district').html('');
+            $.ajax({
+                'url':'/ajax/getDistricts',
+                'method':'get',
+                'data':{'cid':$(this).val()}
+            }).done(function(msg){
+                $('#district').append('<option>- 请选择 -</option>');
+                if(msg.error==1){
+                    alert("网络异常");
+                } else{
+                    msg.data.forEach(function(district){
+                        $('#district').append('<option value="'+district.did+'">'+district.districtName+'</option>');
+                    });
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,26 @@
+{
+  "name": "wohooooApi",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "async": "*",
+    "body-parser": "~1.0.0",
+    "cookie-parser": "~1.0.1",
+    "cookie-session": "*",
+    "debug": "~0.7.4",
+    "ejs": "*",
+    "express": "~4.7.2",
+    "log4js": "*",
+    "moment": "*",
+    "mongoose": "*",
+    "morgan": "~1.0.0",
+    "request": "*",
+    "static-favicon": "~1.0.0",
+    "underscore": "*",
+    "upyun": "^1.0.1",
+    "connect-flash":"*"
+  }
+}

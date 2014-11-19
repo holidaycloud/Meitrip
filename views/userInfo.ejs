@@ -1,0 +1,77 @@
+<%include header%>
+<!-- Main Container Starts -->
+<div id="main-container" class="container">
+<!-- Breadcrumb Starts -->
+<ol class="breadcrumb">
+    <li><a href="/">首页</a></li>
+    <li class="active">个人信息</li>
+</ol>
+<!-- Breadcrumb Ends -->
+
+<!-- Registration Section Starts -->
+<section class="registration-area">
+<div class="row">
+<div class="col-sm-12">
+    <!-- Registration Block Starts -->
+    <div class="panel panel-smart">
+        <div class="panel-heading">
+            <h3 class="panel-title">个人信息</h3>
+        </div>
+        <div class="panel-body">
+            <!-- Registration Form Starts -->
+            <form class="form-horizontal" role="form" method="post" action="/updateInfo">
+                <!-- Personal Information Starts -->
+                <div class="form-group">
+                    <label for="mobile" class="col-sm-3 control-label">手机:</label>
+                    <div class="col-sm-9">
+                        <input type="hidden" class="form-control" id="uid" name="uid" value="<%=user._id%>">
+                        <input type="text" class="form-control" id="mobile" name="mobile" placeholder="手机" value="<%=user.mobile%>" disabled>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="loginName" class="col-sm-3 control-label">昵称:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="loginName" name="loginName" value="<%=user.loginName?user.loginName:''%>" placeholder="昵称">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">邮箱:</label>
+                    <div class="col-sm-9">
+                        <input type="email" class="form-control" id="email" name="email" value="<%=user.email?user.email:''%>" placeholder="邮箱">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-3 control-label">真实姓名:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="name" name="name" value="<%=user.name?user.name:''%>" placeholder="真实姓名">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="address" class="col-sm-3 control-label">联系地址:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" id="address" name="address" value="<%=user.address?user.address:''%>" placeholder="联系地址">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="submit" class="btn btn-primary">
+                            更新信息
+                        </button>
+                        <a class="btn btn-warning" href="/changePasswd">
+                            修改密码
+                        </a>
+                    </div>
+                </div>
+            </form>
+            <!-- Registration Form Starts -->
+        </div>
+    </div>
+    <!-- Registration Block Ends -->
+</div>
+
+</div>
+</section>
+<!-- Registration Section Ends -->
+</div>
+<!-- Main Container Ends -->
+<%include footer%>

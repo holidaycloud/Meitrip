@@ -1,0 +1,303 @@
+<%include header%>
+<!-- Main Container Starts -->
+<div id="main-container" class="container">
+<!-- Breadcrumb Starts -->
+<ol class="breadcrumb">
+    <li><a href="/">首页</a></li>
+    <li><a href="/category/<%=classify._id%>"><%=classify.name%></a></li>
+    <li class="active"><%=product.name%></li>
+</ol>
+<!-- Breadcrumb Ends -->
+<!-- Product Info Starts -->
+<div class="row product-info full">
+    <!-- Left Starts -->
+    <div class="col-sm-4 images-block">
+        <a href="<%=product.images.length>0?product.images[0].url:''%>">
+            <img src="<%=product.images.length>0?product.images[0].url:''%>" alt="Image" class="img-responsive thumbnail" />
+        </a>
+        <ul class="list-unstyled list-inline">
+            <%for(var i=1;i<product.images.length;i++){%>
+            <li>
+                <a href="<%=product.images[i].url%>">
+                    <img src="<%=product.images[i].url%>" alt="Image" class="img-responsive thumbnail" />
+                </a>
+            </li>
+            <%}%>
+        </ul>
+    </div>
+    <!-- Left Ends -->
+    <!-- Right Starts -->
+    <div class="col-sm-8 product-details">
+        <div class="panel-smart">
+            <form class="form-form-horizontal" role="form" action="/cart" method="post">
+                <input type="hidden" value="<%=product._id%>" name="productID"  />
+                <input type="hidden" value="<%=product.name%>" name="productName"  />
+            <!-- Product Name Starts -->
+            <h2><%=product.name%></h2>
+            <!-- Product Name Ends -->
+            <hr />
+            <!-- Manufacturer Starts -->
+            <ul class="list-unstyled manufacturer">
+                <li>
+                    <span>产品类型:</span>度假
+                </li>
+                <li>
+                    <span>库&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存:</span><span class="inventory"><%=price[0].inventory%></span>
+                </li>
+            </ul>
+            <!-- Manufacturer Ends -->
+            <hr />
+            <!-- Price Starts -->
+            <div class="price">
+                <span class="price-head">价格 :</span>
+                <span class="price-new">￥<%=price[0].price%></span>
+            </div>
+            <!-- Price Ends -->
+            <hr />
+            <!-- Available Options Starts -->
+            <div class="options">
+                <%if(product.productType==3){%>
+                <h3>选择数量</h3>
+                <input type="hidden" id="priceID" name="priceID" value="<%=price[0]._id%>">
+                <%} else {%>
+                <h3>选择日期数量</h3>
+                <div class="form-group">
+                    <label for="priceID" class="control-label text-uppercase">产品日期:</label>
+                    <input type="hidden" id="startDate" name="startDate" value="<%=new Date(price[0].date).Format('yyyy-MM-dd')%>">
+                    <select name="priceID" id="priceID" class="form-control">
+                        <%price.forEach(function(p){
+                        if(p.inventory!=0){%>
+                        <option value="<%=p._id%>"><%=new Date(p.date).Format('yyyy-MM-dd')%></option>
+                        <%}});%>
+                    </select>
+                </div>
+                <%}%>
+
+                <div class="form-group">
+                    <label class="control-label text-uppercase" for="input-quantity">数量:</label>
+                    <select name="productQty" id="productQty" class="form-control">
+                        <%var count=price[0].inventory<=10?price[0].inventory:10;for(var i=1;i<=count;i++){%>
+                        <option value="<%=i%>"><%=i%></option>
+                        <%}%>
+                    </select>
+                </div>
+                <div class="cart-button button-group">
+                    <!--<button type="button" id="btn_wish" title="收藏" class="btn btn-wishlist">-->
+                        <!--<i class="fa fa-heart"></i>-->
+                    <!--</button>-->
+                    <button type="submit" class="btn btn-cart">
+                        预订
+                        <i class="fa fa-shopping-cart"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Available Options Ends -->
+            </form>
+        </div>
+    </div>
+    <!-- Right Ends -->
+</div>
+<!-- Product Info Ends -->
+<!-- Tabs Starts -->
+<div class="tabs-panel panel-smart">
+    <!-- Nav Tabs Starts -->
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#tab-specification">产品详情</a>
+        </li>
+        <li>
+            <a href="#tab-description">产品简介</a>
+        </li>
+        <li><a href="#tab-ainfo">预订须知</a></li>
+        <li><a href="#tab-review">取消政策</a></li>
+    </ul>
+    <!-- Nav Tabs Ends -->
+    <!-- Tab Content Starts -->
+    <div class="tab-content clearfix">
+        <!-- Specification Starts -->
+        <div class="tab-pane active" id="tab-specification">
+            <%-product.content%>
+        </div>
+        <!-- Description Starts -->
+        <div class="tab-pane" id="tab-description">
+            <%=product.introduction%>
+        </div>
+        <!-- Description Ends -->
+        <!-- Specification Ends -->
+        <!-- Additional Information Starts -->
+        <div class="tab-pane" id="tab-ainfo">
+            <p>
+            </p>
+        </div>
+        <!-- Additional Information Ends -->
+        <!-- Review Starts -->
+        <div class="tab-pane" id="tab-review">
+            <p>
+            </p>
+        </div>
+        <!-- Review Ends -->
+    </div>
+    <!-- Tab Content Ends -->
+</div>
+<!-- Tabs Ends -->
+<!-- Related Products Starts -->
+<!--<div class="product-info-box">-->
+    <!--<h4 class="heading">Related Products</h4>-->
+    <!--&lt;!&ndash; Products Row Starts &ndash;&gt;-->
+    <!--<div class="row">-->
+        <!--&lt;!&ndash; Product #1 Starts &ndash;&gt;-->
+        <!--<div class="col-md-3 col-sm-6">-->
+            <!--<div class="product-col">-->
+                <!--<div class="image">-->
+                    <!--<img src="/images/product-images/pimg1.jpg" alt="product" class="img-responsive" />-->
+                <!--</div>-->
+                <!--<div class="caption">-->
+                    <!--<h4><a href="product.html">Simply Organic Seeds</a></h4>-->
+                    <!--<div class="description">-->
+                        <!--We are so lucky living in such a wonderful time. Our almost unlimited ...-->
+                    <!--</div>-->
+                    <!--<div class="price">-->
+                        <!--<span class="price-new">$199.50</span>-->
+                        <!--<span class="price-old">$249.50</span>-->
+                    <!--</div>-->
+                    <!--<div class="cart-button button-group">-->
+                        <!--<button type="button" title="Wishlist" class="btn btn-wishlist">-->
+                            <!--<i class="fa fa-heart"></i>-->
+                        <!--</button>-->
+                        <!--<button type="button" title="Compare" class="btn btn-compare">-->
+                            <!--<i class="fa fa-bar-chart-o"></i>-->
+                        <!--</button>-->
+                        <!--<button type="button" class="btn btn-cart">-->
+                            <!--Add to cart-->
+                            <!--<i class="fa fa-shopping-cart"></i>-->
+                        <!--</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--&lt;!&ndash; Product #1 Ends &ndash;&gt;-->
+        <!--&lt;!&ndash; Product #2 Starts &ndash;&gt;-->
+        <!--<div class="col-md-3 col-sm-6">-->
+            <!--<div class="product-col">-->
+                <!--<div class="image">-->
+                    <!--<img src="/images/product-images/pimg1.jpg" alt="product" class="img-responsive" />-->
+                <!--</div>-->
+                <!--<div class="caption">-->
+                    <!--<h4><a href="product.html">Simply Organic Seeds</a></h4>-->
+                    <!--<div class="description">-->
+                        <!--We are so lucky living in such a wonderful time. Our almost unlimited ...-->
+                    <!--</div>-->
+                    <!--<div class="price">-->
+                        <!--<span class="price-new">$199.50</span>-->
+                        <!--<span class="price-old">$249.50</span>-->
+                    <!--</div>-->
+                    <!--<div class="cart-button button-group">-->
+                        <!--<button type="button" title="Wishlist" class="btn btn-wishlist">-->
+                            <!--<i class="fa fa-heart"></i>-->
+                        <!--</button>-->
+                        <!--<button type="button" title="Compare" class="btn btn-compare">-->
+                            <!--<i class="fa fa-bar-chart-o"></i>-->
+                        <!--</button>-->
+                        <!--<button type="button" class="btn btn-cart">-->
+                            <!--Add to cart-->
+                            <!--<i class="fa fa-shopping-cart"></i>-->
+                        <!--</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--&lt;!&ndash; Product #2 Ends &ndash;&gt;-->
+        <!--&lt;!&ndash; Product #3 Starts &ndash;&gt;-->
+        <!--<div class="col-md-3 col-sm-6">-->
+            <!--<div class="product-col">-->
+                <!--<div class="image">-->
+                    <!--<img src="/images/product-images/pimg1.jpg" alt="product" class="img-responsive" />-->
+                <!--</div>-->
+                <!--<div class="caption">-->
+                    <!--<h4><a href="product.html">Simply Organic Seeds</a></h4>-->
+                    <!--<div class="description">-->
+                        <!--We are so lucky living in such a wonderful time. Our almost unlimited ...-->
+                    <!--</div>-->
+                    <!--<div class="price">-->
+                        <!--<span class="price-new">$199.50</span>-->
+                        <!--<span class="price-old">$249.50</span>-->
+                    <!--</div>-->
+                    <!--<div class="cart-button button-group">-->
+                        <!--<button type="button" title="Wishlist" class="btn btn-wishlist">-->
+                            <!--<i class="fa fa-heart"></i>-->
+                        <!--</button>-->
+                        <!--<button type="button" title="Compare" class="btn btn-compare">-->
+                            <!--<i class="fa fa-bar-chart-o"></i>-->
+                        <!--</button>-->
+                        <!--<button type="button" class="btn btn-cart">-->
+                            <!--Add to cart-->
+                            <!--<i class="fa fa-shopping-cart"></i>-->
+                        <!--</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--&lt;!&ndash; Product #3 Ends &ndash;&gt;-->
+        <!--&lt;!&ndash; Product #4 Starts &ndash;&gt;-->
+        <!--<div class="col-md-3 col-sm-6">-->
+            <!--<div class="product-col">-->
+                <!--<div class="image">-->
+                    <!--<img src="/images/product-images/pimg1.jpg" alt="product" class="img-responsive" />-->
+                <!--</div>-->
+                <!--<div class="caption">-->
+                    <!--<h4><a href="product.html">Simply Organic Seeds</a></h4>-->
+                    <!--<div class="description">-->
+                        <!--We are so lucky living in such a wonderful time. Our almost unlimited ...-->
+                    <!--</div>-->
+                    <!--<div class="price">-->
+                        <!--<span class="price-new">$199.50</span>-->
+                        <!--<span class="price-old">$249.50</span>-->
+                    <!--</div>-->
+                    <!--<div class="cart-button button-group">-->
+                        <!--<button type="button" title="Wishlist" class="btn btn-wishlist">-->
+                            <!--<i class="fa fa-heart"></i>-->
+                        <!--</button>-->
+                        <!--<button type="button" title="Compare" class="btn btn-compare">-->
+                            <!--<i class="fa fa-bar-chart-o"></i>-->
+                        <!--</button>-->
+                        <!--<button type="button" class="btn btn-cart">-->
+                            <!--Add to cart-->
+                            <!--<i class="fa fa-shopping-cart"></i>-->
+                        <!--</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--&lt;!&ndash; Product #4 Ends &ndash;&gt;-->
+    <!--</div>-->
+    <!--&lt;!&ndash; Products Row Ends &ndash;&gt;-->
+<!--</div>-->
+<!-- Related Products Ends -->
+</div>
+<!-- Main Container Ends -->
+<%include footer%>
+<script>
+    $(function(){
+        $('#priceID').change(function(){
+            console.log($(this).find("option:selected").text());
+            $('#startDate').val($(this).find("option:selected").text());
+            $.ajax({
+                type: "GET",
+                url: "/ajax/getPrice?id="+$(this).val()
+            }).done(function( data ) {
+                if(data.error==1){
+                    alert('网络异常！');
+                } else {
+                    $('.price-new').text('￥'+data.data.price);
+                    $('.inventory').text(data.data.inventory);
+                    $('#productQty').html("");
+                    var count = data.data.inventory<=10?data.data.inventory:10;
+                    for(var i=1;i<=count;i++){
+                        $('#productQty').append('<option value="'+i+'">'+i+'</option>');
+                    }
+                }
+            });
+        });
+    });
+
+</script>

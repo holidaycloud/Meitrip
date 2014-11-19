@@ -1,0 +1,137 @@
+<%include header%>
+<!-- Main Container Starts -->
+<div id="main-container" class="container">
+    <!-- Breadcrumb Starts -->
+    <ol class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active">我的订单</li>
+    </ol>
+    <!-- Breadcrumb Ends -->
+
+    <!-- Registration Section Starts -->
+    <section class="registration-area">
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- Registration Block Starts -->
+                <div class="panel panel-smart">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">我的订单</h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>订单号</th>
+                                <th>名称</th>
+                                <th class="hidden-sm hidden-xs">订单日期</th>
+                                <th class="hidden-sm hidden-xs">状态</th>
+                                <th class="hidden-sm hidden-xs">金额</th>
+                                <th class="hidden-sm hidden-xs">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <%orders.forEach(function(o){%>
+                            <tr>
+                                <td><a class="btn btn-link btn-xs" href="/orderDetails/<%=o._id%>"><%=o.orderID%></a></td>
+                                <td><%=o.product.name%></td>
+                                <td class="hidden-sm hidden-xs"><%=new Date(o.orderDate).Format('yyyy-MM-dd hh:mm:ss')%></td>
+                                <td class="hidden-sm hidden-xs"><%=orderStatus[o.status]%></td>
+                                <td class="hidden-sm hidden-xs">￥<%=o.totalPrice%></td>
+                                <td class="hidden-sm hidden-xs">
+                                    <a href="javascript:void(0);" data-oid="<%=o._id%>" data-orderID="<%=o.orderID%>" data-name="<%=o.product.name%>" class="btn btn_cancel btn-danger btn-xs <%=o.status==0?'':'hidden'%>">取消</a>
+                                    <a href="/orderDetails/<%=o._id%>" class="btn btn-primary btn-xs">查看</a>
+                                </td>
+                            </tr>
+                            <%});%>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Registration Block Ends -->
+            </div>
+
+        </div>
+        <!-- Pagination & Results Starts -->
+        <div class="row">
+            <!-- Pagination Starts -->
+            <div class="col-sm-6 pagination-block">
+                <ul class="pagination">
+                    <%if(page==0){%>
+                    <li><a href="javascript:void(0)">&laquo;</a></li>
+                    <%} else {%>
+                    <li><a href="/myOrders/?page=<%=page-1%>">&laquo;</a></li>
+                    <%}%>
+
+                    <%for(var i=1;i<=totalPage;i++){
+                    if(i==page+1){%>
+                    <li class="active"><a href="javascript:void(0)"><%=i%></a></li>
+                    <%} else {%>
+                    <li><a href="/myOrders/?page=<%=i-1%>"><%=i%></a></li>
+                    <%}}%>
+
+                    <%if(page+1==totalPage){%>
+                    <li><a href="javascript:void(0)">&raquo;</a></li>
+                    <%} else {%>
+                    <li><a href="/myOrders/?page=<%=page+1%>">&raquo;</a></li>
+                    <%}%>
+                </ul>
+            </div>
+            <!-- Pagination Ends -->
+            <!-- Results Starts -->
+            <div class="col-sm-6 results">
+                第 <%=page+1%> 页 共 <%=totalPage%> 页
+            </div>
+            <!-- Results Ends -->
+        </div>
+        <!-- Pagination & Results Ends -->
+    </section>
+    <!-- Registration Section Ends -->
+</div>
+<!-- Main Container Ends -->
+
+<!-- Modal Cancel Start-->
+<div class="modal fade" id="modal_cancel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">订单取消</h4>
+            </div>
+            <div class="modal-body">
+                是否取消订单 <span id="orderID"></span> <span id="orderName"></span>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="btn_cancel_confirm">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Cancel End-->
+
+<%include footer%>
+
+<script>
+    $(function(){
+        var cancelOrderId;
+        $('.btn_cancel').click(function(){
+            cancelOrderId=$(this).attr('data-oid');
+            $('#orderID').text($(this).attr('data-orderID'));
+            $('#orderName').text($(this).attr('data-name'));
+            $('#modal_cancel').modal('show');
+        });
+
+        $('#btn_cancel_confirm').click(function(){
+            console.log(cancelOrderId);
+            $.ajax({
+                'url':'/ajax/order/cancel',
+                'method':'POST',
+                'data':{
+                    'id':cancelOrderId
+                }
+            }).done(function(data){
+                location.reload();
+            });
+        });
+    });
+</script>

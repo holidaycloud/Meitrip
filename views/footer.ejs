@@ -1,0 +1,104 @@
+<!-- Footer Section Starts -->
+<footer id="footer-area">
+    <!-- Footer Links Starts -->
+    <div class="footer-links">
+        <!-- Container Starts -->
+        <div class="container">
+            <!-- Information Links Starts -->
+            <!--<div class="col-md-2 col-sm-6">-->
+                <!--<h5>相关信息</h5>-->
+                <!--<ul>-->
+                    <!--<li><a href="about.html">关于我们</a></li>-->
+                <!--</ul>-->
+            <!--</div>-->
+            <!-- Information Links Ends -->
+            <!-- My Account Links Starts -->
+            <div class="col-md-3 col-sm-6">
+                <h5>我的账户</h5>
+                <ul>
+                    <li><a href="/myOrders">我的订单</a></li>
+                    <li><a href="/userInfo">个人信息</a></li>
+                </ul>
+            </div>
+            <!-- My Account Links Ends -->
+            <!-- Customer Service Links Starts -->
+            <div class="col-md-3 col-sm-6">
+                <h5>服务</h5>
+                <ul>
+                    <li><a href="/contact">联系我们</a></li>
+                </ul>
+            </div>
+            <!-- Customer Service Links Ends -->
+
+            <!-- Contact Us Starts -->
+            <div class="col-md-4 col-sm-12 last">
+                <h5>联系我们</h5>
+                <ul>
+                    <li><%=domain.title%></li>
+                    <li>
+                        <%=domain.address%>
+                    </li>
+                    <li>
+                        邮箱: <a href="mailto:<%=domain.email%>"><%=domain.email%></a>
+                    </li>
+                </ul>
+                <h4 class="lead">
+                    电话: <span><%=domain.tel%></span>
+                </h4>
+            </div>
+            <!-- Contact Us Ends -->
+
+            <!-- Follow Us Links Starts -->
+            <div class="col-md-2 col-sm-6 hidden-sm hidden-xs">
+                <h5>扫一扫</h5>
+                <img src="<%=domain.qrCode%>" alt="微信号" class="img-responsive" />
+            </div>
+            <!-- Follow Us Links Ends -->
+        </div>
+        <!-- Container Ends -->
+    </div>
+    <!-- Footer Links Ends -->
+    <!-- Copyright Area Starts -->
+    <div class="copyright">
+        <!-- Container Starts -->
+        <div class="container">
+            <!-- Starts -->
+            <p class="pull-left">
+                &nbsp; 2014 Mei Trip All Rights Reserved.</a>
+            </p>
+            <!-- Ends -->
+            <!-- Payment Gateway Links Starts -->
+            <ul class="pull-right list-inline">
+                <li>
+                    <img src="/images/payment-icon/cirrus.png" alt="PaymentGateway" />
+                </li>
+                <li>
+                    <img src="/images/payment-icon/paypal.png" alt="PaymentGateway" />
+                </li>
+                <li>
+                    <img src="/images/payment-icon/visa.png" alt="PaymentGateway" />
+                </li>
+                <li>
+                    <img src="/images/payment-icon/mastercard.png" alt="PaymentGateway" />
+                </li>
+                <li>
+                    <img src="/images/payment-icon/americanexpress.png" alt="PaymentGateway" />
+                </li>
+            </ul>
+            <!-- Payment Gateway Links Ends -->
+        </div>
+        <!-- Container Ends -->
+    </div>
+    <!-- Copyright Area Ends -->
+</footer>
+<!-- Footer Section Ends -->
+<!-- JavaScript Files -->
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/jquery-migrate-1.2.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/bootstrap-hover-dropdown.min.js"></script>
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/md5.js"></script>
+<script src="/js/custom.js"></script>
+</body>
+</html>

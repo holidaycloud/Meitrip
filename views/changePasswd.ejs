@@ -1,0 +1,105 @@
+<%include header%>
+<!-- Main Container Starts -->
+<div id="main-container" class="container">
+<!-- Breadcrumb Starts -->
+<ol class="breadcrumb">
+    <li><a href="/">首页</a></li>
+    <li><a href="/userInfo">个人信息</a></li>
+    <li class="active">修改密码</li>
+</ol>
+<!-- Breadcrumb Ends -->
+
+<!-- Registration Section Starts -->
+<section class="registration-area">
+<div class="row">
+<div class="col-sm-12">
+    <!-- Registration Block Starts -->
+    <div class="panel panel-smart">
+        <div class="panel-heading">
+            <h3 class="panel-title">修改密码</h3>
+        </div>
+        <div class="panel-body">
+            <!-- Registration Form Starts -->
+            <form class="form-horizontal" role="form" id="changeForm" action="">
+                <input type="hidden" class="form-control" id="uid" value="<%=user._id%>" />
+                <!-- Password Area Starts -->
+                <div class="form-group">
+                    <label for="old_passwd" class="col-sm-3 control-label">旧密码:</label>
+                    <div class="col-sm-9">
+                        <input type="password" class="form-control" id="old_passwd" name="old_passwd" placeholder="旧密码">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="new_passwd" class="col-sm-3 control-label">新密码:</label>
+                    <div class="col-sm-9">
+                        <input type="password" class="form-control" id="new_passwd" name="new_passwd" placeholder="新密码">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="renew_passwd" class="col-sm-3 control-label">重复新密码:</label>
+                    <div class="col-sm-9">
+                        <input type="password" class="form-control" id="renew_passwd" name="renew_passwd" placeholder="重复新密码">
+                        <a href="#" class="btn btn-link">忘记密码?</a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                    <span id="rtn_msg"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="submit" class="btn btn-warning">
+                            修改密码
+                        </button>
+                    </div>
+                </div>
+                <!-- Password Area Ends -->
+            </form>
+            <!-- Registration Form Starts -->
+        </div>
+    </div>
+    <!-- Registration Block Ends -->
+</div>
+
+</div>
+</section>
+<!-- Registration Section Ends -->
+</div>
+<!-- Main Container Ends -->
+<%include footer%>
+<script>
+    $(function(){
+        $('#changeForm').submit(function(event){
+            if($('#new_passwd').val()!=$('#renew_passwd').val()){
+                $('#rtn_msg').addClass('text-danger');
+                $('#rtn_msg').text('两次输入密码不一致');
+            } else {
+                $('#rtn_msg').removeClass('text-danger');
+                $('#rtn_msg').text('');
+                $.ajax({
+                    'url':'/ajax/changePasswd',
+                    'method':'POST',
+                    'data':{
+                        'id':$('#uid').val(),
+                        'oldPasswd':faultylabs.MD5($('#old_passwd').val()),
+                        'newPasswd':faultylabs.MD5($('#new_passwd').val())
+                    }
+                }).done(function(data){
+                    if(data.error==1){
+                        $('#rtn_msg').removeClass('text-success');
+                        $('#rtn_msg').text('');
+                        $('#rtn_msg').addClass('text-danger');
+                        $('#rtn_msg').text(data.errMsg);
+                    } else{
+                        $('#rtn_msg').removeClass('text-danger');
+                        $('#rtn_msg').text('');
+                        $('#rtn_msg').addClass('text-success');
+                        $('#rtn_msg').text('修改成功');
+                    }
+                });
+            }
+            event.preventDefault();
+        });
+    });
+</script>
