@@ -8,11 +8,15 @@
                 <%for(var i in recommend){%>
                 <%if(i==0){%>
                 <div class="item active">
+                    <a href="/product/<%=recommend[i]._id%>">
                     <img src="<%=recommend[i].images.length>0?recommend[i].images[0].url:''%>" alt="<%=recommend[i].name%>" width="1170" class="img-responsive" />
+                    </a>
                 </div>
                 <%} else {%>
                 <div class="item">
+                    <a href="/product/<%=recommend[i]._id%>">
                     <img src="<%=recommend[i].images.length>0?recommend[i].images[0].url:''%>" alt="<%=recommend[i].name%>" width="1170" class="img-responsive" />
+                    </a>
                 </div>
                 <%}%>
                 <%}%>
