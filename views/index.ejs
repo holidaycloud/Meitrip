@@ -8,11 +8,11 @@
                 <%for(var i in recommend){%>
                 <%if(i==0){%>
                 <div class="item active">
-                    <img src="<%=recommend[i].images.length>0?recommend[i].images[0].url:''%>!slide" alt="<%=recommend[i].name%>" class="img-responsive" />
+                    <img src="<%=recommend[i].images.length>0?recommend[i].images[0].url:''%>" alt="<%=recommend[i].name%>" width="1170" class="img-responsive" />
                 </div>
                 <%} else {%>
                 <div class="item">
-                    <img src="<%=recommend[i].images.length>0?recommend[i].images[0].url:''%>!slide" alt="<%=recommend[i].name%>" class="img-responsive" />
+                    <img src="<%=recommend[i].images.length>0?recommend[i].images[0].url:''%>" alt="<%=recommend[i].name%>" width="1170" class="img-responsive" />
                 </div>
                 <%}%>
                 <%}%>
