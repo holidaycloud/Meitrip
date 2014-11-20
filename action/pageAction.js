@@ -15,8 +15,13 @@ exports.home = function(req,res){
                 cb(err,result)
             });
         }
+        ,'getRecommend':function(cb){
+            ProductCtrl.recommendList(ent,function(err,result){
+                cb(err,result)
+            });
+        }
     },function(err,results){
-        res.render('index',{'hot':results.getHot.data});
+        res.render('index',{'hot':results.getHot.data,'recommend':results.getRecommend.data});
     });
 
 };

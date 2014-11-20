@@ -17,6 +17,16 @@ ProductCtrl.hotList = function(ent,fn){
     });
 };
 
+ProductCtrl.recommendList = function(ent,fn){
+    var url = config.inf.host+":"+config.inf.port+"/api/product/recommendList?ent="+ent;
+    request({
+        url:url,
+        timeout:3000
+    },function(err,response,body){
+        fn(err,body?JSON.parse(body):{});
+    });
+};
+
 ProductCtrl.classifyList = function(page,pageSize,ent,classify,fn){
     var url = config.inf.host+":"+config.inf.port+"/api/product/classifyList?ent="+ent+"&page="+page+"&pageSize="+pageSize;
     if(classify!='default'){
