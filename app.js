@@ -62,20 +62,14 @@ app.use(function(req,res,next){
 
 app.use(function(req,res,next){
     var domain = req.hostname;
-    if(global.ents[domain]){
-        res.locals.domain = global.ents[domain];
-        next();
-    } else {
-        DomainCtrl.getEnt(domain,function(err,result){
-            if(err){
-                res.render('404');
-            } else {
-                global.ents[domain]=result;
-                res.locals.domain = global.ents[domain];
-                next();
-            }
-        });
-    }
+    DomainCtrl.getEnt(domain,function(err,result){
+        if(err){
+            res.redirect('/404.html');
+        } else {
+            res.locals.domain = result;
+            next();
+        }
+    });
 });
 app.use('/', index);
 app.use('/ajax', ajax);
@@ -94,7 +88,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
         console.log(err.message);
-        res.render('404');
+        res.redirect('/404.html');
     });
 }
 
@@ -102,7 +96,7 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
     console.log(err.message);
-    res.render('404');
+    res.redirect('/404.html');
 });
 
 app.set('port', process.env.PORT || 3333);

@@ -11,4 +11,5 @@ router.get('/getDistricts', AjaxAction.getDistricts);
 router.post('/changePasswd', AjaxAction.changePasswd);
 router.post('/feedback', AjaxAction.feedback);
 router.post('/order/cancel', AjaxAction.orderCancel);
+router.post('/order/cardPay', AjaxAction.cardPay);
 module.exports = router;

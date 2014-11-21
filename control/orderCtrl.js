@@ -48,6 +48,23 @@ OrderCtrl.detail = function(id,customer,fn){
     });
 };
 
+OrderCtrl.cardPay = function(id,customer,token,ent,fn){
+    var url = config.inf.host+":"+config.inf.port+"/api/order/cardPay";
+    request({
+        url:url,
+        timeout:3000,
+        method:'POST',
+        form: {
+            id:id,
+            customer:customer,
+            token:token,
+            ent:ent
+        }
+    },function(err,response,body){
+        fn(err,body?JSON.parse(body):{});
+    });
+};
+
 OrderCtrl.cancel = function(id,customer,fn){
     var url = config.inf.host+":"+config.inf.port+"/api/order/cusCancel";
     request({

@@ -8,7 +8,7 @@ var CustomerCtrl = require('./../control/customerCtrl');
 var AreaCtrl = require('./../control/areaCtrl');
 var OrderCtrl = require('./../control/orderCtrl');
 exports.home = function(req,res){
-    var ent = global.ents[req.hostname].ent;
+    var ent = res.locals.domain.ent;
     async.auto({
         'getHot':function(cb){
             ProductCtrl.hotList(ent,function(err,result){
@@ -39,7 +39,7 @@ exports.product = function(req,res){
     var id = req.params.id;
     ProductCtrl.detail(id,function(err,result){
         var classify ={'_id':'default','name':'所有产品'};
-        global.ents[req.hostname].classify.forEach(function(c){
+        res.locals.domain.classify.forEach(function(c){
             if(c._id==result.product.classify){
                 classify = c;
             }
@@ -53,10 +53,10 @@ exports.categoryGrid = function(req,res){
     var id = req.params.id;
     var page = req.query.page||0;
     var pageSize = req.query.pageSize||9;
-    var ent = global.ents[req.hostname].ent;
+    var ent = res.locals.domain.ent;
     ProductCtrl.classifyList(page,pageSize,ent,id,function(err,result){
         var classify ={'_id':'default','name':'所有产品'};
-        global.ents[req.hostname].classify.forEach(function(c){
+        res.locals.domain.classify.forEach(function(c){
             if(c._id==id){
                 classify = c;
             }
@@ -69,10 +69,10 @@ exports.categoryList = function(req,res){
     var id = req.params.id;
     var page = req.query.page||0;
     var pageSize = req.query.pageSize||9;
-    var ent = global.ents[req.hostname].ent;
+    var ent = res.locals.domain.ent;
     ProductCtrl.classifyList(page,pageSize,ent,id,function(err,result){
         var classify ={'_id':'default','name':'所有产品'};
-        global.ents[req.hostname].classify.forEach(function(c){
+        res.locals.domain.classify.forEach(function(c){
             if(c._id==id){
                 classify = c;
             }
@@ -92,7 +92,7 @@ exports.login = function(req,res){
 exports.register = function(req,res){
     var mobile = req.body.reg_mobile;
     var passwd = req.body.reg_passwd;
-    var ent = global.ents[req.hostname].ent;
+    var ent = res.locals.domain.ent;
     CustomerCtrl.register(mobile,passwd,ent,function(err,result){
         if(err){
             res.render('500');
@@ -156,12 +156,11 @@ exports.orderDetails = function(req,res){
 exports.doLogin = function(req,res){
     var mobile = req.body.mobile;
     var passwd = req.body.passwd;
-    var ent = global.ents[req.hostname].ent;
+    var ent = res.locals.domain.ent;
     CustomerCtrl.login(mobile,passwd,ent,function(err,result){
         if(err){
             res.render('500');
         } else {
-            console.log(result);
             if(result.error==0&&result.data){
                 req.session.user = result.data;
                 res.redirect(req.session.referer);

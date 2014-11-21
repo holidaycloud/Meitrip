@@ -50,7 +50,6 @@ DomainCtrl.classify = function(ent,fn){
     });
 };
 
-
 DomainCtrl.getWebConf = function(domain,fn){
     var url = config.inf.host+":"+config.inf.port+"/api/domain/get?domain="+domain;
     request({

@@ -78,3 +78,20 @@ exports.orderCancel = function(req,res){
         }
     });
 };
+
+exports.cardPay = function(req,res){
+    var id = req.body.id;
+    var customer = req.session.user._id;
+    var token = res.locals.domain.longToken;
+    var ent = res.locals.domain.ent;
+    OrderCtrl.cardPay(id,customer,token,ent,function(err,result){
+        if(err){
+            res.json({'error':1,'errMsg':err.message});
+        } else {
+            if(result.error==0&&result.data){
+                req.session.user.cardBalance = result.data.balance;
+            }
+            res.json(result);
+        }
+    });
+};
