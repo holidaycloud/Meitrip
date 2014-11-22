@@ -50,13 +50,13 @@ app.use(function(req,res,next){
     res.set('X-Powered-By','Server');
     next();
 });
-//app.use(function(req,res,next){
-//    if(req.hostname=='meitrip.net'){
-//        res.redirect('http://www.meitrip.net');
-//    } else {
-//        next();
-//    }
-//});
+app.use(function(req,res,next){
+    if(req.hostname=='meitrip.net'){
+        res.redirect('http://www.meitrip.net');
+    } else {
+        next();
+    }
+});
 app.use(flash());
 app.use(function(req,res,next){
     if(req.session.user){
@@ -70,7 +70,9 @@ app.use(function(req,res,next){
 app.use(function(req,res,next){
     var domain = req.hostname;
     //var domain = 'www.meitrip.net';
+    console.log('domain:',domain);
     DomainCtrl.getEnt(domain,function(err,result){
+        console.log('domainResult:',err,result);
         if(err){
             res.redirect('/404.html');
         } else {
