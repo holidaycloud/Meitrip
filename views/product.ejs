@@ -67,7 +67,7 @@
                     <select name="priceID" id="priceID" class="form-control">
                         <%price.forEach(function(p){
                         if(p.inventory!=0){%>
-                        <option value="<%=p._id%>"><%=new Date(p.date).Format('yyyy-MM-dd')%></option>
+                        <option value="<%=p._id%>"><%=new Date(p.date).Format('yyyy-MM-dd W')%></option>
                         <%}});%>
                     </select>
                 </div>

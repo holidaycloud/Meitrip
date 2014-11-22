@@ -106,7 +106,34 @@ var server = app.listen(app.get('port'), function() {
     console.log('Express server listening on port ' + server.address().port);
 });
 
-Date.prototype.Format = function (fmt) { //author: wucho
+Date.prototype.Format = function (fmt) {
+    function getWeek(w){
+        var x;
+        switch(w){
+            case 0:
+                x="周日";
+                break;
+            case 1:
+                x="周一";
+                break;
+            case 2:
+                x="周二";
+                break;
+            case 3:
+                x="周三";
+                break;
+            case 4:
+                x="周四";
+                break;
+            case 5:
+                x="周五";
+                break;
+            case 6:
+                x="周六";
+                break;
+        }
+        return x;
+    }
     var o = {
         "M+": this.getMonth() + 1, //月份
         "d+": this.getDate(), //日
@@ -114,7 +141,8 @@ Date.prototype.Format = function (fmt) { //author: wucho
         "m+": this.getMinutes(), //分
         "s+": this.getSeconds(), //秒
         "q+": Math.floor((this.getMonth() + 3) / 3), //季度
-        "S": this.getMilliseconds() //毫秒
+        "S": this.getMilliseconds(), //毫秒
+        "W": getWeek(this.getDay()) //星期
     };
     if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
     for (var k in o)

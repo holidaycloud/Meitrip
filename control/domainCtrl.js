@@ -19,15 +19,19 @@ DomainCtrl.getEnt = function(domain,fn){
             });
         },
         'getClassify':['getConfig',function(cb,results){
-            DomainCtrl.classify(results.getConfig.data.ent,function(err,res){
-                if(err){
-                    cb(err,null);
-                } else if(res.error!=0){
-                    cb(new Error('网络异常'),null);
-                } else {
-                    cb(null,res);
-                }
-            })
+            if(results.getConfig.data){
+                DomainCtrl.classify(results.getConfig.data.ent,function(err,res){
+                    if(err){
+                        cb(err,null);
+                    } else if(res.error!=0){
+                        cb(new Error('网络异常'),null);
+                    } else {
+                        cb(null,res);
+                    }
+                });
+            } else {
+                cb(null,null);
+            }
         }]
     },function(err,results){
         if(err){
