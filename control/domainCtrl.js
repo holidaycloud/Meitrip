@@ -37,9 +37,13 @@ DomainCtrl.getEnt = function(domain,fn){
         if(err){
             fn(err,null);
         } else {
-            var obj = results.getConfig.data;
-            obj.classify = results.getClassify.data;
-            fn(null,obj);
+            if(results.getConfig.data){
+                var obj = results.getConfig.data;
+                obj.classify = results.getClassify.data;
+                fn(null,obj);
+            } else {
+                fn(null,null);
+            }
         }
     });
 };
