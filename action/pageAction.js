@@ -141,9 +141,14 @@ exports.orderDetails = function(req,res){
             res.render('500');
         } else {
             if(result.error==0&&result.data){
+                var isWeixin = false;
+                if(req.headers['user-agent'].indexOf('MicroMessenger')>-1){
+                    isWeixin = true;
+                }
                 var obj = {
                     'order':result.data,
-                    'newOrder':isNew
+                    'newOrder':isNew,
+                    'isWeixin':isWeixin
                 };
                 res.render('orderDetails',obj);
             } else {
@@ -232,7 +237,6 @@ exports.cart = function(req,res){
     var startDate = req.body.startDate;
     async.auto({
         'getProduct':function(cb){
-
             ProductCtrl.getProduct(pid,function(err,result){
                 if(err){
                     cb(err,null);
@@ -272,6 +276,10 @@ exports.cart = function(req,res){
             });
         }
     },function(err,results){
+        var isWeixin = false;
+        if(req.headers['user-agent'].indexOf('MicroMessenger')>-1){
+            isWeixin = true;
+        }
         res.render('cart',{
             'provinces':results.getProvince,
             'orderInfo':{
@@ -279,7 +287,8 @@ exports.cart = function(req,res){
                 'startDate':startDate
             },
             'product':results.getProduct,
-            'price':results.getPrice
+            'price':results.getPrice,
+            'isWeixin':isWeixin
         });
     });
 };
