@@ -2,6 +2,7 @@
 <!-- Slider Section Starts -->
 <div class="slider">
     <div class="container">
+        <%if(recommend.length>0){%>
         <div id="main-carousel" class="carousel slide" data-ride="carousel">
             <!-- Wrapper For Slides Starts -->
             <div class="carousel-inner">
@@ -9,19 +10,17 @@
                 <%if(i==0){%>
                 <div class="item active">
                     <a href="/product/<%=recommend[i]._id%>">
-                    <img src="<%=recommend[i].images.length>0?recommend[i].images[0].url:''%>!silde" alt="<%=recommend[i].name%>" class="img-responsive" />
+                        <img src="<%=recommend[i].images.length>0?recommend[i].images[0].url:''%>!silde" alt="<%=recommend[i].name%>" class="img-responsive" />
                     </a>
                 </div>
                 <%} else {%>
                 <div class="item">
                     <a href="/product/<%=recommend[i]._id%>">
-                    <img src="<%=recommend[i].images.length>0?recommend[i].images[0].url:''%>!silde" alt="<%=recommend[i].name%>" class="img-responsive" />
+                        <img src="<%=recommend[i].images.length>0?recommend[i].images[0].url:''%>!silde" alt="<%=recommend[i].name%>" class="img-responsive" />
                     </a>
                 </div>
                 <%}%>
                 <%}%>
-
-
             </div>
             <!-- Wrapper For Slides Ends -->
             <!-- Controls Starts -->
@@ -33,6 +32,7 @@
             </a>
             <!-- Controls Ends -->
         </div>
+        <%}%>
     </div>
 </div>
 <!-- Slider Section Ends -->
