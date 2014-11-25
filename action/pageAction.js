@@ -300,6 +300,7 @@ exports.weixinBind = function(req,res){
     var ent = res.locals.domain.ent;
     console.log(req.query);
     WeiXinCtrl.codeAccessToken(ent,code,state,function(err,result){
+        console.log(err,result);
         res.render('weixinBind',result);
     });
 };
