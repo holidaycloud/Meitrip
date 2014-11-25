@@ -1,0 +1,23 @@
+<%include header%>
+<!-- Main Container Starts -->
+<div id="main-container" class="container">
+    <!-- Breadcrumb Starts -->
+    <ol class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active">微信绑定</li>
+    </ol>
+    <!-- Breadcrumb Ends -->
+    <!-- Main Heading Starts -->
+    <h2 class="main-heading text-center">
+        绑定成功
+    </h2>
+</div>
+<!-- Main Container Ends -->
+<%include footer%>
+<script>
+    $(function(){
+        $('#loginForm').submit(function(event){
+            $("#passwd").val(faultylabs.MD5($("#passwd").val()));
+        });
+    });
+</script>
