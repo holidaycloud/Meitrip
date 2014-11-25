@@ -298,6 +298,7 @@ exports.weixinBind = function(req,res){
     var code = req.query.code;
     var state = req.query.state;
     var ent = res.locals.domain.ent;
+    console.log(req.query);
     WeiXinCtrl.codeAccessToken(ent,code,state,function(err,result){
         res.render('weixinBind',result);
     });
