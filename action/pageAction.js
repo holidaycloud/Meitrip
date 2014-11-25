@@ -301,7 +301,20 @@ exports.weixinBind = function(req,res){
     console.log(req.query);
     WeiXinCtrl.codeAccessToken(ent,code,state,function(err,result){
         console.log(err,result);
-        res.render('weixinBind',result);
+        if(err){
+            res.redirect('/500.html');
+        } else {
+            if(result&&result.error==0){
+                var obj = {
+                    'lgn_msg':'',
+                    'openID':result.data.openid
+                }
+                res.render('weixinBind',result);
+            } else {
+                res.redirect('/500.html');
+            }
+        }
+
     });
 };
 
