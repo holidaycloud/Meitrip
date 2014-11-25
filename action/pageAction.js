@@ -327,6 +327,7 @@ exports.doWeixinBind = function(req,res){
         if(err){
             res.redirect('/500.html');
         } else {
+            console.log(err,result);
             if(result&&result.error==0){
                 var obj = {
                     'openID':'',
