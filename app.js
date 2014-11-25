@@ -70,9 +70,7 @@ app.use(function(req,res,next){
 app.use(function(req,res,next){
     var domain = req.hostname;
     //var domain = 'www.meitrip.net';
-    console.log('domain:',domain);
     DomainCtrl.getEnt(domain,function(err,result){
-        console.log('domainResult:',err,result);
         if(err){
             res.redirect('/404.html');
         } else {
