@@ -327,8 +327,8 @@ exports.doWeixinBind = function(req,res){
         if(err){
             res.redirect('/500.html');
         } else {
-            console.log(err,result);
             if(result&&result.error==0){
+                req.session.user = result.data;
                 var obj = {
                     'openID':'',
                     'lgn_msg':'绑定成功'
