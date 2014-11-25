@@ -309,7 +309,7 @@ exports.weixinBind = function(req,res){
                     'lgn_msg':'',
                     'openID':result.data.openid
                 }
-                res.render('weixinBind',result);
+                res.render('weixinBind',obj);
             } else {
                 res.redirect('/500.html');
             }
@@ -324,6 +324,17 @@ exports.doWeixinBind = function(req,res){
     var mobile = req.body.mobile;
     var passwd = req.body.passwd;
     CustomerCtrl.weixinBind(ent,mobile,passwd,openID,function(err,result){
-
+        if(err){
+            res.redirect('/500.html');
+        } else {
+            if(result&&result.error==0){
+                var obj = {
+                    'lgn_msg':'绑定成功'
+                }
+                res.render('weixinBind',obj);
+            } else {
+                res.redirect('/500.html');
+            }
+        }
     });
 };
