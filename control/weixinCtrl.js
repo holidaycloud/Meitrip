@@ -1,6 +1,8 @@
 /**
  * Created by zzy on 2014/11/24.
  */
+var request = require('request');
+var config = require('./../config/config.json');
 var WeiXinCtrl = function(){};
 
 WeiXinCtrl.codeAccessToken = function(ent,code,state,fn){
