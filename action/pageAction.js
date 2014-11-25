@@ -329,6 +329,7 @@ exports.doWeixinBind = function(req,res){
         } else {
             if(result&&result.error==0){
                 var obj = {
+                    'openID':'',
                     'lgn_msg':'绑定成功'
                 }
                 res.render('weixinBind',obj);
