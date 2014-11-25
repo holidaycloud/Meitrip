@@ -18,4 +18,6 @@ router.post('/register', PageAction.register);
 router.post('/updateInfo', PageAction.updateInfo);
 router.post('/cart', PageAction.checkLogin,PageAction.cart);
 router.post('/saveOrder', PageAction.checkLogin,PageAction.saveOrder);
+router.get('/customerWeixinBind', PageAction.weixinBind);
+router.get('/weixinBind', PageAction.doWeixinBind);
 module.exports = router;

@@ -7,6 +7,7 @@ var ProductCtrl = require('./../control/productCtrl');
 var CustomerCtrl = require('./../control/customerCtrl');
 var AreaCtrl = require('./../control/areaCtrl');
 var OrderCtrl = require('./../control/orderCtrl');
+var WeiXinCtrl = require('./../control/weixinCtrl');
 exports.home = function(req,res){
     var ent = res.locals.domain.ent;
     async.auto({
@@ -290,5 +291,24 @@ exports.cart = function(req,res){
             'price':results.getPrice,
             'isWeixin':isWeixin
         });
+    });
+};
+
+exports.weixinBind = function(req,res){
+    var code = req.query.code;
+    var state = req.query.state;
+    var ent = res.locals.domain.ent;
+    WeiXinCtrl.codeAccessToken(ent,code,state,function(err,result){
+        res.render('weixinBind',result);
+    });
+};
+
+exports.doWeixinBind = function(req,res){
+    var ent = res.locals.domain.ent;
+    var openID = req.body.openID;
+    var mobile = req.body.mobile;
+    var passwd = req.body.passwd;
+    CustomerCtrl.weixinBind(ent,mobile,passwd,openID,function(err,result){
+
     });
 };

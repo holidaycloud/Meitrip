@@ -61,4 +61,21 @@ CustomerCtrl.chagePasswd = function(id,oldPasswd,newPasswd,fn){
         fn(err,body?JSON.parse(body):{});
     });
 };
+
+CustomerCtrl.weixinBind = function(ent,mobile,passwd,openID,fn){
+    var url = config.inf.host+':'+config.inf.port+'/api/customer/weixinBind';
+    request({
+        url:url,
+        method:'POST',
+        form: {
+            ent:ent,
+            mobile:mobile,
+            passwd:passwd,
+            openId:openID
+        },
+        timeout:3000
+    },function(err,response,body){
+        fn(err,body?JSON.parse(body):{});
+    });
+};
 module.exports = CustomerCtrl;
