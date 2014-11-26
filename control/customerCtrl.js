@@ -98,11 +98,11 @@ CustomerCtrl.weixinBind = function(ent,mobile,passwd,openID,fn){
                 },
                 timeout:3000
             },function(err,response,body){
-                fn(err,body?JSON.parse(body):{});
+                cb(err,body?JSON.parse(body):{});
             });
         }]
     },function(err,results){
-
+        fn(err,results.bindCustomer);
     });
 
 };
