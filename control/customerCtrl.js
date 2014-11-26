@@ -102,6 +102,7 @@ CustomerCtrl.weixinBind = function(ent,mobile,passwd,openID,fn){
             });
         }]
     },function(err,results){
+        console.log(err,results);
         fn(err,results.bindCustomer);
     });
 
