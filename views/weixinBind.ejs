@@ -19,18 +19,18 @@
                 <!-- Login Panel Starts -->
                 <div class="panel panel-smart">
                     <div class="panel-heading">
-                        <h3 class="panel-title">登录</h3>
+                        <h3 class="panel-title">微信绑定</h3>
                     </div>
                     <div class="panel-body">
                         <p>
-                            请输入用户名和密码
+                            请输入手机和密码
                         </p>
                         <!-- Login Form Starts -->
                         <form class="form-form-horizontal" role="form" action="/weixinBind" method="post" id="loginForm">
                             <input type="hidden" name="openID" value="<%=openID?openID:''%>" />
                             <div class="form-group">
-                                <label class="sr-only" for="mobile">用户名</label>
-                                <input type="text" class="form-control" id="mobile" name="mobile" placeholder="用户名">
+                                <label class="sr-only" for="mobile">手机号</label>
+                                <input type="text" class="form-control" id="mobile" name="mobile" placeholder="手机号">
                             </div>
                             <div class="form-group">
                                 <label class="sr-only" for="passwd">密码</label>
