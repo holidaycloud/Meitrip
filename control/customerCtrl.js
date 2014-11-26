@@ -3,6 +3,7 @@
  */
 var request = require('request');
 var config = require('./../config/config.json');
+var async = require('async');
 var CustomerCtrl = function(){};
 CustomerCtrl.login = function(mobile,passwd,ent,fn){
     var url = config.inf.host+':'+config.inf.port+'/api/customer/login?mobile='+mobile+'&passwd='+passwd+'&ent='+ent;
