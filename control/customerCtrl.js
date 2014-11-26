@@ -63,19 +63,47 @@ CustomerCtrl.chagePasswd = function(id,oldPasswd,newPasswd,fn){
 };
 
 CustomerCtrl.weixinBind = function(ent,mobile,passwd,openID,fn){
-    var url = config.inf.host+':'+config.inf.port+'/api/customer/weixinBind';
-    request({
-        url:url,
-        method:'POST',
-        form: {
-            ent:ent,
-            mobile:mobile,
-            passwd:passwd,
-            openId:openID
+    async.auto({
+        'getUserInfo':function(cb){
+            var url = config.weixin.host+':'+config.weixin.port+'/weixin/userInfo/'+ent+'?openid='+openID;
+            request({
+                url:url,
+                timeout:3000
+            },function(err,response,body){
+                if(err){
+                    cb(err,null);
+                } else {
+                    var res = body?JSON.parse(body):{};
+                    if(res.error==0&&res.data){
+                        cb(null,res.data);
+                    } else {
+                        cb(new Error(res.errMsg),null);
+                    }
+                }
+            });
         },
-        timeout:3000
-    },function(err,response,body){
-        fn(err,body?JSON.parse(body):{});
+        'bindCustomer':['getUserInfo',function(cb,results){
+            var url = config.inf.host+':'+config.inf.port+'/api/customer/weixinBind';
+            request({
+                url:url,
+                method:'POST',
+                form: {
+                    ent:ent,
+                    mobile:mobile,
+                    passwd:passwd,
+                    openId:openID,
+                    headimgurl:results.getUserInfo.headimgurl,
+                    loginName:results.getUserInfo.nickname,
+                    sex:results.getUserInfo.sex
+                },
+                timeout:3000
+            },function(err,response,body){
+                fn(err,body?JSON.parse(body):{});
+            });
+        }]
+    },function(err,results){
+
     });
+
 };
 module.exports = CustomerCtrl;
