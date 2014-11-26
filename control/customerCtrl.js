@@ -95,7 +95,7 @@ CustomerCtrl.weixinBind = function(ent,mobile,passwd,openID,fn){
                     openId:openID,
                     headimgurl:results.getUserInfo.headimgurl,
                     loginName:results.getUserInfo.nickname,
-                    sex:results.getUserInfo.sex
+                    sex:parseInt(results.getUserInfo.sex)
                 },
                 timeout:3000
             },function(err,response,body){
