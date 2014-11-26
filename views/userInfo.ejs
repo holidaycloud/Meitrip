@@ -20,7 +20,14 @@
         <div class="panel-body">
             <!-- Registration Form Starts -->
             <form class="form-horizontal" role="form" method="post" action="/updateInfo">
+
                 <!-- Personal Information Starts -->
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">头像</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-static"><img src="<%=user.headimgurl%>" alt="头像" class="img-circle"></p>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="mobile" class="col-sm-3 control-label">手机:</label>
                     <div class="col-sm-9">
