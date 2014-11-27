@@ -41,6 +41,7 @@
 <!-- Shipping Section Starts -->
 <section class="registration-area">
 <form class="form-horizontal" role="form" action="/saveOrder" method="post">
+<input type="hidden" name="productName" value="<%=product.name%>">
 <input type="hidden" name="startDate" value="<%=orderInfo.startDate?orderInfo.startDate:''%>">
 <input type="hidden" name="quantity" value="<%=orderInfo.qty%>">
 <input type="hidden" name="product" value="<%=product._id%>">

@@ -13,7 +13,7 @@ OrderCtrl.save = function(token, startDate, quantity, remark, product, liveName,
         timeout:3000,
         form: {
             token:token,
-            startDate:startDate?new Date(startDate+timeZone).getTime():Date.now(),
+            startDate:startDate?new Date(startDate.substr(0,10)+timeZone).getTime():Date.now(),
             quantity:quantity,
             remark:remark,
             product:product,

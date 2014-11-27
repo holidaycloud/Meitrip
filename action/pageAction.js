@@ -8,6 +8,7 @@ var CustomerCtrl = require('./../control/customerCtrl');
 var AreaCtrl = require('./../control/areaCtrl');
 var OrderCtrl = require('./../control/orderCtrl');
 var WeiXinCtrl = require('./../control/weixinCtrl');
+var AlipayCtrl = require('./../control/alipayCtrl');
 exports.home = function(req,res){
     var ent = res.locals.domain.ent;
     async.auto({
@@ -212,17 +213,33 @@ exports.saveOrder = function(req,res){
     var quantity = req.body.quantity;
     var remark = null;
     var product = req.body.product;
+    var productName = req.body.productName;
     var liveName = req.body.contactName;
     var contactPhone = req.body.contactMobile;
     var priceId = req.body.priceID;
     var customer = req.session.user._id;
     var payway = req.body.payway;
+    console.log(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,productName);
     OrderCtrl.save(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,function(err,result){
+        console.log(err,result);
         if(err){
             res.render('500');
         } else {
             if(result.error==0&&result.data){
-                res.redirect('/orderDetails/'+result.data._id+"?isNew=true");
+                if(payway==3&&res.locals.domain.alipay){
+                    var url = AlipayCtrl.createUrl(
+                        res.locals.domain.alipay.pid,
+                        res.locals.domain.alipay.key,
+                        'http://www.meitrip.net/alipay/notify',
+                        'http://www.meitrip.net/orderDetails/'+result.data._id,
+                        result.data.orderID,
+                        productName,
+                        result.data.totalPrice);
+                    res.redirect(url);
+                } else {
+                    res.redirect('/orderDetails/'+result.data._id+"?isNew=true");
+                }
+
             } else {
                 res.render('500');
             }
@@ -333,4 +350,9 @@ exports.doWeixinBind = function(req,res){
             }
         }
     });
+};
+
+exports.alipayNotify = function(req,res){
+    console.log(req.body,req.query);
+    res.send('');
 };
