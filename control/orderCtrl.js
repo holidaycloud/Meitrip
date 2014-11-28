@@ -80,8 +80,21 @@ OrderCtrl.cancel = function(id,customer,fn){
     });
 };
 
+OrderCtrl.pay = function(id,fn){
+    var url = config.inf.host+":"+config.inf.port+"/api/order/pay";
+    request({
+        url:url,
+        timeout:3000,
+        method:'POST',
+        form: {
+            orderID:id
+        }
+    },function(err,response,body){
+        fn(err,body?JSON.parse(body):{});
+    });
+};
+
 OrderCtrl.confirm = function(id,fn){
-    console.log('-----------changeOrderStatus start-------------',id);
     var url = config.inf.host+":"+config.inf.port+"/api/order/confirm";
     request({
         url:url,
@@ -91,7 +104,6 @@ OrderCtrl.confirm = function(id,fn){
             orderID:id
         }
     },function(err,response,body){
-        console.log('-----------changeOrderStatus end-------------',err,body);
         fn(err,body?JSON.parse(body):{});
     });
 };

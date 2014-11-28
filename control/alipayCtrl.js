@@ -5,6 +5,7 @@ var _ = require('underscore');
 var crypto = require('crypto');
 var qs = require('querystring');
 var async = require('async');
+var https = require('https');
 var OrderCtrl = require('./orderCtrl');
 var AlipayCtrl = function(){};
 AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,totalPrice,oid){
@@ -30,7 +31,6 @@ AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,
 
 AlipayCtrl.notifyVerify = function(pid,notifyId,fn){
     console.log('-----------verify start-------------',pid,notifyId);
-    var https = require('https');
     var options = {
         hostname: 'mapi.alipay.com',
         port: 443,
@@ -80,9 +80,8 @@ AlipayCtrl.notify = function(pid,key,params,fn){
             });
         },
         'changeOrderStatus':function(cb){
-            console.log('-----------async changeOrderStatus-------------');
             var id = params.extra_common_param;
-            OrderCtrl.confirm(id,function(err,res){
+            OrderCtrl.pay(id,function(err,res){
                 console.log('changeOrderStatus',err,res);
                 if(err){
                     cb(err,null);
