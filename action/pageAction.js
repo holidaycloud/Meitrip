@@ -32,6 +32,9 @@ exports.checkLogin = function(req,res,next){
     if(req.session.user){
         next();
     } else {
+        if(req.url=='/cart'){
+            req.session.body=req.body;
+        }
         req.flash('url',req.url);
         res.redirect('/login');
     }
@@ -238,11 +241,12 @@ exports.saveOrder = function(req,res,next){
 };
 
 exports.cart = function(req,res){
-    var pid = req.body.productID;
-    var name = req.body.productName;
-    var qty = req.body.productQty;
-    var priceID = req.body.priceID;
-    var startDate = req.body.startDate;
+    var pid = req.session.body.productID;
+    var name = req.session.body.productName;
+    var qty = req.session.body.productQty;
+    var priceID = req.session.body.priceID;
+    var startDate = req.session.body.startDate;
+    req.session.body=null;
     async.auto({
         'getProduct':function(cb){
             ProductCtrl.getProduct(pid,function(err,result){
