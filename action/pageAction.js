@@ -207,7 +207,7 @@ exports.contact = function(req,res){
     res.render('contact');
 };
 
-exports.saveOrder = function(req,res){
+exports.saveOrder = function(req,res,next){
     var token = res.locals.domain.longToken;
     var startDate = req.body.startDate==""?null:req.body.startDate;
     var quantity = req.body.quantity;
@@ -225,16 +225,9 @@ exports.saveOrder = function(req,res){
         } else {
             if(result.error==0&&result.data){
                 if(payway==3&&res.locals.domain.alipay){
-                    var url = AlipayCtrl.createUrl(
-                        res.locals.domain.alipay.pid,
-                        res.locals.domain.alipay.key,
-                        'http://www.meitrip.net/alipay/notify',
-                        'http://www.meitrip.net/orderDetails/'+result.data._id,
-                        result.data.orderID,
-                        productName,
-                        result.data.totalPrice,
-                        result.data._id);
-                    res.redirect(url);
+                    res.locals.order = result.data;
+                    res.locals.productName = productName;
+                    next();
                 } else {
                     res.redirect('/orderDetails/'+result.data._id+"?isNew=true");
                 }
@@ -362,4 +355,17 @@ exports.alipayNotify = function(req,res){
             res.send('success');
         }
     });
+};
+
+exports.alipay = function(req,res){
+    var url = AlipayCtrl.createUrl(
+        res.locals.domain.alipay.pid,
+        res.locals.domain.alipay.key,
+        'http://www.meitrip.net/alipay/notify',
+        'http://www.meitrip.net/orderDetails/'+result.data._id,
+        res.locals.order.orderID,
+        res.locals.productName,
+        res.locals.order.totalPrice,
+        res.locals.order._id);
+    res.redirect(url);
 };
