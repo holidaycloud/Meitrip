@@ -4,8 +4,9 @@
 var _ = require('underscore');
 var crypto = require('crypto');
 var qs = require('querystring');
+var async = require('async');
 var AlipayCtrl = function(){};
-AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,totalPrice){
+AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,totalPrice,oid){
     var params = {
         'service':'create_direct_pay_by_user',
         'partner':pid,
@@ -16,7 +17,8 @@ AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,
         'subject':productName,
         'payment_type':1,
         'total_fee':totalPrice,
-        'seller_id':pid
+        'seller_id':pid,
+        'extra_common_param':oid
     };
     var sign = AlipayCtrl.sign(params,key);
     params.sign = sign;
@@ -24,6 +26,81 @@ AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,
     var url = 'https://mapi.alipay.com/gateway.do?'+qs.stringify(params);
     return url;
 };
+
+AlipayCtrl.notifyVerify = function(pid,notifyId,fn){
+    var https = require('https');
+    var options = {
+        hostname: 'mapi.alipay.com',
+        port: 443,
+        path: '/gateway.do?service=notify_verify&partner='+pid+'&notify_id='+notifyId,
+        method: 'GET'
+    };
+    var req = https.request(options, function(res) {
+        res.setEncoding('utf8');
+        var _data="";
+        res.on('data', function(chunk) {
+            _data+=chunk;
+        });
+        res.on('end',function(){
+            fn(null,_data=='true');
+        });
+    });
+    req.end();
+    req.on('error', function(e) {
+        fn(e,null);
+    });
+};
+
+AlipayCtrl.notify = function(pid,params,fn){
+    async.auto({
+        'Verify':function(cb){
+            AlipayCtrl.notifyVerify(pid,params.notify_id,function(err,res){
+                if(err){
+                    cb(err,null);
+                } else {
+                    if(res){
+                        var reqSign = params.sign;
+                        delete params.sign;
+                        delete params.sign_type;
+                        var sign = AlipayCtrl.sign(params,key);
+                        if(sign==reqSign){
+                            cb(null,true);
+                        } else {
+                            cb(null,false);
+                        }
+                    } else {
+                        cb(new Error('支付宝请求验证错误'),null);
+                    }
+                }
+            });
+        },
+        'changeOrderStatus':function(cb){
+            var id = params.extra_common_param;
+            OrderCtrl.confirm(id,function(err,res){
+                if(err){
+                    cb(err,null);
+                } else {
+                    if(res.error!=0){
+                        cb(new Error(res.errMsg),null);
+                    } else {
+                        if(res.data){
+                            cb(null,true);
+                        } else {
+                            cb(null,false);
+                        }
+                    }
+                }
+                cb(err,res);
+            })
+        }
+    },function(err,results){
+        if(err){
+            fn(err,null);
+        } else {
+            fn(null,results.Verify&&results.changeOrderStatus);
+        }
+    });
+}
 
 AlipayCtrl.sign = function(params,key){
     var keys = _.keys(params);

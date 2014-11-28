@@ -79,4 +79,18 @@ OrderCtrl.cancel = function(id,customer,fn){
         fn(err,body?JSON.parse(body):{});
     });
 };
+
+OrderCtrl.confirm = function(id,fn){
+    var url = config.inf.host+":"+config.inf.port+"/api/order/confirm";
+    request({
+        url:url,
+        timeout:3000,
+        method:'POST',
+        form: {
+            orderID:id
+        }
+    },function(err,response,body){
+        fn(err,body?JSON.parse(body):{});
+    });
+};
 module.exports = OrderCtrl;

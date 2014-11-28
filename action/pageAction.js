@@ -234,7 +234,8 @@ exports.saveOrder = function(req,res){
                         'http://www.meitrip.net/orderDetails/'+result.data._id,
                         result.data.orderID,
                         productName,
-                        result.data.totalPrice);
+                        result.data.totalPrice,
+                        result.data._id);
                     res.redirect(url);
                 } else {
                     res.redirect('/orderDetails/'+result.data._id+"?isNew=true");
@@ -353,6 +354,13 @@ exports.doWeixinBind = function(req,res){
 };
 
 exports.alipayNotify = function(req,res){
-    console.log(req.body,req.query);
-    res.send('');
+    AlipayCtrl.notify(res.locals.domain.alipay.pid,req.body,function(err,res){
+        if(err||!res){
+            console.log('alipayNotify',false);
+            res.send('');
+        }else {
+            console.log('alipayNotify',true);
+            res.send('success');
+        }
+    });
 };
