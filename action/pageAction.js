@@ -355,6 +355,7 @@ exports.doWeixinBind = function(req,res){
 
 exports.alipayNotify = function(req,res){
     AlipayCtrl.notify(res.locals.domain.alipay.pid,req.body,function(err,res){
+        console.log(err,res);
         if(err||!res){
             console.log('alipayNotify',false);
             res.send('');

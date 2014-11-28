@@ -78,6 +78,7 @@ AlipayCtrl.notify = function(pid,params,fn){
         'changeOrderStatus':function(cb){
             var id = params.extra_common_param;
             OrderCtrl.confirm(id,function(err,res){
+                console.log('changeOrderStatus',err,res);
                 if(err){
                     cb(err,null);
                 } else {
@@ -95,6 +96,7 @@ AlipayCtrl.notify = function(pid,params,fn){
             })
         }
     },function(err,results){
+        console.log('alinotify',err,results);
         if(err){
             fn(err,null);
         } else {
