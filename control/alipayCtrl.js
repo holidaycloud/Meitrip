@@ -83,7 +83,7 @@ AlipayCtrl.notify = function(pid,key,params,fn){
             });
         }],
         'changeOrderStatus':['Verify',function(cb){
-            if(params.trade_status==" TRADE_FINISHED"||params.trade_status==" TRADE_SUCCESS"){
+            if(params.trade_status=="TRADE_FINISHED"||params.trade_status=="TRADE_SUCCESS"){
                 var id = params.extra_common_param;
                 OrderCtrl.pay(id,function(err,res){
                     if(err){
