@@ -219,9 +219,7 @@ exports.saveOrder = function(req,res){
     var priceId = req.body.priceID;
     var customer = req.session.user._id;
     var payway = req.body.payway;
-    console.log(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,productName);
     OrderCtrl.save(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,function(err,result){
-        console.log(err,result);
         if(err){
             res.render('500');
         } else {

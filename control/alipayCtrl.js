@@ -29,6 +29,7 @@ AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,
 };
 
 AlipayCtrl.notifyVerify = function(pid,notifyId,fn){
+    console.log('-----------verify start-------------',pid,notifyId);
     var https = require('https');
     var options = {
         hostname: 'mapi.alipay.com',
@@ -43,11 +44,13 @@ AlipayCtrl.notifyVerify = function(pid,notifyId,fn){
             _data+=chunk;
         });
         res.on('end',function(){
+            console.log('-----------verify end-------------',_data,_data=='true');
             fn(null,_data=='true');
         });
     });
     req.end();
     req.on('error', function(e) {
+        console.log('-----------verify error-------------',e);
         fn(e,null);
     });
 };
@@ -55,6 +58,7 @@ AlipayCtrl.notifyVerify = function(pid,notifyId,fn){
 AlipayCtrl.notify = function(pid,key,params,fn){
     async.auto({
         'Verify':function(cb){
+            console.log('-----------async verify-------------');
             AlipayCtrl.notifyVerify(pid,params.notify_id,function(err,res){
                 if(err){
                     cb(err,null);
@@ -76,6 +80,7 @@ AlipayCtrl.notify = function(pid,key,params,fn){
             });
         },
         'changeOrderStatus':function(cb){
+            console.log('-----------async changeOrderStatus-------------');
             var id = params.extra_common_param;
             OrderCtrl.confirm(id,function(err,res){
                 console.log('changeOrderStatus',err,res);

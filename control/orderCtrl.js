@@ -81,6 +81,7 @@ OrderCtrl.cancel = function(id,customer,fn){
 };
 
 OrderCtrl.confirm = function(id,fn){
+    console.log('-----------changeOrderStatus start-------------',id);
     var url = config.inf.host+":"+config.inf.port+"/api/order/confirm";
     request({
         url:url,
@@ -90,6 +91,7 @@ OrderCtrl.confirm = function(id,fn){
             orderID:id
         }
     },function(err,response,body){
+        console.log('-----------changeOrderStatus end-------------',err,body);
         fn(err,body?JSON.parse(body):{});
     });
 };
