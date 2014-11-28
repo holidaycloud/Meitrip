@@ -40,7 +40,7 @@
 <!-- Shopping Cart Table Ends -->
 <!-- Shipping Section Starts -->
 <section class="registration-area">
-<form class="form-horizontal" role="form" action="/saveOrder" method="post">
+<form class="form-horizontal" role="form" action="/saveOrder" method="post" id="cartForm">
 <input type="hidden" name="productName" value="<%=product.name%>">
 <input type="hidden" name="startDate" value="<%=orderInfo.startDate?orderInfo.startDate:''%>">
 <input type="hidden" name="quantity" value="<%=orderInfo.qty%>">
@@ -233,7 +233,7 @@
             </dl>
             <hr />
             <div class="text-uppercase clearfix">
-                <button class="btn btn-success pull-right">
+                <button class="btn btn-success pull-right" id="btn_submit">
                     结算
                 </button>
             </div>
@@ -251,6 +251,10 @@
 <%include footer%>
 <script>
     $(function(){
+        $('#cartForm').submit(function(event){
+            $('#btn_submit').attr('disabled','disabled');
+        });
+
         $('#ckb_invoice').click(function(){
             if($(this).attr('checked')){
                 $('.invoice').removeClass('hidden');
