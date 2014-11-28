@@ -52,7 +52,7 @@ AlipayCtrl.notifyVerify = function(pid,notifyId,fn){
     });
 };
 
-AlipayCtrl.notify = function(pid,params,fn){
+AlipayCtrl.notify = function(pid,key,params,fn){
     async.auto({
         'Verify':function(cb){
             AlipayCtrl.notifyVerify(pid,params.notify_id,function(err,res){
