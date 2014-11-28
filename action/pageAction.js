@@ -362,7 +362,7 @@ exports.alipay = function(req,res){
         res.locals.domain.alipay.pid,
         res.locals.domain.alipay.key,
         'http://www.meitrip.net/alipay/notify',
-        'http://www.meitrip.net/orderDetails/'+result.data._id,
+        'http://www.meitrip.net/orderDetails/'+res.locals.order._id,
         res.locals.order.orderID,
         res.locals.productName,
         res.locals.order.totalPrice,
