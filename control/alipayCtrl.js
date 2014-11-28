@@ -79,7 +79,7 @@ AlipayCtrl.notify = function(pid,key,params,fn){
                 }
             });
         },
-        'changeOrderStatus':function(cb){
+        'changeOrderStatus':['Verify',function(cb){
             var id = params.extra_common_param;
             OrderCtrl.pay(id,function(err,res){
                 console.log('changeOrderStatus',err,res);
@@ -98,7 +98,7 @@ AlipayCtrl.notify = function(pid,key,params,fn){
                 }
                 cb(err,res);
             })
-        }
+        }]
     },function(err,results){
         console.log('alinotify',err,results);
         if(err){
