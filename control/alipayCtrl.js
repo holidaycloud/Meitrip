@@ -5,6 +5,7 @@ var _ = require('underscore');
 var crypto = require('crypto');
 var qs = require('querystring');
 var async = require('async');
+var OrderCtrl = require('./orderCtrl');
 var AlipayCtrl = function(){};
 AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,totalPrice,oid){
     var params = {
