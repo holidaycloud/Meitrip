@@ -29,12 +29,12 @@ exports.home = function(req,res){
 };
 
 exports.checkLogin = function(req,res,next){
+    if(req.url=='/cart'&&req.method=='POST'){
+        req.session.body=req.body;
+    }
     if(req.session.user){
         next();
     } else {
-        if(req.url=='/cart'){
-            req.session.body=req.body;
-        }
         req.flash('url',req.url);
         res.redirect('/login');
     }
