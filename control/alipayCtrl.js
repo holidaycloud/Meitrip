@@ -7,6 +7,7 @@ var qs = require('querystring');
 var async = require('async');
 var https = require('https');
 var OrderCtrl = require('./orderCtrl');
+var PayLogCtrl = require('./payLogCtrl');
 var AlipayCtrl = function(){};
 AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,totalPrice,oid){
     var params = {
@@ -30,7 +31,6 @@ AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,
 };
 
 AlipayCtrl.notifyVerify = function(pid,notifyId,fn){
-    console.log('-----------verify start-------------',pid,notifyId);
     var options = {
         hostname: 'mapi.alipay.com',
         port: 443,
@@ -44,13 +44,11 @@ AlipayCtrl.notifyVerify = function(pid,notifyId,fn){
             _data+=chunk;
         });
         res.on('end',function(){
-            console.log('-----------verify end-------------',_data,_data=='true');
             fn(null,_data=='true');
         });
     });
     req.end();
     req.on('error', function(e) {
-        console.log('-----------verify error-------------',e);
         fn(e,null);
     });
 };
@@ -58,7 +56,6 @@ AlipayCtrl.notifyVerify = function(pid,notifyId,fn){
 AlipayCtrl.notify = function(pid,key,params,fn){
     async.auto({
         'Verify':function(cb){
-            console.log('-----------async verify-------------');
             AlipayCtrl.notifyVerify(pid,params.notify_id,function(err,res){
                 if(err){
                     cb(err,null);
@@ -79,28 +76,36 @@ AlipayCtrl.notify = function(pid,key,params,fn){
                 }
             });
         },
+        'savePayLog':['Verify',function(cb){
+            params.type = 0;
+            PayLogCtrl.save(params,function(err,res){
+               cb(null,null);
+            });
+        }],
         'changeOrderStatus':['Verify',function(cb){
-            var id = params.extra_common_param;
-            OrderCtrl.pay(id,function(err,res){
-                console.log('changeOrderStatus',err,res);
-                if(err){
-                    cb(err,null);
-                } else {
-                    if(res.error!=0){
-                        cb(new Error(res.errMsg),null);
+            if(params.trade_status==" TRADE_FINISHED"||params.trade_status==" TRADE_SUCCESS"){
+                var id = params.extra_common_param;
+                OrderCtrl.pay(id,function(err,res){
+                    if(err){
+                        cb(err,null);
                     } else {
-                        if(res.data){
-                            cb(null,true);
+                        if(res.error!=0){
+                            cb(new Error(res.errMsg),null);
                         } else {
-                            cb(null,false);
+                            if(res.data){
+                                cb(null,true);
+                            } else {
+                                cb(null,false);
+                            }
                         }
                     }
-                }
-                cb(err,res);
-            })
+                    cb(err,res);
+                })
+            } else {
+                cb(null,false);
+            }
         }]
     },function(err,results){
-        console.log('alinotify',err,results);
         if(err){
             fn(err,null);
         } else {
