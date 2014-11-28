@@ -136,7 +136,6 @@ exports.myOrders = function(req,res){
 
 exports.orderDetails = function(req,res){
     var id = req.params.id;
-    var isNew = req.query.isNew?true:false;
     var customer = req.session.user._id;
     OrderCtrl.detail(id,customer,function(err,result){
         if(err){
@@ -149,7 +148,6 @@ exports.orderDetails = function(req,res){
                 }
                 var obj = {
                     'order':result.data,
-                    'newOrder':isNew,
                     'isWeixin':isWeixin
                 };
                 res.render('orderDetails',obj);
@@ -229,7 +227,7 @@ exports.saveOrder = function(req,res,next){
                     res.locals.productName = productName;
                     next();
                 } else {
-                    res.redirect('/orderDetails/'+result.data._id+"?isNew=true");
+                    res.redirect('/orderDetails/'+result.data._id);
                 }
 
             } else {
@@ -368,4 +366,21 @@ exports.alipay = function(req,res){
         res.locals.order.totalPrice,
         res.locals.order._id);
     res.redirect(url);
+};
+
+exports.orderDetailPay = function(req,res,next){
+    var payway = req.body.payway;
+    var productName = req.body.productName;
+    var order = {
+        'orderID':req.body.orderID,
+        '_id':req.body.oid,
+        'totalPrice':req.body.totalPrice
+    }
+    if(payway==3&&res.locals.domain.alipay){
+        res.locals.order = order;
+        res.locals.productName = productName;
+        next();
+    } else {
+        res.redirect('/orderDetails/'+result.data._id);
+    }
 };

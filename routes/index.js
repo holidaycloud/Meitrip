@@ -18,6 +18,7 @@ router.post('/register', PageAction.register);
 router.post('/updateInfo', PageAction.updateInfo);
 router.post('/cart', PageAction.checkLogin,PageAction.cart);
 router.post('/saveOrder', PageAction.checkLogin,PageAction.saveOrder,PageAction.alipay);
+router.post('/orderPay',PageAction.checkLogin,PageAction.orderDetailPay,PageAction.alipay);
 router.get('/customerWeixinBind', PageAction.weixinBind);
 router.post('/weixinBind', PageAction.doWeixinBind);
 router.post('/alipay/notify',PageAction.alipayNotify);

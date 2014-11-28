@@ -20,7 +20,11 @@
                         <input type="hidden" value="<%=order._id%>" id="order_id" />
                     </div>
                     <div class="panel-body">
-                        <form class="form-horizontal" role="form">
+                        <form class="form-horizontal" role="form" id="payForm" action="/orderPay" method="post">
+                            <input type="hidden" name="orderID" value="<%=order.orderID%>">
+                            <input type="hidden" name="oid" value="<%=order._id%>">
+                            <input type="hidden" name="totalPrice" value="<%=order.totalPrice%>">
+                            <input type="hidden" name="productName" value="<%=order.product.name%>">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">产品名称:</label>
                                 <div class="col-sm-10">
@@ -74,19 +78,19 @@
                                 <div class="col-sm-10">
                                     <div class="radio">
                                         <label>
-                                            <input type="radio" name="payway" value="3">
+                                            <input type="radio" name="payway" value="3" <%=order.payWay==3?'checked':''%>>
                                             <img src="/images/zfb.png" alt="支付宝" class="img-responsive" />
                                         </label>
                                     </div>
                                     <div class="radio <%=isWeixin?'':'hidden'%>">
                                         <label>
-                                            <input type="radio" name="payway" value="4">
+                                            <input type="radio" name="payway" value="4" <%=order.payWay==4?'checked':''%>>
                                             <img src="/images/wx.png" alt="微信支付" class="img-responsive" />
                                         </label>
                                     </div>
                                     <div class="radio">
                                         <label>
-                                            <input type="radio" name="payway" id="accountPay" value="2" checked>
+                                            <input type="radio" name="payway" id="accountPay" value="2" <%=order.payWay==2?'checked':''%>>
                                             账户内支付
                                         </label>
                                     </div>
@@ -136,23 +140,23 @@
 <!-- Modal Pay End-->
 
 <!-- Modal Pay Result Start-->
-<div class="modal fade" id="modal_payresult" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">支付结果</h4>
-            </div>
-            <div class="modal-body">
-                是否支付完成？
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">支付未完成</button>
-                <button type="button" class="btn btn-default" id="btn_payed">支付已完成</button>
-            </div>
-        </div>
-    </div>
-</div>
+<!--<div class="modal fade" id="modal_payresult" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">-->
+    <!--<div class="modal-dialog">-->
+        <!--<div class="modal-content">-->
+            <!--<div class="modal-header">-->
+                <!--<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>-->
+                <!--<h4 class="modal-title" id="myModalLabel">支付结果</h4>-->
+            <!--</div>-->
+            <!--<div class="modal-body">-->
+                <!--是否支付完成？-->
+            <!--</div>-->
+            <!--<div class="modal-footer">-->
+                <!--<button type="button" class="btn btn-default" data-dismiss="modal">支付未完成</button>-->
+                <!--<button type="button" class="btn btn-default" id="btn_payed">支付已完成</button>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
 <!-- Modal Pay Result End-->
 
 <!-- Modal Cancel Start-->
@@ -178,36 +182,16 @@
 <script>
     $(function(){
         var payway = <%=order.payWay%>;
-        var isNewOrder = <%=newOrder%>;
-        if(isNewOrder){
-            switch(payway)
-            {
-                case 2:
-                    $('#modal_pay').modal('show');
-                    break;
-                case 3:
-                    window.open('https://www.alipay.com/');
-                    $('#modal_payresult').modal('show');
-                    break;
-                case 4:
-                    window.open('https://wx.qq.com/');
-                    $('#modal_payresult').modal('show');
-                    break;
-                case 5:
-                    window.open('http://www.chinapay.com/');
-                    $('#modal_payresult').modal('show');
-                    break;
-            }
+        if(payway==2){
+            $('#modal_pay').modal('show');
         }
-        $('#btn_payed').click(function(){
-            $('#modal_payresult').modal('hide');
-            location.href='/orderDetails/<%=order._id%>';
-        });
+
         $('#btn_pay').click(function(){
             if($('#accountPay').attr('checked')){
                 $('#modal_pay').modal('show');
             } else {
-                location.reload();
+                $('#payForm').submit();
+//                location.reload();
             }
         });
         $('#btn_cancel').click(function(){
