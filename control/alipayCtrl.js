@@ -1,6 +1,7 @@
 /**
  * Created by zzy on 2014/11/27.
  */
+
 var _ = require('underscore');
 var crypto = require('crypto');
 var qs = require('querystring');
@@ -22,6 +23,43 @@ AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,
         'total_fee':totalPrice,
         'seller_id':pid,
         'extra_common_param':oid
+    };
+    var sign = AlipayCtrl.sign(params,key);
+    params.sign = sign;
+    params.sign_type = "MD5";
+    var url = 'https://mapi.alipay.com/gateway.do?'+qs.stringify(params);
+    return url;
+};
+
+AlipayCtrl.qrPay = function(productId,productName,price,returnUrl,notifyUrl,partner,method,key){
+    var biz_data = {
+        'trade_type':'1',
+        'need_address':'F',
+        'goods_info':{
+            'id':productId,
+            'name':'test',
+            'price':'0.01'
+        },
+        'return_url':returnUrl,
+        'notify_url':notifyUrl,
+        'ext_info':{
+            'single_limit':'10',
+            'ext_field':[
+                {
+                    'input_title': '请输入手机号码',
+                    'input_regex':'^[1][3-8]+\\d{9}$'
+                }
+            ]
+        }
+    };
+    var params = {
+        'service':'alipay.mobile.qrcode.manage',
+        'partner':partner,
+        '_input_charset':'utf-8',
+        'timestamp':new Date().Format('yyyy-MM-dd hh:mm:ss'),
+        'method':method,
+        'biz_type':10,
+        'biz_data':JSON.stringify(biz_data)
     };
     var sign = AlipayCtrl.sign(params,key);
     params.sign = sign;
@@ -130,5 +168,4 @@ AlipayCtrl.sign = function(params,key){
     return hasher.digest("hex");
 };
 module.exports = AlipayCtrl;
-
 //https://mapi.alipay.com/gateway.do?_input_charset=utf-8&out_trade_no=123456&partner=2088611202683801&payment_type=1&seller_id=2088611202683801&service=create_direct_pay_by_use&subject=test&total_fee=0.01&sign_typ=MD5&sign399ffba0c276ffd1e07aeecc133469a1

@@ -9,6 +9,7 @@ var AreaCtrl = require('./../control/areaCtrl');
 var OrderCtrl = require('./../control/orderCtrl');
 var WeiXinCtrl = require('./../control/weixinCtrl');
 var AlipayCtrl = require('./../control/alipayCtrl');
+var CouponCtrl = require('./../control/couponCtrl');
 exports.home = function(req,res){
     var ent = res.locals.domain.ent;
     async.auto({
@@ -272,6 +273,13 @@ exports.cart = function(req,res){
                         cb(new Error('网络错误'),null);
                     }
                 }
+            });
+        },
+        'getCoupons':function(cb){
+            var customer = req.session.user._id;
+            var ent = res.locals.domain.ent;
+            CouponCtrl.getCoupons(customer,ent,pid,function(err,result){
+                cb(err,result);
             });
         },
         'getProvince':function(cb){

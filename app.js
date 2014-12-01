@@ -70,6 +70,7 @@ app.use(function(req,res,next){
 app.use(function(req,res,next){
     var domain = req.hostname;
     //var domain = 'www.meitrip.net';
+    //var domain = 'pinyuan.holidaycloud.cn'
     DomainCtrl.getEnt(domain,function(err,result){
         if(err){
             res.redirect('/404.html');
