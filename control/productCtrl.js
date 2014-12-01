@@ -70,38 +70,42 @@ ProductCtrl.detail = function(id,fn){
         }
         ,'productPrice':['productDetail',function(cb,results){
             var url;
-            if(results.productDetail.productType==3){
-                url = config.inf.host+":"+config.inf.port+"/api/price/list?product="+id;
-            } else {
-                var now = new Date();
-                var todayStr = now.Format('yyyy-MM-dd');
-                todayStr+=timeZone;
-                var startDate = new Date(todayStr).getTime();
-                now.setDate(now.getDate()+90);
-                var endDateStr = now.Format('yyyy-MM-dd');
-                endDateStr += timeZone;
-                var endDate = new Date(endDateStr).getTime();
-                url = config.inf.host+":"+config.inf.port+"/api/price/list?product="+id+"&startDate="+startDate+"&endDate="+endDate;
-            }
-            request({
-                url:url,
-                timeout:3000
-            },function(err,response,body){
-                if(err){
-                    cb(err,null);
+            if(results.productDetail){
+                if(results.productDetail.productType==3){
+                    url = config.inf.host+":"+config.inf.port+"/api/price/list?product="+id;
                 } else {
-                    if(body){
-                        var res = JSON.parse(body);
-                        if(res.error==0){
-                            cb(null,res.data);
-                        } else {
-                            cb(new Error(res.errMsg),null);
-                        }
-                    } else {
-                        cb(new Error('网络错误'),null);
-                    }
+                    var now = new Date();
+                    var todayStr = now.Format('yyyy-MM-dd');
+                    todayStr+=timeZone;
+                    var startDate = new Date(todayStr).getTime();
+                    now.setDate(now.getDate()+90);
+                    var endDateStr = now.Format('yyyy-MM-dd');
+                    endDateStr += timeZone;
+                    var endDate = new Date(endDateStr).getTime();
+                    url = config.inf.host+":"+config.inf.port+"/api/price/list?product="+id+"&startDate="+startDate+"&endDate="+endDate;
                 }
-            });
+                request({
+                    url:url,
+                    timeout:3000
+                },function(err,response,body){
+                    if(err){
+                        cb(err,null);
+                    } else {
+                        if(body){
+                            var res = JSON.parse(body);
+                            if(res.error==0){
+                                cb(null,res.data);
+                            } else {
+                                cb(new Error(res.errMsg),null);
+                            }
+                        } else {
+                            cb(new Error('网络错误'),null);
+                        }
+                    }
+                });
+            }else {
+                cb(new Error('网络错误'),null);
+            }
         }]
     },function(err,results){
         var res = {};
