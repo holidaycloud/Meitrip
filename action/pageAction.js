@@ -44,14 +44,18 @@ exports.checkLogin = function(req,res,next){
 exports.product = function(req,res){
     var id = req.params.id;
     ProductCtrl.detail(id,function(err,result){
-        var classify ={'_id':'default','name':'所有产品'};
-        res.locals.domain.classify.forEach(function(c){
-            if(c._id==result.product.classify){
-                classify = c;
-            }
-        });
-        result.classify = classify;
-        res.render('product',result);
+        if(err){
+            res.render('500');
+        } else {
+            var classify ={'_id':'default','name':'所有产品'};
+            res.locals.domain.classify.forEach(function(c){
+                if(c._id==result.product.classify){
+                    classify = c;
+                }
+            });
+            result.classify = classify;
+            res.render('product',result);
+        }
     });
 };
 
