@@ -54,7 +54,11 @@ ProductCtrl.detail = function(id,fn){
                     if(body){
                         var res = JSON.parse(body);
                         if(res.error==0){
-                            cb(null,res.data);
+                            if(res.data){
+                                cb(null,res.data);
+                            } else {
+                                cb(new Error('网络错误'),null);
+                            }
                         } else {
                             cb(new Error(res.errMsg),null);
                         }
