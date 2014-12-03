@@ -1,0 +1,128 @@
+<%include header%>
+<!-- Main Container Starts -->
+<div id="main-container" class="container">
+    <!-- Breadcrumb Starts -->
+    <ol class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li class="active">我的优惠券</li>
+    </ol>
+    <!-- Breadcrumb Ends -->
+
+    <!-- Registration Section Starts -->
+    <section class="registration-area">
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- Registration Block Starts -->
+                <div class="panel panel-smart">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">我的优惠券</h3>
+                    </div>
+                    <div class="panel-body">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active">
+                                <a href="#used" role="tab" data-toggle="tab">已使用</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#unuse" role="tab" data-toggle="tab">未使用</a>
+                            </li>
+                        </ul>
+
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="used">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>券号</th>
+                                        <th>名称</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <%used.forEach(function(c){%>
+                                    <tr>
+                                        <td><%=c.code%></td>
+                                        <td><%=c.name%></td>
+                                        </td>
+                                    </tr>
+                                    <%});%>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="unuse">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>券号</th>
+                                        <th>名称</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <%unuse.forEach(function(c){%>
+                                    <tr>
+                                        <td><%=c.code%></td>
+                                        <td><%=c.name%></td>
+                                    </tr>
+                                    <%});%>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Registration Block Ends -->
+            </div>
+
+        </div>
+    </section>
+    <!-- Registration Section Ends -->
+</div>
+<!-- Main Container Ends -->
+
+<!-- Modal Cancel Start-->
+<div class="modal fade" id="modal_cancel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">订单取消</h4>
+            </div>
+            <div class="modal-body">
+                是否取消订单 <span id="orderID"></span> <span id="orderName"></span>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="btn_cancel_confirm">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Cancel End-->
+
+<%include footer%>
+
+<script>
+    $(function(){
+        var cancelOrderId;
+        $('.btn_cancel').click(function(){
+            cancelOrderId=$(this).attr('data-oid');
+            $('#orderID').text($(this).attr('data-orderID'));
+            $('#orderName').text($(this).attr('data-name'));
+            $('#modal_cancel').modal('show');
+        });
+
+        $('#btn_cancel_confirm').click(function(){
+            console.log(cancelOrderId);
+            $.ajax({
+                'url':'/ajax/order/cancel',
+                'method':'POST',
+                'data':{
+                    'id':cancelOrderId
+                }
+            }).done(function(data){
+                location.reload();
+            });
+        });
+    });
+</script>

@@ -22,4 +22,6 @@ router.post('/orderPay',PageAction.checkLogin,PageAction.orderDetailPay,PageActi
 router.get('/customerWeixinBind', PageAction.weixinBind);
 router.post('/weixinBind', PageAction.doWeixinBind);
 router.post('/alipay/notify',PageAction.alipayNotify);
+router.get('/coupons',PageAction.checkLogin,PageAction.coupons);
+router.get('/address',PageAction.checkLogin,PageAction.address);
 module.exports = router;

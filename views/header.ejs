@@ -55,7 +55,10 @@
                     <li>
                         <a href="/userInfo">
                             <span>
-                                <img src="<%=user.headimgurl%>" alt="头像" class="img-circle" style="width: 19px;height: 19px; "><%=user.mobile%>
+                                <%if(user.headimgurl){%>
+                                <img src="<%=user.headimgurl%>" alt="头像" class="img-circle" style="width: 19px;height: 19px; ">
+                                <%}%>
+                                <%=user.mobile%>
                             </span>
                         </a>
                     </li>
@@ -94,7 +97,7 @@
                 <!-- Logo Starts -->
                 <div class="col-md-6 hidden-sm hidden-xs">
                     <div id="logo">
-                        <a href="/"><img src="<%=domain.logo%>" title="Spice Shoppe" alt="logo" class="img-responsive" /></a>
+                        <a href="/"><img src="<%=domain.logo%>" title="logo" alt="logo" class="img-responsive" /></a>
                     </div>
                 </div>
                 <!-- Logo Starts -->
