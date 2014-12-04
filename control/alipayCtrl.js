@@ -131,7 +131,8 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
             if(results.verifySign){
                 console.log('start getPrice');
                 var product = params.goods_id;
-                var startDate = params.sku_name;
+                var startDateStr = params.sku_name;
+                var startDate = startDateStr?new Date(startDate.substr(0,10)+timeZone).getTime():null;
                 ProductCtrl.getDatePrice(product,startDate,function(err,res){
                     console.log('price',err,res);
                     console.log('end getPrice');
@@ -157,8 +158,7 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
         }],
         'saveOrder':['verifySign','getCustomer','getPrice',function(cb,results){
             if(results.verifySign){
-                var startDateStr = params.sku_name;
-                var startDate = startDateStr?new Date(startDate.substr(0,10)+timeZone).getTime():null;
+                var startDate = params.sku_name;;
                 var quantity = params.quantity;
                 var remark = null;
                 var product = params.goods_id;
