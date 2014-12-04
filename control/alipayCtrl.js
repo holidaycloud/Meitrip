@@ -168,7 +168,7 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
                 cb(null,null);
             }
         }],
-        'saveOrder':['verifySign','getCustomer','getPrice',function(cb,results){
+        'saveOrder':['verifySign','getCustomer','getPrice','getAddress',function(cb,results){
             if(results.verifySign){
                 var startDate = params.sku_name;;
                 var quantity = params.quantity;
@@ -181,33 +181,30 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
                 var payway=3;
                 var iTitle = null;
                 var coupon = null;
-                var deliveryAddress;
-                console.log(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,iTitle,coupon,deliveryAddress);
-                //OrderCtrl.save(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,iTitle,coupon,deliveryAddress,function(err,result){
-                //    if(err){
-                //        res.render('500');
-                //    } else {
-                //        if(result.error==0&&result.data){
-                //            if(payway==3&&res.locals.domain.alipay){
-                //                res.locals.order = result.data;
-                //                res.locals.productName = productName;
-                //                next();
-                //            } else {
-                //                res.redirect('/orderDetails/'+result.data._id);
-                //            }
-                //        } else {
-                //            res.render('500');
-                //        }
-                //    }
-                //});
-                cb(null,null);
+                var deliveryAddress=results.getAddress._id;;
+                OrderCtrl.save(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,iTitle,coupon,deliveryAddress,function(err,result){
+                    if(err){
+                        cb(null,{is_success:'F',error_code:'OUT_SYSTEM_ERROR'});
+                    } else {
+                        if(result.error==0&&result.data){
+                            console.log(result.data);
+                            cb(null,{is_success:'T',out_trade_no:result.data.orderID});
+                        } else {
+                            cb(null,{is_success:'F',error_code:'OUT_SYSTEM_ERROR'});
+                        }
+                    }
+                });
             } else {
                 cb(null,null);
             }
         }]
     }, function (err, results) {
-        console.log(err,results);
-        fn(null,{is_success:'T',out_trade_no:'1234567890'});
+        if(results.verifySign){
+            fn(null,results.saveOrder);
+        } else{
+            fn(null,null);
+        }
+
     });
       //async.auto({
       //    'verifySign':function(cb){
