@@ -106,6 +106,7 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
         'getCustomer':['verifySign',function(cb,results){
             if(results.verifySign){
                 console.log('start getCustomer');
+                console.log(params);
                 CustomerCtrl.getOrRegister(params.context_data.value2,params.context_data.value1,ent,function(err,res){
                     console.log('customer',err,res);
                     console.log('end getCustomer');
