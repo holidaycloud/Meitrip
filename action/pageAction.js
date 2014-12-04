@@ -408,6 +408,7 @@ exports.alipayScanOrderNotify = function(req,res){
     var pid='';
     var key = '';
     var token='';
+    console.log(req.body);
     AlipayCtrl.scanOrder(pid,key,req.body,token,function(err,result){
         if(err){
             res.render('500');
