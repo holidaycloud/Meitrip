@@ -19,6 +19,6 @@
 //});
 
 var alipay = require('./../control/alipayCtrl');
-var url = alipay.qrPay('546d809648056c5f7336d8e8','【苏州十大美丽乡村】之新毛电站村生态园，感受秋收稻香、亲自采摘,草莓玉米、莴苣青菜',899,'http://cloud.bingdian.com/web/callback/id','http://cloud.bingdian.com/web/notify/id','2088611202683801','add','572wffos12xculzbtwaveqh8mzvren9l');
+var url = alipay.qrPay('546d809648056c5f7336d8e8','【苏州十大美丽乡村】之新毛电站村生态园，感受秋收稻香、亲自采摘,草莓玉米、莴苣青菜',899,'http://test.meitrip.net/alipay/scan/order','http://test.meitrip.net/alipay/scan/order','2088611202683801','add','572wffos12xculzbtwaveqh8mzvren9l');
 //var url = alipay.createUrl('2088611202683801','572wffos12xculzbtwaveqh8mzvren9l','http://cloud.bingdian.com/web/notify/id','http://cloud.bingdian.com/web/callback/id','1234567890','测试产品','0.01');
 console.log(url);

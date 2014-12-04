@@ -34,17 +34,36 @@ AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,
 AlipayCtrl.qrPay = function(productId,productName,price,returnUrl,notifyUrl,partner,method,key){
     var biz_data = {
         'trade_type':'1',
-        'need_address':'F',
+        'need_address':'T',
         'goods_info':{
             'id':productId,
             'name':'test',
-            'price':'0.01'
+            'price':'0.03',
+            'sku_title':'出发日期',
+            'sku':[
+                {
+                    "sku_id": "1",
+                    "sku_name": " 12月9日",
+                    "sku_price": "0.01",
+                    "sku_inventory": "20"
+                },
+                {
+                    "sku_id": "2",
+                    "sku_name": " 12月10日",
+                    "sku_price": "0.02",
+                    "sku_inventory": "10"
+                }
+            ]
         },
         'return_url':returnUrl,
         'notify_url':notifyUrl,
         'ext_info':{
             'single_limit':'10',
             'ext_field':[
+                {
+                    'input_title': '请输入联系人',
+                    'input_regex':'[^\\s]+'
+                },
                 {
                     'input_title': '请输入手机号码',
                     'input_regex':'^[1][3-8]+\\d{9}$'
@@ -69,7 +88,25 @@ AlipayCtrl.qrPay = function(productId,productName,price,returnUrl,notifyUrl,part
 };
 
 AlipayCtrl.scanOrder = function(pid,key,params,token,fn){
-    fn(null,{is_success:'T',out_trade_no:'1234567890'});
+    async.auto({
+        'verifySign':function(cb){
+            var reqSign = params.sign;
+            delete params.sign;
+            delete params.sign_type;
+            var sign = AlipayCtrl.sign(params,key);
+            if(sign==reqSign){
+                cb(null,true);
+            } else {
+                cb(null,false);
+            }
+        },
+        'saveOrder':['verifySign',function(cb,results){
+            console.log(results.verifySign);
+            cb(null,null);
+        }]
+    }, function (err, results) {
+        fn(null,{is_success:'T',out_trade_no:'1234567890'});
+    });
       //async.auto({
       //    'verifySign':function(cb){
       //        var reqSign = params.sign;
@@ -249,4 +286,46 @@ AlipayCtrl.sign = function(params,key){
     return hasher.digest("hex");
 };
 module.exports = AlipayCtrl;
-//https://mapi.alipay.com/gateway.do?_input_charset=utf-8&out_trade_no=123456&partner=2088611202683801&payment_type=1&seller_id=2088611202683801&service=create_direct_pay_by_use&subject=test&total_fee=0.01&sign_typ=MD5&sign399ffba0c276ffd1e07aeecc133469a1
+Date.prototype.Format = function (fmt) {
+    function getWeek(w){
+        var x;
+        switch(w){
+            case 0:
+                x="周日";
+                break;
+            case 1:
+                x="周一";
+                break;
+            case 2:
+                x="周二";
+                break;
+            case 3:
+                x="周三";
+                break;
+            case 4:
+                x="周四";
+                break;
+            case 5:
+                x="周五";
+                break;
+            case 6:
+                x="周六";
+                break;
+        }
+        return x;
+    }
+    var o = {
+        "M+": this.getMonth() + 1, //月份
+        "d+": this.getDate(), //日
+        "h+": this.getHours(), //小时
+        "m+": this.getMinutes(), //分
+        "s+": this.getSeconds(), //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds(), //毫秒
+        "W": getWeek(this.getDay()) //星期
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+};

@@ -405,10 +405,9 @@ exports.alipayNotify = function(req,res){
 };
 
 exports.alipayScanOrderNotify = function(req,res){
-    var pid='';
-    var key = '';
-    var token='';
-    console.log(req.body);
+    var pid=res.locals.domain.alipay.pid;
+    var key = res.locals.domain.alipay.key;
+    var token = res.locals.domain.longToken;;
     AlipayCtrl.scanOrder(pid,key,req.body,token,function(err,result){
         if(err){
             res.render('500');
