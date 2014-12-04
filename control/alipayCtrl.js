@@ -11,6 +11,7 @@ var OrderCtrl = require('./orderCtrl');
 var CustomerCtrl = require('./customerCtrl');
 var ProductCtrl = require('./productCtrl');
 var PayLogCtrl = require('./payLogCtrl');
+var timeZone = ' 00:00:00 +08:00';
 var AlipayCtrl = function(){};
 AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,totalPrice,oid){
     var params = {
@@ -150,7 +151,8 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
         }],
         'saveOrder':['verifySign','getCustomer','getPrice',function(cb,results){
             if(results.verifySign){
-                var startDate = params.sku_name;
+                var startDateStr = params.sku_name;
+                var startDate = startDateStr?new Date(startDate.substr(0,10)+timeZone).getTime():null;
                 var quantity = params.quantity;
                 var remark = null;
                 var product = params.goods_id;
