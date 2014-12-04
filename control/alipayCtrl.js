@@ -68,6 +68,87 @@ AlipayCtrl.qrPay = function(productId,productName,price,returnUrl,notifyUrl,part
     return url;
 };
 
+AlipayCtrl.scanOrder = function(pid,key,params,token,fn){
+    fn(null,{is_success:'T',out_trade_no:'1234567890'});
+      //async.auto({
+      //    'verifySign':function(cb){
+      //        var reqSign = params.sign;
+      //        delete params.sign;
+      //        delete params.sign_type;
+      //        var sign = AlipayCtrl.sign(params,key);
+      //        if(sign==reqSign){
+      //            cb(null,true);
+      //        } else {
+      //            cb(null,false);
+      //        }
+      //    },
+      //    'saveOrder':['verifySign',function(cb,results){
+      //        var startDate = null;
+      //        var quantity = params.quantity;
+      //        var remark = null;
+      //        var product = params.goods_id;
+      //        var liveName;
+      //        var contactPhone;
+      //        var priceId;
+      //        var customer;
+      //        var payway;
+      //        var iTitle = null;
+      //        var coupon = null;
+      //        var deliveryAddress;
+      //
+      //        if(results.verifySign){
+      //            OrderCtrl.save(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,iTitle,coupon,deliveryAddress,function(err,result){
+      //                if(err){
+      //                    res.render('500');
+      //                } else {
+      //                    if(result.error==0&&result.data){
+      //                        if(payway==3&&res.locals.domain.alipay){
+      //                            res.locals.order = result.data;
+      //                            res.locals.productName = productName;
+      //                            next();
+      //                        } else {
+      //                            res.redirect('/orderDetails/'+result.data._id);
+      //                        }
+      //                    } else {
+      //                        res.render('500');
+      //                    }
+      //                }
+      //            });
+      //            cb(null,{is_success:'T',out_trade_no:'1234567890'});
+      //        } else {
+      //            /*
+      //            * user_id 买家支付宝账号
+      //            * qrcode 二维码
+      //            * goods_id 商品编号
+      //            * goods_name 商品名称
+      //            * quantity 购买数量
+      //            * price 价格
+      //            * sku_id 商品属性id
+      //            * sku_name 商品属性名称
+      //            * context_data 通知上下文数据
+      //            * prov 省
+      //            * city 市
+      //            * area 区
+      //            * address 地址
+      //            * buyer_name 收货人
+      //            * post_code 邮编
+      //            * phone 电话
+      //            * */
+      //
+      //
+      //            //INVENTORY_NOT_ENOUGH 库存不足
+      //            //PRICE_NOT_MATCH 价格不匹配
+      //            //CREATE_TRADE_FAILURE 订单创建失败
+      //            //OUT_SYSTEM_ERROR 系统异常
+      //            //PARAM_ILLEGAL 参数不合法
+      //            cb(null,{is_success:'F',error_code:'PARAM_ILLEGAL'});
+      //        }
+      //    }]
+      //},function(err,results){
+      //
+      //});
+};
+
 AlipayCtrl.notifyVerify = function(pid,notifyId,fn){
     var options = {
         hostname: 'mapi.alipay.com',

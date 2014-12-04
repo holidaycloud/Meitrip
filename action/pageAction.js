@@ -404,6 +404,19 @@ exports.alipayNotify = function(req,res){
     });
 };
 
+exports.alipayScanOrderNotify = function(req,res){
+    var pid='';
+    var key = '';
+    var token='';
+    AlipayCtrl.scanOrder(pid,key,req.body,token,function(err,result){
+        if(err){
+            res.render('500');
+        }  else {
+            res.json(result);
+        }
+    })
+};
+
 exports.alipay = function(req,res){
     var url = AlipayCtrl.createUrl(
         res.locals.domain.alipay.pid,
