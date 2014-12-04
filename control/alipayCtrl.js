@@ -40,20 +40,20 @@ AlipayCtrl.qrPay = function(productId,productName,price,returnUrl,notifyUrl,part
         'need_address':'T',
         'goods_info':{
             'id':productId,
-            'name':'test',
-            'price':'0.03',
+            'name':productName,
+            'price':price,
             'sku_title':'出发日期',
             'sku':[
                 {
                     "sku_id": "1",
-                    "sku_name": " 12月9日",
-                    "sku_price": "0.01",
+                    "sku_name": "2014-12-09",
+                    "sku_price": "899",
                     "sku_inventory": "20"
                 },
                 {
                     "sku_id": "2",
-                    "sku_name": " 12月10日",
-                    "sku_price": "0.02",
+                    "sku_name": "2014-12-10",
+                    "sku_price": "899",
                     "sku_inventory": "10"
                 }
             ]
@@ -105,7 +105,10 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
         },
         'getCustomer':['verifySign',function(cb,results){
             if(results.verifySign){
+                console.log('start getCustomer');
                 CustomerCtrl.getOrRegister(params.context_data.value2,params.context_data.value1,ent,function(err,res){
+                    console.log('customer',err,res);
+                    console.log('end getCustomer');
                     if(err){
                         cb(err,null);
                     } else {
@@ -126,9 +129,12 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
         }],
         'getPrice':['verifySign',function(cb,results){
             if(results.verifySign){
+                console.log('start getPrice');
                 var product = params.goods_id;
                 var startDate = params.sku_name;
                 ProductCtrl.getDatePrice(product,startDate,function(err,res){
+                    console.log('price',err,res);
+                    console.log('end getPrice');
                     if(err){
                         cb(err,null);
                     } else {
@@ -188,6 +194,7 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
             }
         }]
     }, function (err, results) {
+        console.log(err,results);
         fn(null,{is_success:'T',out_trade_no:'1234567890'});
     });
       //async.auto({
