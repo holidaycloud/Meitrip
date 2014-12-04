@@ -107,7 +107,8 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
             if(results.verifySign){
                 console.log('start getCustomer');
                 console.log(params);
-                CustomerCtrl.getOrRegister(params.context_data.value2,params.context_data.value1,ent,function(err,res){
+                var context_data = JSON.parse(params.context_data);
+                CustomerCtrl.getOrRegister(context_data.value2,context_data.value1,ent,function(err,res){
                     console.log('customer',err,res);
                     console.log('end getCustomer');
                     if(err){
@@ -133,7 +134,7 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
                 console.log('start getPrice');
                 var product = params.goods_id;
                 var startDateStr = params.sku_name;
-                var startDate = startDateStr?new Date(startDate.substr(0,10)+timeZone).getTime():null;
+                var startDate = startDateStr?new Date(startDateStr.substr(0,10)+timeZone).getTime():null;
                 ProductCtrl.getDatePrice(product,startDate,function(err,res){
                     console.log('price',err,res);
                     console.log('end getPrice');
