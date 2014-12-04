@@ -407,8 +407,9 @@ exports.alipayNotify = function(req,res){
 exports.alipayScanOrderNotify = function(req,res){
     var pid=res.locals.domain.alipay.pid;
     var key = res.locals.domain.alipay.key;
-    var token = res.locals.domain.longToken;;
-    AlipayCtrl.scanOrder(pid,key,req.body,token,function(err,result){
+    var token = res.locals.domain.longToken;
+    var ent = res.locals.domain.ent;
+    AlipayCtrl.scanOrder(pid,key,req.body,token,ent,function(err,result){
         if(err){
             res.render('500');
         }  else {

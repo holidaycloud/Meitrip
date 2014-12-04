@@ -8,6 +8,8 @@ var qs = require('querystring');
 var async = require('async');
 var https = require('https');
 var OrderCtrl = require('./orderCtrl');
+var CustomerCtrl = require('./customerCtrl');
+var ProductCtrl = require('./productCtrl');
 var PayLogCtrl = require('./payLogCtrl');
 var AlipayCtrl = function(){};
 AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,totalPrice,oid){
@@ -87,7 +89,7 @@ AlipayCtrl.qrPay = function(productId,productName,price,returnUrl,notifyUrl,part
     return url;
 };
 
-AlipayCtrl.scanOrder = function(pid,key,params,token,fn){
+AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
     async.auto({
         'verifySign':function(cb){
             var reqSign = params.sign;
@@ -100,9 +102,88 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,fn){
                 cb(null,false);
             }
         },
-        'saveOrder':['verifySign',function(cb,results){
-            console.log(results.verifySign);
-            cb(null,null);
+        'getCustomer':['verifySign',function(cb,results){
+            if(results.verifySign){
+                CustomerCtrl.getOrRegister(params.context_data.value2,params.context_data.value1,ent,function(err,res){
+                    if(err){
+                        cb(err,null);
+                    } else {
+                        if(res.error!=0){
+                            cb(new Error(res.errMsg),null);
+                        } else {
+                            if(res.data){
+                                cb(null,res.data)
+                            } else {
+                                cb(new Error('未找到用户'),null);
+                            }
+                        }
+                    }
+                });
+            } else {
+                cb(null,null);
+            }
+        }],
+        'getPrice':['verifySign',function(cb,results){
+            if(results.verifySign){
+                var product = params.goods_id;
+                var startDate = params.sku_name;
+                ProductCtrl.getDatePrice(product,startDate,function(err,res){
+                    if(err){
+                        cb(err,null);
+                    } else {
+                        if(res.error==0){
+                            if(res.data){
+                                if(parseFloat(res.data.price)==parseFloat(params.price)){
+                                    cb(null,res.data);
+                                } else {
+                                    cb(new Error('价格错误'),null);
+                                }
+                            } else {
+                                cb(new Error('价格错误'),null);
+                            }
+                        } else {
+                            cb(new Error(res.errMsg),null)
+                        }
+                    }
+                });
+            }
+        }],
+        'saveOrder':['verifySign','getCustomer','getPrice',function(cb,results){
+            if(results.verifySign){
+                var startDate = params.sku_name;
+                var quantity = params.quantity;
+                var remark = null;
+                var product = params.goods_id;
+                var liveName = params.context_data.value1;
+                var contactPhone = params.context_data.value2;
+                var priceId=results.getPrice._id;
+                var customer=results.getCustomer._id;
+                var payway=3;
+                var iTitle = null;
+                var coupon = null;
+                var deliveryAddress;
+                console.log(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,iTitle,coupon,deliveryAddress);
+                //OrderCtrl.save(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,iTitle,coupon,deliveryAddress,function(err,result){
+                //    if(err){
+                //        res.render('500');
+                //    } else {
+                //        if(result.error==0&&result.data){
+                //            if(payway==3&&res.locals.domain.alipay){
+                //                res.locals.order = result.data;
+                //                res.locals.productName = productName;
+                //                next();
+                //            } else {
+                //                res.redirect('/orderDetails/'+result.data._id);
+                //            }
+                //        } else {
+                //            res.render('500');
+                //        }
+                //    }
+                //});
+                cb(null,null);
+            } else {
+                cb(null,null);
+            }
         }]
     }, function (err, results) {
         fn(null,{is_success:'T',out_trade_no:'1234567890'});

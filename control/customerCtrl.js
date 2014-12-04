@@ -27,6 +27,17 @@ CustomerCtrl.register = function(mobile,passwd,ent,fn){
     });
 };
 
+CustomerCtrl.getOrRegister = function(mobile,name,ent,fn){
+    var url = config.inf.host+':'+config.inf.port+'/api/customer/getOrRegister?ent='+ent+'&mobile='+mobile+'&name='+name;
+    request({
+        url:url,
+        method:'GET',
+        timeout:3000
+    },function(err,response,body){
+        fn(err,body?JSON.parse(body):{});
+    });
+};
+
 CustomerCtrl.update = function(id,loginName,email,name,address,fn){
     var url = config.inf.host+':'+config.inf.port+'/api/customer/update';
     request({
