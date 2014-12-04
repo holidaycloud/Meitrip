@@ -10,6 +10,7 @@ var https = require('https');
 var OrderCtrl = require('./orderCtrl');
 var CustomerCtrl = require('./customerCtrl');
 var ProductCtrl = require('./productCtrl');
+var AddressCtrl = require('./addressCtrl');
 var PayLogCtrl = require('./payLogCtrl');
 var timeZone = ' 00:00:00 +08:00';
 var AlipayCtrl = function(){};
@@ -105,12 +106,8 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
         },
         'getCustomer':['verifySign',function(cb,results){
             if(results.verifySign){
-                console.log('start getCustomer');
-                console.log(params);
                 var context_data = JSON.parse(params.context_data);
                 CustomerCtrl.getOrRegister(context_data.value2,context_data.value1,ent,function(err,res){
-                    console.log('customer',err,res);
-                    console.log('end getCustomer');
                     if(err){
                         cb(err,null);
                     } else {
@@ -131,13 +128,10 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
         }],
         'getPrice':['verifySign',function(cb,results){
             if(results.verifySign){
-                console.log('start getPrice');
                 var product = params.goods_id;
                 var startDateStr = params.sku_name;
                 var startDate = startDateStr?new Date(startDateStr.substr(0,10)+timeZone).getTime():null;
                 ProductCtrl.getDatePrice(product,startDate,function(err,res){
-                    console.log('price',err,res);
-                    console.log('end getPrice');
                     if(err){
                         cb(err,null);
                     } else {
@@ -156,6 +150,22 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
                         }
                     }
                 });
+            }
+        }],
+        'getAddress':['verifySign','getCustomer',function(cb,results){
+            if(results.verifySign){
+                var customer=results.getCustomer._id;
+                var prov=params.prov;
+                var city=params.city;
+                var area=params.area;
+                var address=params.address;
+                var name=params.buyer_name;
+                var phone=params.phone;
+                AddressCtrl.getOrSave(customer,prov,city,area,address,name,phone,function(err,res){
+                    cb(err,res);
+                });
+            } else {
+                cb(null,null);
             }
         }],
         'saveOrder':['verifySign','getCustomer','getPrice',function(cb,results){

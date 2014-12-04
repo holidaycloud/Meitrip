@@ -28,6 +28,39 @@ AddressCtrl.get = function(customer,fn){
     });
 };
 
+AddressCtrl.getOrSave = function(customer,prov,city,area,address,name,phone,fn){
+    var url = config.inf.host+':'+config.inf.port+'/api/address/getOrSaveAddress';
+    request({
+        url:url,
+        method:'POST',
+        timeout:3000,
+        form:{
+            prov:prov,
+            city:city,
+            area:area,
+            address:address,
+            customer:customer,
+            name:name,
+            phone:phone
+        }
+    },function(err,response,body){
+        if(err){
+            fn(err,null);
+        } else {
+            if(body){
+                var res = JSON.parse(body);
+                if(res.error==0){
+                    fn(null,res.data);
+                } else {
+                    fn(new Error(res.errMsg),null);
+                }
+            } else {
+                fn(new Error('网络错误'),null);
+            }
+        }
+    });
+};
+
 AddressCtrl.save = function(province,city,district,address,customer,name,isDefault,fn){
     var url = config.inf.host+':'+config.inf.port+'/api/address/save';
     request({
