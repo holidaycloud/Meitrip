@@ -7,7 +7,6 @@ var crypto = require('crypto');
 var qs = require('querystring');
 var async = require('async');
 var https = require('https');
-var parseString = require('xml2js').parseString;
 var OrderCtrl = require('./orderCtrl');
 var CustomerCtrl = require('./customerCtrl');
 var ProductCtrl = require('./productCtrl');
@@ -48,14 +47,14 @@ AlipayCtrl.qrPay = function(productId,productName,price,returnUrl,notifyUrl,part
             'sku':[
                 {
                     "sku_id": "1",
-                    "sku_name": "2014-12-09",
-                    "sku_price": "899",
+                    "sku_name": "2014-12-05",
+                    "sku_price": "0.01",
                     "sku_inventory": "20"
                 },
                 {
                     "sku_id": "2",
-                    "sku_name": "2014-12-10",
-                    "sku_price": "899",
+                    "sku_name": "2014-12-06",
+                    "sku_price": "0.01",
                     "sku_inventory": "10"
                 }
             ]
@@ -251,7 +250,68 @@ AlipayCtrl.scanPay = function(pid,key,params,fn){
     parseString(params.notify_data,function (err, result) {
         console.log(result);
     })
-    fn(null,null);
+
+    async.auto({
+        'parseXml':function(cb){
+            var parseString = require('xml2js').parseString;
+            parseString(params.notify_data, function (err, result) {
+                cb(err,result);
+            });
+        },
+        'Verify':function(cb){
+            var reqSign = params.sign;
+            delete params.sign;
+            delete params.sign_type;
+            var sign = AlipayCtrl.sign(params,key);
+            if(sign==reqSign){
+                cb(null,true);
+            } else {
+                cb(null,false);
+            }
+        },
+        'savePayLog':['Verify',function(cb,results){
+            if(results.Verify){
+                params.type = 0;
+                PayLogCtrl.save(params,function(err,res){
+                    cb(null,null);
+                });
+            } else {
+                cb(null,null);
+            }
+        }],
+        'changeOrderStatus':['Verify','parseXml',function(cb,results){
+            var notifyData = results.parseXml;
+            if(results.Verify){
+                if(notifyData.notify.trade_status[0]=="TRADE_FINISHED"||notifyData.notify.trade_status[0]=="TRADE_SUCCESS"){
+                    var id = notifyData.notify.out_trade_no[0];
+                    OrderCtrl.pay(id,function(err,res){
+                        if(err){
+                            cb(err,null);
+                        } else {
+                            if(res.error!=0){
+                                cb(new Error(res.errMsg),null);
+                            } else {
+                                if(res.data){
+                                    cb(null,true);
+                                } else {
+                                    cb(null,false);
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    cb(null,false);
+                }
+            }
+        }]
+    },function(err,results){
+        console.log(err,results);
+        if(err){
+            fn(err,null);
+        } else {
+            fn(null,results.Verify&&results.changeOrderStatus);
+        }
+    });
 };
 
 AlipayCtrl.notifyVerify = function(pid,notifyId,fn){
