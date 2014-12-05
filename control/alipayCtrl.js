@@ -173,12 +173,13 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
         }],
         'saveOrder':['verifySign','getCustomer','getPrice','getAddress',function(cb,results){
             if(results.verifySign){
+                var context_data = JSON.parse(params.context_data);
                 var startDate = params.sku_name;;
                 var quantity = params.quantity;
                 var remark = null;
                 var product = params.goods_id;
-                var liveName = params.context_data.value1;
-                var contactPhone = params.context_data.value2;
+                var liveName = context_data.value1;
+                var contactPhone = context_data.value2;
                 var priceId=results.getPrice._id;
                 var customer=results.getCustomer._id;
                 var payway=3;
