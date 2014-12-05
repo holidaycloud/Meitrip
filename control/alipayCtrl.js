@@ -7,6 +7,7 @@ var crypto = require('crypto');
 var qs = require('querystring');
 var async = require('async');
 var https = require('https');
+var parseString = require('xml2js').parseString;
 var OrderCtrl = require('./orderCtrl');
 var CustomerCtrl = require('./customerCtrl');
 var ProductCtrl = require('./productCtrl');
@@ -246,14 +247,8 @@ AlipayCtrl.scanOrder = function(pid,key,params,token,ent,fn){
 };
 
 AlipayCtrl.scanPay = function(pid,key,params,fn){
-    console.log(params);
-    parseString(params.notify_data,function (err, result) {
-        console.log(result);
-    })
-
     async.auto({
         'parseXml':function(cb){
-            var parseString = require('xml2js').parseString;
             parseString(params.notify_data, function (err, result) {
                 cb(err,result);
             });
