@@ -130,6 +130,19 @@ ProductCtrl.getProduct = function(id,fn){
     });
 };
 
+ProductCtrl.getDatePrice = function(product,date,fn){
+    var url = config.inf.host+":"+config.inf.port+"/api/price/getDatePrice?product="+product;
+    if(date){
+        url += '&startDate='+date;
+    }
+    request({
+        url:url,
+        timeout:3000
+    },function(err,response,body){
+        fn(err,body?JSON.parse(body):{});
+    });
+};
+
 ProductCtrl.getPrice = function(id,fn){
     var url = config.inf.host+":"+config.inf.port+"/api/price/get?id="+id;
     request({

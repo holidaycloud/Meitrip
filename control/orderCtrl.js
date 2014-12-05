@@ -5,24 +5,34 @@ var request = require('request');
 var config = require('./../config/config.json');
 var OrderCtrl = function(){};
 var timeZone = ' 00:00:00 +08:00';
-OrderCtrl.save = function(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,fn){
+OrderCtrl.save = function(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,invoiceTitle,coupon,deliveryAddress,fn){
     var url = config.inf.host+':'+config.inf.port+'/api/order/save';
+    var form = {
+        token:token,
+        startDate:startDate?new Date(startDate.substr(0,10)+timeZone).getTime():Date.now(),
+        quantity:quantity,
+        remark:remark,
+        product:product,
+        liveName:liveName,
+        contactPhone:contactPhone,
+        price:priceId,
+        customer:customer,
+        payway:payway
+    };
+    if(deliveryAddress){
+        form.deliveryAddress = deliveryAddress;
+    }
+    if(invoiceTitle){
+        form.invoiceTitle = invoiceTitle;
+    }
+    if(coupon){
+        form.coupon = coupon;
+    }
     request({
         url:url,
         method:'POST',
         timeout:3000,
-        form: {
-            token:token,
-            startDate:startDate?new Date(startDate.substr(0,10)+timeZone).getTime():Date.now(),
-            quantity:quantity,
-            remark:remark,
-            product:product,
-            liveName:liveName,
-            contactPhone:contactPhone,
-            price:priceId,
-            customer:customer,
-            payway:payway
-        }
+        form: form
     }, function(err,response,body){
         fn(err,body?JSON.parse(body):{});
     });

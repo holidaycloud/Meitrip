@@ -12,4 +12,5 @@ router.post('/changePasswd', AjaxAction.changePasswd);
 router.post('/feedback', AjaxAction.feedback);
 router.post('/order/cancel', AjaxAction.orderCancel);
 router.post('/order/cardPay', AjaxAction.cardPay);
+router.post('/address/save', AjaxAction.saveAddress);
 module.exports = router;

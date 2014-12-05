@@ -6,6 +6,7 @@ var CustomerCtrl = require('./../control/customerCtrl');
 var AreaCtrl = require('./../control/areaCtrl');
 var FeedbackCtrl = require('./../control/feedbackCtrl');
 var OrderCtrl = require('./../control/orderCtrl');
+var AddressCtrl = require('./../control/addressCtrl');
 exports.getPrice = function(req,res){
     var id = req.query.id;
     ProductCtrl.getPrice(id,function(err,result){
@@ -91,6 +92,24 @@ exports.cardPay = function(req,res){
             if(result.error==0&&result.data){
                 req.session.user.cardBalance = result.data.balance;
             }
+            res.json(result);
+        }
+    });
+};
+
+exports.saveAddress = function(req,res){
+    var customer = req.session.user._id;
+    var province = req.body.province;
+    var city = req.body.city;
+    var district = req.body.district;
+    var address = req.body.address;
+    var name = req.body.name;
+    var isDefault = req.body.isDefault;
+    console.log(isDefault);
+    AddressCtrl.save(province,city,district,address,customer,name,isDefault,function(err,result){
+        if(err){
+            res.json({'error':1,'errMsg':err.message});
+        } else {
             res.json(result);
         }
     });

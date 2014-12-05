@@ -10,6 +10,7 @@ var OrderCtrl = require('./../control/orderCtrl');
 var WeiXinCtrl = require('./../control/weixinCtrl');
 var AlipayCtrl = require('./../control/alipayCtrl');
 var CouponCtrl = require('./../control/couponCtrl');
+var AddressCtrl = require('./../control/addressCtrl');
 exports.home = function(req,res){
     var ent = res.locals.domain.ent;
     async.auto({
@@ -26,7 +27,6 @@ exports.home = function(req,res){
     },function(err,results){
         res.render('index',{'hot':results.getHot.data,'recommend':results.getRecommend.data});
     });
-
 };
 
 exports.checkLogin = function(req,res,next){
@@ -225,7 +225,24 @@ exports.saveOrder = function(req,res,next){
     var priceId = req.body.priceID;
     var customer = req.session.user._id;
     var payway = req.body.payway;
-    OrderCtrl.save(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,function(err,result){
+    var ckb_invoice = req.body.ckb_invoice;
+    var invoiceType = req.body.invoiceType;
+    var invoiceTitle = req.body.invoiceTitle;
+    var couponCode = req.body.couponCode;
+    var deliveryAddress = req.body.deliveryAddress;
+    var iTitle = null;
+    var coupon = null;
+    if(ckb_invoice){
+        if(invoiceType=='0'){
+            iTitle='个人';
+        } else {
+            iTitle = invoiceTitle;
+        }
+    }
+    if(couponCode!=""){
+        coupon = couponCode.split('|')[0];
+    }
+    OrderCtrl.save(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,iTitle,coupon,deliveryAddress,function(err,result){
         if(err){
             res.render('500');
         } else {
@@ -279,13 +296,22 @@ exports.cart = function(req,res){
                 }
             });
         },
-        'getCoupons':function(cb){
+        'getCoupons':['getPrice',function(cb,results){
             var customer = req.session.user._id;
             var ent = res.locals.domain.ent;
-            CouponCtrl.getCoupons(customer,ent,pid,function(err,result){
-                cb(err,result);
+            var totalPrice = results.getPrice.price*qty;
+            CouponCtrl.getCanUseCoupons(customer,ent,pid,totalPrice,function(err,result){
+                if(err){
+                    cb(err,null);
+                } else {
+                    if(result.error==0){
+                        cb(null,result.data);
+                    } else {
+                        cb(new Error(result.errMsg),null);
+                    }
+                }
             });
-        },
+        }],
         'getProvince':function(cb){
             AreaCtrl.provinceList(function(err,result){
                 if(err){
@@ -298,6 +324,11 @@ exports.cart = function(req,res){
                     }
                 }
             });
+        },
+        'getAddress':function(cb){
+            AddressCtrl.get(req.session.user._id,function(err,result){
+                cb(err,result);
+            })
         }
     },function(err,results){
         var isWeixin = false;
@@ -310,8 +341,10 @@ exports.cart = function(req,res){
                 'qty':qty,
                 'startDate':startDate
             },
+            'coupons':results.getCoupons,
             'product':results.getProduct,
             'price':results.getPrice,
+            'address':results.getAddress,
             'isWeixin':isWeixin
         });
     });
@@ -371,6 +404,35 @@ exports.alipayNotify = function(req,res){
     });
 };
 
+exports.alipayScanOrderNotify = function(req,res){
+    var pid=res.locals.domain.alipay.pid;
+    var key = res.locals.domain.alipay.key;
+    var token = res.locals.domain.longToken;
+    var ent = res.locals.domain.ent;
+    AlipayCtrl.scanOrder(pid,key,req.body,token,ent,function(err,result){
+        if(err){
+            res.render('500');
+        }  else {
+            res.json(result);
+        }
+    })
+};
+
+exports.alipayScanPayNotify = function(req,res){
+    var pid=res.locals.domain.alipay.pid;
+    var key = res.locals.domain.alipay.key;
+    AlipayCtrl.scanPay(pid,key,req.body,function(err,result){
+        console.log(err,result);
+        if(err||!result){
+            console.log('alipaySacnNotify',false);
+            res.send('');
+        }else {
+            console.log('alipaySacnNotify',true);
+            res.send('success');
+        }
+    })
+};
+
 exports.alipay = function(req,res){
     var url = AlipayCtrl.createUrl(
         res.locals.domain.alipay.pid,
@@ -382,6 +444,18 @@ exports.alipay = function(req,res){
         res.locals.order.totalPrice,
         res.locals.order._id);
     res.redirect(url);
+};
+
+exports.coupons = function(req,res){
+    var customer = req.session.user._id;
+    var ent = res.locals.domain.ent;
+    CouponCtrl.getCoupons(customer,ent,function(err,result){
+       if(err){
+           res.render('500');
+       }  else {
+           res.render('coupons',result);
+       }
+    });
 };
 
 exports.orderDetailPay = function(req,res,next){
@@ -399,4 +473,16 @@ exports.orderDetailPay = function(req,res,next){
     } else {
         res.redirect('/orderDetails/'+result.data._id);
     }
+};
+
+exports.address = function(req,res){
+    var customer = req.session.user._id;
+    AddressCtrl.get(customer,function(err,result){
+        if(err){
+            res.render('500');
+        }  else {
+            console.log(err,result);
+            res.send('');
+        }
+    });
 };

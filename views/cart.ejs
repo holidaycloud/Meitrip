@@ -43,9 +43,10 @@
 <form class="form-horizontal" role="form" action="/saveOrder" method="post" id="cartForm">
 <input type="hidden" name="productName" value="<%=product.name%>">
 <input type="hidden" name="startDate" value="<%=orderInfo.startDate?orderInfo.startDate:''%>">
-<input type="hidden" name="quantity" value="<%=orderInfo.qty%>">
+<input type="hidden" name="quantity" id="quantity" value="<%=orderInfo.qty%>">
 <input type="hidden" name="product" value="<%=product._id%>">
 <input type="hidden" name="priceID" value="<%=price._id%>">
+<input type="hidden" id="price" value="<%=price.price%>">
 <div class="row">
 <!-- 左边 Starts -->
 <div class="col-sm-6">
@@ -57,37 +58,20 @@
             </h3>
         </div>
         <div class="panel-body">
-            <div class="form-group">
-                <label for="province" class="col-sm-3 control-label">省:</label>
-                <div class="col-sm-9">
-                    <select class="form-control" id="province" name="province">
-                        <option value="">- 请选择 -</option>
-                        <%provinces.forEach(function(p){%>
-                        <option value="<%=p.pid%>"><%=p.provinceName%></option>
-                        <%});%>
-                    </select>
-                </div>
+            <%if(product.productType==3){address.forEach(function(a){%>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="deliveryAddress" value="<%=a._id%>" <%=a.isDefault?'checked':''%>>
+                    <%=a.showtext%><br/><%=a.name%>
+                </label>
             </div>
-            <div class="form-group">
-                <label for="inputCity" class="col-sm-3 control-label">市:</label>
-                <div class="col-sm-9">
-                    <select class="form-control" id="city" name="city">
-                    </select>
-                </div>
+            <%})};%>
+            <div>
+                <a class="btn btn-success" id="btn_Address">
+                    新增地址
+                </a>
             </div>
-            <div class="form-group">
-                <label for="district" class="col-sm-3 control-label">区:</label>
-                <div class="col-sm-9">
-                    <select class="form-control" id="district" name="district">
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="address" class="col-sm-3 control-label">地址:</label>
-                <div class="col-sm-9">
-                    <input type="text" class="form-control" id="address" name="address" placeholder="地址">
-                </div>
-            </div>
+
         </div>
     </div>
     <!-- 收货地址 Ends -->
@@ -160,10 +144,13 @@
         <div class="panel-body">
             <!-- Form Starts -->
                 <div class="form-group">
-                    <label for="inputCouponCode" class="col-sm-3 control-label">优惠券:</label>
+                    <label for="couponCode" class="col-sm-3 control-label">优惠券:</label>
                     <div class="col-sm-9">
-                        <select id="inputCouponCode" class="form-control">
-                            <option>--请选择--</option>
+                        <select id="couponCode" name="couponCode" class="form-control">
+                            <option value="">--请选择--</option>
+                            <%coupons.forEach(function(c){%>
+                            <option value="<%=c.code+'|'+c.type+'|'+c.value%>"><%=c.name%></option>
+                            <%})%>
                         </select>
                     </div>
                 </div>
@@ -224,12 +211,12 @@
                 <dt>数量:</dt>
                 <dd><%=orderInfo.qty%></dd>
                 <dt>折扣:</dt>
-                <dd>￥0</dd>
+                <dd>-￥<span id="lb_discount">0</span></dd>
             </dl>
             <hr />
             <dl class="dl-horizontal total">
                 <dt>合计 :</dt>
-                <dd>￥<%=price.price*orderInfo.qty%></dd>
+                <dd>￥<span id="lb_totalPrice"><%=price.price*orderInfo.qty%></span></dd>
             </dl>
             <hr />
             <div class="text-uppercase clearfix">
@@ -248,11 +235,124 @@
 <!-- Shipping Section Ends -->
 </div>
 <!-- Main Container Ends -->
+
+<!-- Modal AddAddress Start-->
+<div class="modal fade" id="modal_address" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">新增地址</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="province" class="col-sm-3 control-label">省:</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="province" name="province">
+                                <option value="">- 请选择 -</option>
+                                <%provinces.forEach(function(p){%>
+                                <option value="<%=p.pid%>"><%=p.provinceName%></option>
+                                <%});%>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputCity" class="col-sm-3 control-label">市:</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="city" name="city">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="district" class="col-sm-3 control-label">区:</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="district" name="district">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address" class="col-sm-3 control-label">地址:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="address" name="address" placeholder="地址">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-3 control-label">收货人姓名:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="收货人姓名">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="isDefault" class="col-sm-3 control-label"></label>
+                        <div class="col-sm-9">
+                            <input type="checkbox" id="isDefault" name="isDefault" checked>设为默认地址
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="btn_submitAdd">新增</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal AddAddress End-->
 <%include footer%>
 <script>
     $(function(){
         $('#cartForm').submit(function(event){
             $('#btn_submit').attr('disabled','disabled');
+        });
+
+        $('#couponCode').change(function(){
+            var selVal = $(this).val();
+            var arr = selVal.split('|');
+
+            var qty = parseFloat($('#quantity').val());
+            var price = parseFloat($('#price').val());
+            if(arr.length==3){
+                var discountValue = parseFloat(arr[2]);
+                if(arr[1]=='0'){
+                    $('#lb_discount').text(discountValue);
+                    $('#lb_totalPrice').text(price*qty-discountValue);
+                } else if(arr[1]=='1'){
+                    $('#lb_discount').text((discountValue*100)+'%');
+                    $('#lb_totalPrice').text(price*qty -price*qty*discountValue);
+                } else if(arr[1]=='3'){
+                    $('#lb_discount').text(price-discountValue);
+                    $('#lb_totalPrice').text((price*(qty-1))+discountValue);
+                } else if(arr[1]=='4'){
+                    $('#lb_discount').text(price);
+                    $('#lb_totalPrice').text(price*(qty-1));
+                }
+            } else {
+                $('#lb_discount').text(0);
+                $('#lb_totalPrice').text(price*qty);
+            }
+        });
+
+        $('#btn_Address').click(function(){
+            $('#modal_address').modal('show');
+        });
+
+        $('#btn_submitAdd').click(function(){
+            var formDate = {
+                'province':$('#province').val(),
+                'city':$('#city').val(),
+                'district':$('#district').val(),
+                'address':$('#address').val(),
+                'name':$('#name').val(),
+                'isDefault':$('#isDefault').attr('checked')=='checked'
+            };
+            $.ajax({
+                'url':'/ajax/address/save',
+                'method':'POST',
+                'data':formDate
+            }).done(function(data){
+                location.reload();
+            });
         });
 
         $('#ckb_invoice').click(function(){
