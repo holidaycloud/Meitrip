@@ -26,4 +26,5 @@ router.get('/address',PageAction.checkLogin,PageAction.address);
 
 router.post('/alipay/notify',PageAction.alipayNotify);
 router.post('/alipay/scan/order',PageAction.alipayScanOrderNotify);
+router.post('/alipay/scan/pay',PageAction.alipayScanPayNotify);
 module.exports = router;

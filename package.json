@@ -21,6 +21,7 @@
     "static-favicon": "~1.0.0",
     "underscore": "*",
     "upyun": "^1.0.1",
-    "connect-flash":"*"
+    "connect-flash":"*",
+    "xml2js":"*"
   }
 }
