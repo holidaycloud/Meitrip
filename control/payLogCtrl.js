@@ -12,7 +12,6 @@ PayLogCtrl.save = function(params,fn){
         method:'POST',
         form: params
     },function(err,response,body){
-        console.log('---save paylog---',err,body);
         fn(err,body?JSON.parse(body):{});
     });
 };

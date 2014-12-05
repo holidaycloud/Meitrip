@@ -410,10 +410,13 @@ exports.alipayScanOrderNotify = function(req,res){
     var token = res.locals.domain.longToken;
     var ent = res.locals.domain.ent;
     AlipayCtrl.scanOrder(pid,key,req.body,token,ent,function(err,result){
-        if(err){
-            res.render('500');
-        }  else {
-            res.json(result);
+        console.log(err,result);
+        if(err||!result){
+            console.log('alipaySacnNotify',false);
+            res.send('');
+        }else {
+            console.log('alipaySacnNotify',true);
+            res.send('success');
         }
     })
 };
@@ -421,8 +424,6 @@ exports.alipayScanOrderNotify = function(req,res){
 exports.alipayScanPayNotify = function(req,res){
     var pid=res.locals.domain.alipay.pid;
     var key = res.locals.domain.alipay.key;
-    var token = res.locals.domain.longToken;
-    var ent = res.locals.domain.ent;
     AlipayCtrl.scanPay(pid,key,req.body,function(err,result){
         if(err){
             res.render('500');
