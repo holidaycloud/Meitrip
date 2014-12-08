@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var flash = require('connect-flash');
 var log4js = require('log4js');
+var compression = require('compression');
 //log4js config
 log4js.configure({
     appenders : [ {
@@ -32,6 +33,7 @@ app.locals.orderStatus = {
     '4':'已退款'
 }
 app.enable('trust proxy');
+app.use(compression());
 app.use(favicon());
 
 //app.use(logger('dev'));
