@@ -22,6 +22,7 @@
     "underscore": "*",
     "upyun": "^1.0.1",
     "connect-flash":"*",
-    "xml2js":"*"
+    "xml2js":"*",
+    "compression":"*"
   }
 }

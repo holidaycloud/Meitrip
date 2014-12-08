@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var flash = require('connect-flash');
 var log4js = require('log4js');
+var compression = require('compression');
 //log4js config
 log4js.configure({
     appenders : [ {
@@ -32,6 +33,7 @@ app.locals.orderStatus = {
     '4':'已退款'
 }
 app.enable('trust proxy');
+app.use(compression());
 app.use(favicon());
 
 //app.use(logger('dev'));
@@ -39,7 +41,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'),{maxAge:2592000000}));
 app.use(log4js.connectLogger(logger, {
     level : log4js.levels.INFO
 }));
