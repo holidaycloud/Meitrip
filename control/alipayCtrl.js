@@ -7,6 +7,9 @@ var crypto = require('crypto');
 var qs = require('querystring');
 var async = require('async');
 var https = require('https');
+var ejs = require('ejs');
+var fs = require('fs');
+var request = require('request');
 var parseString = require('xml2js').parseString;
 var OrderCtrl = require('./orderCtrl');
 var CustomerCtrl = require('./customerCtrl');
@@ -34,6 +37,128 @@ AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,
     params.sign_type = "MD5";
     var url = 'https://mapi.alipay.com/gateway.do?'+qs.stringify(params);
     return url;
+};
+
+AlipayCtrl.wapCreateUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,totalPrice,oid){
+    async.auto({
+        'createDirect':function(cb){
+            var str = fs.readFileSync('./../views/wapAuthXml.ejs').toString();
+            var reqDate = ejs.render(str,{
+                'productName':productName,
+                'orderID':orderID,
+                'totalPrice':totalPrice,
+                'callbackUrl':returnUrl,
+                'notifyUrl':notifyUrl
+            });
+            var params = {
+                'service':'alipay.wap.trade.create.direct',
+                'format':'xml',
+                'v':'2.0',
+                'partner':pid,
+                'req_id': Date.now()+orderID,
+                'sec_id':'MD5',
+                'req_data':reqDate
+            };
+            var sign = AlipayCtrl.sign(params,key);
+            params.sign = sign;
+            var url = 'http://wappaygw.alipay.com/service/rest.htm?'+qs.stringify(params);
+            request({
+                url:url,
+                timeout:3000
+            },function(err,response,body){
+                cb(err,qs.parse(body));
+            });
+        },
+        "createUrl":['createDirect',function(cb,results){
+            var authResult = results.createDirect;
+            if(authResult.res_error){
+                cb(null,null);
+            } else {
+                var res_data = authResult.res_data;
+                parseString(res_data, function (err, result) {
+                    if(err){
+                        cb(err,null);
+                    } else {
+                        var request_token = result.direct_trade_create_res.request_token[0];
+                        var params = {
+                            'service':'alipay.wap.auth.authAndExecute',
+                            'format':'xml',
+                            'v':'2.0',
+                            'partner':pid,
+                            'sec_id':'MD5',
+                            'req_data':'<auth_and_execute_req><request_token>'+request_token+'</request_token></auth_and_execute_req>'
+                        };
+                        var sign = AlipayCtrl.sign(params,key);
+                        params.sign = sign;
+                        var url = 'http://wappaygw.alipay.com/service/rest.htm?'+qs.stringify(params);
+                        cb(null,url);
+                    }
+                });
+            }
+        }]
+    },function(err,results){
+        fn(err,results.createUrl);
+    });
+};
+
+AlipayCtrl.wapNotify = function (pid,key,params,fn){
+    async.auto({
+        'verfiy':function(cb){
+            var reqSign = params.sign;
+            delete params.sign;
+            delete params.sign_type;
+            var sign = AlipayCtrl.sign(params,key);
+            if(sign==reqSign){
+                cb(null,true);
+            } else {
+                cb(null,false);
+            }
+        },
+        'savePayLog':['Verify',function(cb){
+            params.type = 0;
+            PayLogCtrl.save(params,function(err,res){
+                cb(null,null);
+            });
+        }],
+        'changeOrderStatus':['Verify',function(cb){
+            var notify_data = params.notify_data;
+            parseString(notify_data, function (err, result) {
+                if(err){
+                    cb(err);
+                } else {
+                    var trade_status = result.notify.trade_status[0];
+                    if(trade_status=="TRADE_FINISHED"||trade_status=="TRADE_SUCCESS"){
+                        var id = result.notify.out_trade_no[0];
+                        OrderCtrl.pay(id,function(err,res){
+                            if(err){
+                                cb(err,null);
+                            } else {
+                                if(res.error!=0){
+                                    cb(new Error(res.errMsg),null);
+                                } else {
+                                    if(res.data){
+                                        cb(null,true);
+                                    } else {
+                                        cb(null,false);
+                                    }
+                                }
+                            }
+                            cb(err,res);
+                        })
+                    } else {
+                        cb(null,false);
+                    }
+                }
+            });
+
+        }]
+    },function(err,results){
+        if(err){
+            fn(err,null);
+        } else {
+            fn(null,results.Verify&&results.changeOrderStatus);
+        }
+    });
 };
 
 AlipayCtrl.qrPay = function(productId,productName,price,returnUrl,notifyUrl,partner,method,key){

@@ -49,6 +49,8 @@ app.use(session({
     secret:'meitrip'
 }));
 app.use(function(req,res,next){
+    var userAgent = req.header('user-agent');
+    console.log(userAgent.match(/(iPhone|iPod|Android|ios)/i));
     res.set('X-Powered-By','Server');
     next();
 });
