@@ -105,12 +105,11 @@ AlipayCtrl.wapNotify = function (pid,key,params,fn){
     console.log(pid,key,params);
     async.auto({
         'verfiy':function(cb){
-            console.log("verfiy start");
             var reqSign = params.sign;
             delete params.sign;
             delete params.sign_type;
             var sign = AlipayCtrl.sign(params,key);
-            console.log("verfiy end");
+            console.log(sign,reqSign);
             if(sign==reqSign){
                 cb(null,true);
             } else {
@@ -118,15 +117,12 @@ AlipayCtrl.wapNotify = function (pid,key,params,fn){
             }
         },
         'savePayLog':['verfiy',function(cb){
-            console.log("savePayLog start");
             params.type = 0;
             PayLogCtrl.save(params,function(err,res){
-                console.log("savePayLog end",err,res);
                 cb(null,null);
             });
         }],
         'changeOrderStatus':['verfiy',function(cb){
-            console.log("changeOrderStatus start");
             var notify_data = params.notify_data;
             parseString(notify_data, function (err, result) {
                 if(err){
@@ -136,7 +132,6 @@ AlipayCtrl.wapNotify = function (pid,key,params,fn){
                     if(trade_status=="TRADE_FINISHED"||trade_status=="TRADE_SUCCESS"){
                         var id = result.notify.out_trade_no[0];
                         OrderCtrl.pay(id,function(err,res){
-                            console.log("savePayLog end",err,res);
                             if(err){
                                 cb(err,null);
                             } else {
@@ -160,7 +155,6 @@ AlipayCtrl.wapNotify = function (pid,key,params,fn){
 
         }]
     },function(err,results){
-        console.log("all end",err,results);
         if(err){
             fn(err,null);
         } else {
