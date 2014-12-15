@@ -119,4 +119,24 @@ CustomerCtrl.weixinBind = function(ent,mobile,passwd,openID,fn){
     });
 
 };
+
+CustomerCtrl.detail = function(id,fn){
+    var url = config.inf.host+':'+config.inf.port+'/api/customer/detail?id='+id;
+    request({
+        url:url,
+        timeout:3000
+    },function(err,response,body){
+        console.log(err,body);
+        if(err){
+            fn(err,null);
+        } else {
+            var res = body?JSON.parse(body):{};
+            if(res.error==0&&res.data){
+                fn(null,res.data);
+            } else {
+                fn(new Error(res.errMsg),null);
+            }
+        }
+    });
+};
 module.exports = CustomerCtrl;

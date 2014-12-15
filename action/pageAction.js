@@ -328,7 +328,7 @@ exports.cart = function(req,res){
         'getAddress':function(cb){
             AddressCtrl.get(req.session.user._id,function(err,result){
                 cb(err,result);
-            })
+            });
         }
     },function(err,results){
         var isWeixin = false;

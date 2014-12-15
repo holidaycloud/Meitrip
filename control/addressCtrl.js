@@ -61,7 +61,7 @@ AddressCtrl.getOrSave = function(customer,prov,city,area,address,name,phone,fn){
     });
 };
 
-AddressCtrl.save = function(province,city,district,address,customer,name,isDefault,fn){
+AddressCtrl.save = function(province,city,district,address,customer,name,phone,isDefault,fn){
     var url = config.inf.host+':'+config.inf.port+'/api/address/save';
     request({
         url:url,
@@ -74,6 +74,7 @@ AddressCtrl.save = function(province,city,district,address,customer,name,isDefau
             address:address,
             customer:customer,
             name:name,
+            phone:phone,
             isDefault:isDefault
         }
     },function(err,response,body){

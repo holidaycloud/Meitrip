@@ -39,10 +39,10 @@ AlipayCtrl.createUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,
     return url;
 };
 
-AlipayCtrl.wapCreateUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,totalPrice,oid){
+AlipayCtrl.wapCreateUrl = function(pid,key,notifyUrl,returnUrl,orderID,productName,totalPrice,oid,fn){
     async.auto({
         'createDirect':function(cb){
-            var str = fs.readFileSync('./../views/wapAuthXml.ejs').toString();
+            var str = fs.readFileSync('./views/wapAuthXml.ejs').toString();
             var reqDate = ejs.render(str,{
                 'productName':productName,
                 'orderID':orderID,
