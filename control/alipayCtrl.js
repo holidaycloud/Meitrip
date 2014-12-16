@@ -537,15 +537,11 @@ AlipayCtrl.sign = function(params,key){
 };
 
 AlipayCtrl.wapNotifySign = function(params,key){
-    var keys = _.keys(params);
     var signStr='';
-    for(var i in keys){
-        if(i==0){
-            signStr+=keys[i]+"="+params[keys[i]];
-        } else {
-            signStr+='&'+keys[i]+"="+params[keys[i]];
-        }
-    }
+    signStr+="service="+params.service;
+    signStr+="&v="+params.v;
+    signStr+="&sec_id="+params.sec_id;
+    signStr+="&notify_data="+params.notify_data;
     var hasher = crypto.createHash("md5");
     hasher.update(signStr+key,'utf8');
     return hasher.digest("hex");
