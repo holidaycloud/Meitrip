@@ -5,9 +5,11 @@
     <title></title>
     <script>
         $(function(){
+
             var timeStamp = getTimeStamp();
             var nonceStr = getNonceStr();
             var package = "prepay_id=<%=prepay_id%>";
+            alert(timeStamp+" "+nonceStr+" "+package+" <%=appID%> <%=partnerKey%> <%=orderID%>");
             WeixinJSBridge.invoke('getBrandWCPayRequest',{
                 "appId" : '<%=appID%>', //公众号名称，由商户传入
                 "timeStamp":timeStamp, //时间戳，自 1970 年以来的秒数
