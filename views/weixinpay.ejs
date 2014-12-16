@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script>
+        $(function(){
+            var timeStamp = getTimeStamp();
+            var nonceStr = getNonceStr();
+            var package = "prepay_id=<%=prepay_id%>";
+            WeixinJSBridge.invoke('getBrandWCPayRequest',{
+                "appId" : '<%=appID%>', //公众号名称，由商户传入
+                "timeStamp":timeStamp, //时间戳，自 1970 年以来的秒数
+                "nonceStr" : nonceStr, //随机串
+                "package" : package,
+                "signType" : "MD5",  //微信签名方式:
+                "paySign" : getSign('<%=appID%>','MD5',nonceStr,package,timeStamp,'<%=partnerKey%>') //微信签名
+            },function(res){
+                if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                    location.href = "/orderDetails/<%=orderID%>"
+                }
+                // 使用以上方式判断前端返回,微信团队郑重提示： res.err_msg 将在用户支付成功后返回 ok，但幵丌保证它绝对可靠。
+            });
+        });
+
+    </script>
+</head>
+<body>
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/wxTool.js"></script>
+</body>
+</html>

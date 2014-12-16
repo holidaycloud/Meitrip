@@ -251,15 +251,112 @@ exports.saveOrder = function(req,res,next){
                     res.locals.order = result.data;
                     res.locals.productName = productName;
                     next();
+                } else if(payway==4&&res.locals.domain.weixin) {
+                    var appID = res.locals.domain.weixin.appID;
+                    var orderID = result.data._id;
+                    res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid='+appID+'&redirect_uri=http://www.meitrip.net/weixinPay?showwxpaytitle=1&orderID='+orderID+'&response_type=code&scope=snsapi_base&state=pay#wechat_redirect');
                 } else {
                     res.redirect('/orderDetails/'+result.data._id);
                 }
-
             } else {
                 res.render('500');
             }
         }
     });
+};
+
+exports.weixinpay = function(req,res){
+    var orderID = req.query.orderID;
+    var code = req.query.code;
+    var state = req.query.state;
+    var ent = res.locals.domain.ent;
+    function getNonceStr(){
+        var $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var maxPos = $chars.length;
+        var noceStr = "";
+        for (i = 0; i < 32; i++) {
+            noceStr += $chars.charAt(Math.floor(Math.random() * maxPos));
+        }
+        return noceStr;
+    };
+    function getUnifiedOrderXml(params,key){
+        var xml = "<xml>";
+        xml += "<out_trade_no><![CDATA["+params.out_trade_no+"]]></out_trade_no>";
+        xml += "<body><![CDATA["+params.body+"]]></body>";
+        xml += "<total_fee>"+params.total_fee+"</total_fee>";
+        xml += "<notify_url><![CDATA["+params.notify_url+"]]></notify_url>";
+        xml += "<trade_type><![CDATA["+params.trade_type+"]]></trade_type>";
+        xml += "<openid><![CDATA["+params.openid+"]]></openid>";
+        xml += "<appid><![CDATA["+params.appid+"]]></appid>";
+        xml += "<mch_id><![CDATA["+params.mch_id+"]]></mch_id>";
+        xml += "<spbill_create_ip><![CDATA["+params.spbill_create_ip+"]]></spbill_create_ip>";
+        xml += "<nonce_str><![CDATA["+params.nonce_str+"]]></nonce_str>";
+        xml += "<sign><![CDATA["+weixin.generateSign(params,key)+"]]></sign>";
+        xml += "</xml>";
+        return xml;
+    };
+    async.auto({
+        'getOrder':function(cb){
+            OrderCtrl.get(orderID,function(err,result){
+                if(err){
+                    cb(err,null);
+                } else {
+                    if(result.error==0&&result.data){
+                        cb(null,result.data)
+                    } else {
+                        cb(new Error(result.errMsg))
+                    }
+                }
+                cb(err,res);
+            })
+        },
+        'getOpenId':function(cb){
+            WeiXinCtrl.codeAccessToken(ent,code,state,function(err,result){
+                if(result.error==0&&result.data){
+                    cb(null,result.data)
+                } else {
+                    cb(new Error(result.errMsg))
+                }
+            });
+        },
+        'getPrepayId':['getOrder','getOpenId',function(cb,results){
+            var order = results.getOrder;
+            var openID = results.getOpenId.openid;
+            var appID = res.locals.domain.weixin.appID;
+            var partnerId = res.locals.domain.weixin.partnerId;
+            var partnerKey = res.locals.domain.weixin.partnerKey;
+            var xml_params = {};
+            xml_params.out_trade_no = order.orderID;
+            xml_params.body = order.product.name;
+            xml_params.total_fee = order.totalPrice;
+            xml_params.notify_url = "http://www.meitrip.net/weixinpay/notify";
+            xml_params.trade_type = "JSAPI";
+            xml_params.appid = appID;
+            xml_params.mch_id = partnerId;
+            xml_params.openid = openID;
+            xml_params.nonce_str = getNonceStr();
+            xml_params.spbill_create_ip = req.ip;
+            var xml = getUnifiedOrderXml(xml_params,partnerKey);
+            WeiXinCtrl.getPrePayId(xml,function(err,result){
+                cb(err,result);
+            });
+        }]
+    },function(err,results){
+        if(err){
+            res.render('500');
+        } else {
+            var appID = res.locals.domain.weixin.appID;
+            var partnerKey = res.locals.domain.weixin.partnerKey;
+            res.render('weixinpay',{
+                appID:appID,
+                prepay_id:results.getPrepayId,
+                partnerKey:partnerKey,
+                orderID:orderID
+            });
+            fn(null,results.getPrepayId);
+        }
+    });
+
 };
 
 exports.cart = function(req,res){
