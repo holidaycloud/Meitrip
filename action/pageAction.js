@@ -369,6 +369,7 @@ exports.weixinpay = function(req,res){
         } else {
             var appID = res.locals.domain.weixin.appID;
             var partnerKey = res.locals.domain.weixin.partnerKey;
+            console.log('----------------render-----------------');
             res.render('weixinpay',{
                 appID:appID,
                 prepay_id:results.getPrepayId,
