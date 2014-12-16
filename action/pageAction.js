@@ -406,10 +406,14 @@ exports.alipayNotify = function(req,res){
 
 exports.alipayWapNotify = function(req,res){
     AlipayCtrl.wapNotify(res.locals.domain.alipay.pid,res.locals.domain.alipay.key,req.body,function(err,result){
-        if(err||!result){
+        console.log(err,!result);
+        if(err){
+            console.log('alipayWapNotify error',false);
+            res.send('');
+        } else if(!result){
             console.log('alipayWapNotify',false);
             res.send('');
-        }else {
+        } else {
             console.log('alipayWapNotify',true);
             res.send('success');
         }
