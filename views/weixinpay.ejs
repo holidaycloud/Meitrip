@@ -8,6 +8,7 @@
         var timeStamp = getTimeStamp();
         var nonceStr = getNonceStr();
         var package = "prepay_id=<%=prepay_id%>";
+        alert('进了');
         WeixinJSBridge.invoke('getNetworkType',{},
                 function(e){
                     alert(e);
