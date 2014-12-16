@@ -151,9 +151,9 @@ AlipayCtrl.wapNotify = function (pid,key,params,fn){
                     }
                 }
             });
-
         }]
     },function(err,results){
+        console.log(err,results);
         if(err){
             fn(err,null);
         } else {
