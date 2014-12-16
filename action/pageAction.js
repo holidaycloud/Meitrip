@@ -270,6 +270,28 @@ exports.weixinpay = function(req,res){
     var code = req.query.code;
     var state = req.query.state;
     var ent = res.locals.domain.ent;
+    function generateSign(params,pk){
+        var arrayKeys = [];
+        var str = "";
+        for(var key in params){
+            arrayKeys.push(key);
+        }
+        arrayKeys.sort();
+        for(var i=0;i<arrayKeys.length;i++){
+            if(i==0){
+                str = arrayKeys[i] +"="+ params[arrayKeys[i]];
+            }else{
+                str += "&" + arrayKeys[i] +"="+ params[arrayKeys[i]];
+            }
+        }
+        str +="&key="+pk;
+        console.log('------------------------str',str);
+        var crypto = require('crypto');
+        var shasum = crypto.createHash('md5');
+        shasum.update(str,"utf8");
+        var mySign = shasum.digest('hex');
+        return mySign.toUpperCase();
+    }
     function getNonceStr(){
         var $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         var maxPos = $chars.length;
@@ -291,7 +313,7 @@ exports.weixinpay = function(req,res){
         xml += "<mch_id><![CDATA["+params.mch_id+"]]></mch_id>";
         xml += "<spbill_create_ip><![CDATA["+params.spbill_create_ip+"]]></spbill_create_ip>";
         xml += "<nonce_str><![CDATA["+params.nonce_str+"]]></nonce_str>";
-        xml += "<sign><![CDATA["+weixin.generateSign(params,key)+"]]></sign>";
+        xml += "<sign><![CDATA["+generateSign(params,key)+"]]></sign>";
         xml += "</xml>";
         return xml;
     };
