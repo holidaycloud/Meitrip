@@ -375,7 +375,6 @@ exports.weixinpay = function(req,res){
                 partnerKey:partnerKey,
                 orderID:orderID
             });
-            fn(null,results.getPrepayId);
         }
     });
 
