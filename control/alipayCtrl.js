@@ -102,13 +102,11 @@ AlipayCtrl.wapCreateUrl = function(pid,key,notifyUrl,returnUrl,orderID,productNa
 };
 
 AlipayCtrl.wapNotify = function (pid,key,params,fn){
-    console.log(pid,key,params);
     async.auto({
         'verfiy':function(cb){
             var reqSign = params.sign;
             delete params.sign;
             var sign = AlipayCtrl.wapNotifySign(params,key);
-            console.log(sign,reqSign);
             if(sign==reqSign){
                 cb(null,true);
             } else {
@@ -144,7 +142,6 @@ AlipayCtrl.wapNotify = function (pid,key,params,fn){
                                     }
                                 }
                             }
-                            cb(err,res);
                         })
                     } else {
                         cb(null,false);
@@ -153,7 +150,6 @@ AlipayCtrl.wapNotify = function (pid,key,params,fn){
             });
         }]
     },function(err,results){
-        console.log(err,results);
         if(err){
             fn(err,null);
         } else {
