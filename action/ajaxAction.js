@@ -181,7 +181,6 @@ exports.saveOrder = function(req,res,next){
     var iTitle = null;
     var coupon = null;
     OrderCtrl.save(token, startDate, quantity, remark, product, liveName, contactPhone, priceId,customer,payway,iTitle,coupon,deliveryAddress,function(err,result){
-        console.log('orderSave',err,result);
         if(err){
             res.json({error:1,errMsg:err.message});
         } else {
@@ -200,8 +199,8 @@ exports.alipay = function(err,res){
     AlipayCtrl.wapCreateUrl(
         res.locals.domain.alipay.pid,
         res.locals.domain.alipay.key,
-        'http://test.meitrip.net/alipay/wapnotify',
-        'http://test.meitrip.net/orderDetails/'+res.locals.order._id,
+        'http://www.meitrip.net/alipay/wapnotify',
+        'http://www.meitrip.net/orderDetails/'+res.locals.order._id,
         res.locals.order.orderID,
         res.locals.productName,
         res.locals.order.totalPrice,

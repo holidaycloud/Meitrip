@@ -449,16 +449,33 @@ exports.alipayScanPayNotify = function(req,res){
 };
 
 exports.alipay = function(req,res){
-    var url = AlipayCtrl.createUrl(
+    var userAgent = req.header('user-agent');
+    if(userAgent.match(/(iPhone|iPod|Android|ios)/i)){
+        AlipayCtrl.wapCreateUrl(
         res.locals.domain.alipay.pid,
         res.locals.domain.alipay.key,
-        'http://www.meitrip.net/alipay/notify',
+        'http://www.meitrip.net/alipay/wapnotify',
         'http://www.meitrip.net/orderDetails/'+res.locals.order._id,
         res.locals.order.orderID,
         res.locals.productName,
         res.locals.order.totalPrice,
-        res.locals.order._id);
-    res.redirect(url);
+        res.locals.order._id,
+        function(err,result){
+            res.redirect(result);
+        });
+    } else {
+        var url = AlipayCtrl.createUrl(
+            res.locals.domain.alipay.pid,
+            res.locals.domain.alipay.key,
+            'http://www.meitrip.net/alipay/notify',
+            'http://www.meitrip.net/orderDetails/'+res.locals.order._id,
+            res.locals.order.orderID,
+            res.locals.productName,
+            res.locals.order.totalPrice,
+            res.locals.order._id);
+        res.redirect(url);
+    }
+
 };
 
 exports.coupons = function(req,res){
