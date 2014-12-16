@@ -254,7 +254,7 @@ exports.saveOrder = function(req,res,next){
                 } else if(payway==4&&res.locals.domain.weixin) {
                     var appID = res.locals.domain.weixin.appID;
                     var orderID = result.data._id;
-                    res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid='+appID+'&redirect_uri=http://test.meitrip.net/weixinPay?showwxpaytitle=1&orderID='+orderID+'&response_type=code&scope=snsapi_base&state=pay#wechat_redirect');
+                    res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid='+appID+'&redirect_uri=http://test.meitrip.net/weixinPay?orderID='+orderID+'&showwxpaytitle=1&response_type=code&scope=snsapi_base&state=pay#wechat_redirect');
                 } else {
                     res.redirect('/orderDetails/'+result.data._id);
                 }
