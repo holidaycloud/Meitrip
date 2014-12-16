@@ -113,41 +113,49 @@ AlipayCtrl.wapNotify = function (pid,key,params,fn){
                 cb(null,false);
             }
         },
-        'savePayLog':['verfiy',function(cb){
-            params.type = 0;
-            PayLogCtrl.save(params,function(err,res){
+        'savePayLog':['verfiy',function(cb,results){
+            if(results.verfiy){
+                params.type = 0;
+                PayLogCtrl.save(params,function(err,res){
+                    cb(null,null);
+                });
+            } else {
                 cb(null,null);
-            });
+            }
         }],
-        'changeOrderStatus':['verfiy',function(cb){
-            var notify_data = params.notify_data;
-            parseString(notify_data, function (err, result) {
-                if(err){
-                    cb(err,false);
-                } else {
-                    var trade_status = result.notify.trade_status[0];
-                    if(trade_status=="TRADE_FINISHED"||trade_status=="TRADE_SUCCESS"){
-                        var id = result.notify.out_trade_no[0];
-                        OrderCtrl.pay(id,function(err,res){
-                            if(err){
-                                cb(err,null);
-                            } else {
-                                if(res.error!=0){
-                                    cb(new Error(res.errMsg),false);
+        'changeOrderStatus':['verfiy',function(cb,results){
+            if(results.verfiy){
+                var notify_data = params.notify_data;
+                parseString(notify_data, function (err, result) {
+                    if(err){
+                        cb(err,false);
+                    } else {
+                        var trade_status = result.notify.trade_status[0];
+                        if(trade_status=="TRADE_FINISHED"||trade_status=="TRADE_SUCCESS"){
+                            var id = result.notify.out_trade_no[0];
+                            OrderCtrl.pay(id,function(err,res){
+                                if(err){
+                                    cb(err,null);
                                 } else {
-                                    if(res.data){
-                                        cb(null,true);
+                                    if(res.error!=0){
+                                        cb(new Error(res.errMsg),false);
                                     } else {
-                                        cb(null,false);
+                                        if(res.data){
+                                            cb(null,true);
+                                        } else {
+                                            cb(null,false);
+                                        }
                                     }
                                 }
-                            }
-                        })
-                    } else {
-                        cb(null,false);
+                            })
+                        } else {
+                            cb(null,false);
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                cb(null,false);
+            }
         }]
     },function(err,results){
         if(err){
