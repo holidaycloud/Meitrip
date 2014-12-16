@@ -12,13 +12,13 @@
 
 <a href="javascript:void(0)" onclick="callpay()">cao</a>
 </body>
-
+<script src="/js/md5.js"></script>
 <script src="/js/wxTool.js"></script>
 <script>
     var timeStamp = getTimeStamp();
     var nonceStr = getNonceStr();
     var package = "prepay_id=<%=prepay_id%>";
-
+    var sign = getSign('<%=appID%>','MD5',nonceStr,package,timeStamp,'<%=partnerKey%>');
 
     //调用支付方法
     function jsApiCall(){
@@ -31,7 +31,7 @@
                     "nonceStr" : nonceStr, //随机串
                     "package" : package,//扩展包
                     "signType" : 'MD5', //微信签名方式:1.sha1
-                    "paySign" :  ''//微信签名getSign('<%=appID%>','MD5',nonceStr,package,timeStamp,'<%=partnerKey%>')
+                    "paySign" :  sign//微信签名
                 },
                 function(res){
                     alert(res.err_code+","+res.err_desc+","+res.err_msg);
