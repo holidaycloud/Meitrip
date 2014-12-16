@@ -342,6 +342,7 @@ exports.weixinpay = function(req,res){
             });
         }]
     },function(err,results){
+        console.log(err,results);
         if(err){
             res.render('500');
         } else {
