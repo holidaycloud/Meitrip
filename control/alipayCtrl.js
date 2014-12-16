@@ -107,8 +107,7 @@ AlipayCtrl.wapNotify = function (pid,key,params,fn){
         'verfiy':function(cb){
             var reqSign = params.sign;
             delete params.sign;
-            delete params.sign_type;
-            var sign = AlipayCtrl.sign(params,key);
+            var sign = AlipayCtrl.wapNotifySign(params,key);
             console.log(sign,reqSign);
             if(sign==reqSign){
                 cb(null,true);
@@ -524,6 +523,21 @@ AlipayCtrl.notify = function(pid,key,params,fn){
 AlipayCtrl.sign = function(params,key){
     var keys = _.keys(params);
     keys.sort();
+    var signStr='';
+    for(var i in keys){
+        if(i==0){
+            signStr+=keys[i]+"="+params[keys[i]];
+        } else {
+            signStr+='&'+keys[i]+"="+params[keys[i]];
+        }
+    }
+    var hasher = crypto.createHash("md5");
+    hasher.update(signStr+key,'utf8');
+    return hasher.digest("hex");
+};
+
+AlipayCtrl.wapNotifySign = function(params,key){
+    var keys = _.keys(params);
     var signStr='';
     for(var i in keys){
         if(i==0){
