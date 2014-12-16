@@ -72,7 +72,6 @@ app.use(function(req,res,next){
     //var domain = 'www.meitrip.net';
     //var domain = 'pinyuan.holidaycloud.cn'
     DomainCtrl.getEnt(domain,function(err,result){
-        console.log(err,result);
         if(err){
             res.redirect('/404.html');
         } else {
