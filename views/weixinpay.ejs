@@ -9,18 +9,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
 <body>
-cao
+
+<a href="javascript:void(0)" onclick="callpay()">cao</a>
 </body>
+
 <script src="/js/wxTool.js"></script>
 <script>
     var timeStamp = getTimeStamp();
     var nonceStr = getNonceStr();
     var package = "prepay_id=<%=prepay_id%>";
-    alert(WeixinJSBridge);
+
 
     //调用支付方法
     function jsApiCall(){
-        alert('jsApiCall');
+        alert(WeixinJSBridge);
         WeixinJSBridge.invoke(
                 'getBrandWCPayRequest',
                 {
@@ -54,6 +56,5 @@ cao
             jsApiCall();
         }
     }
-    callpay();
 </script>
 </html>
