@@ -10,6 +10,7 @@
         var package = "prepay_id=<%=prepay_id%>";
         //调用支付方法
         function jsApiCall(){
+            alert('jsApiCall');
             WeixinJSBridge.invoke(
                     'getBrandWCPayRequest',
                     {
@@ -31,6 +32,7 @@
 
         //监听微信支付
         function callpay(){
+            alert('callpay');
             if (typeof WeixinJSBridge == "undefined"){
                 if( document.addEventListener ){
                     document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
