@@ -123,7 +123,7 @@ AlipayCtrl.wapNotify = function (pid,key,params,fn){
             var notify_data = params.notify_data;
             parseString(notify_data, function (err, result) {
                 if(err){
-                    cb(err);
+                    cb(err,false);
                 } else {
                     var trade_status = result.notify.trade_status[0];
                     if(trade_status=="TRADE_FINISHED"||trade_status=="TRADE_SUCCESS"){
@@ -133,7 +133,7 @@ AlipayCtrl.wapNotify = function (pid,key,params,fn){
                                 cb(err,null);
                             } else {
                                 if(res.error!=0){
-                                    cb(new Error(res.errMsg),null);
+                                    cb(new Error(res.errMsg),false);
                                 } else {
                                     if(res.data){
                                         cb(null,true);
@@ -150,6 +150,7 @@ AlipayCtrl.wapNotify = function (pid,key,params,fn){
             });
         }]
     },function(err,results){
+        console.log(err,results);
         if(err){
             fn(err,null);
         } else {
