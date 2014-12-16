@@ -13,4 +13,9 @@ router.post('/feedback', AjaxAction.feedback);
 router.post('/order/cancel', AjaxAction.orderCancel);
 router.post('/order/cardPay', AjaxAction.cardPay);
 router.post('/address/save', AjaxAction.saveAddress);
+router.post('/login', AjaxAction.login);
+router.post('/logout', AjaxAction.logout);
+router.get('/address', AjaxAction.getAddress);
+router.post('/saveOrder', AjaxAction.saveOrder,AjaxAction.alipay);
+
 module.exports = router;

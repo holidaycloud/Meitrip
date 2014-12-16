@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- CSS Files -->
+    <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/css/magnific-popup.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/responsive.css" rel="stylesheet">
+    <title></title>
+    <style>
+        .itemBox p{
+            margin-top: 10px;
+            height: 50px;
+            line-height:50px;
+            overflow:hidden;
+        }
+        .itemBox .itemTitle{
+            padding-left: 10px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="container">
+            <div class= navbar-left">
+                <a class="navbar-brand" href="javascript:void(0);"><strong>购买商品</strong></a>
+            </div>
+            <div class="navbar-text navbar-right">
+                <%if(user){%>
+                <p class="navbar-text user-box"><span id="user_mobile"><%=user.mobile%></span>&nbsp;&nbsp;<a href="javascript:void(0);" class="navbar-link" id="logout">注销</a></p>
+                <%} else {%>
+                <p class="navbar-text user-box hidden"><span id="user_mobile"></span>&nbsp;&nbsp;<a href="javascript:void(0);" class="navbar-link" id="logout">注销</a></p>
+                <%}%>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section>
+    <div class="container" style="padding-top: 10px; margin-bottom: 72px;" id="main-box">
+        <div class="row" style="background-color: #ffffff; margin-bottom: 10px;">
+            <div class="col-xs-12 itemBox">
+                <p class="pull-left"><img src="<%=image%>" alt="logo" style="width:50px;height:50px;" class="img-rounded img-responsive"></p>
+                <p class="pull-left itemTitle"><a class="navbar-brand" href="javascript:void(0);" id="btn_proDetail" data-pname="<%=name%>" data-pid="<%=pid%>"><%=name.substr(0,10)%></a></p>
+                <p class="pull-right"><span class="glyphicon glyphicon-chevron-right"></span></p>
+            </div>
+        </div>
+        <form class="form-horizontal" role="form">
+            <div class="form-group" style="padding-right: 10px;padding-left: 10px;">
+                <%for(var i in price){
+                var p = price[i];
+                if(i==0){%>
+                <button class="btn btn-sm btn-default kind active" style="margin-bottom: 5px;" type="button" data-startDate="<%=p.date%>" data-price="<%=p.id%>"><%=p.date%></button>
+                <%} else {%>
+                <button class="btn btn-sm btn-default kind" style="margin-bottom: 5px;" type="button" data-startDate="<%=p.date%>" data-price="<%=p.id%>"><%=p.date%></button>
+                <%}}%>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-3" style="height: 36px; line-height:36px;">
+                    <label class="control-label pull-right">单价:</label>
+                </div>
+                <div class="col-xs-9">
+                    <p class="form-control-static text-danger" id="price"><%=price[0].price%>元</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-3" style="height: 36px; line-height:36px;">
+                    <label class="control-label pull-right">数量:</label>
+                </div>
+                <div class="col-xs-9">
+                    <select class="form-control" id="qty">
+                        <%for(var i=1;i<=price[0].inventory;i++){%>
+                        <option value="<%=i%>"><%=i%></option>
+                        <%}%>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-3" style="height: 36px; line-height:36px;">
+                    <label class="control-label pull-right">库存:</label>
+                </div>
+                <div class="col-xs-9">
+                    <p class="form-control-static"><span id="inventory_text"><%=price[0].inventory%></span>件</p>
+                </div>
+            </div>
+            <div class="form-group" style="padding-right: 10px;padding-left: 10px;">
+                <input type="text" class="form-control" id="contact" placeholder="联系人" value="<%=user?user.name:''%>">
+            </div>
+            <div class="form-group" style="padding-right: 10px;padding-left: 10px;">
+                <input type="text" class="form-control" id="contactMobile" placeholder="联系电话" value="<%=user?user.mobile:''%>">
+            </div>
+            <div class="form-group" id="address-btn-box" style="padding-right: 10px;padding-left: 10px;">
+                <button class="btn btn-warning btn-sm" type="button" id="btn_addAddress">新增地址</button>
+                <button class="btn btn-warning btn-sm" type="button" id="btn_changeAddress">选择地址</button>
+            </div>
+            <div class="row" style="margin-right: -5px;margin-left: -5px;padding-top: 10px;padding-bottom: 10px;">
+                <div class="col-xs-12" id="address-box" style="background-color: #ffffff;">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="container hidden" style="padding-top: 10px; margin-bottom: 72px;" id="content-box">
+        <div class="row">
+            <div class="col-xs-12">
+                <button class="btn btn-primary" type="button" id="btn_contentReturn">返回</button>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 10px;">
+            <div class="col-xs-12">
+                <%-content%>
+            </div>
+        </div>
+    </div>
+</section>
+<footer>
+    <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-3">
+                    <p class="navbar-text"><button class="btn btn-primary btn-sm" id="btn_buy">立即购买</button></p>
+                </div>
+                <div class="col-xs-9">
+                    <p class="navbar-text" style="font-size: 20px;">
+                        <strong>合计:</strong>
+                        <span class="text-danger" id="totalPrice"><%=price[0].price%></span>元
+                    </p>
+                </div>
+            </div>
+        </div>
+    </nav>
+</footer>
+
+<!-- Modal Login Start -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">登陆/注册</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control" id="mobile" placeholder="手机号">
+                <input type="password" class="form-control" id="passwd" placeholder="密码">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btn_login">登陆</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Login Ent -->
+<!-- Modal Address List Start -->
+<div class="modal fade" id="modal_add_list" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">选择地址</h4>
+            </div>
+            <div class="modal-body" id="address_list">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Address List Ent -->
+<!-- Modal AddAddress Start-->
+<div class="modal fade" id="modal_address" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">新增地址</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="province" class="col-sm-3 control-label">省:</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="province" name="province">
+                                <option value="">- 请选择 -</option>
+                                <%provinces.forEach(function(p){%>
+                                <option value="<%=p.pid%>"><%=p.provinceName%></option>
+                                <%});%>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputCity" class="col-sm-3 control-label">市:</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="city" name="city">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="district" class="col-sm-3 control-label">区:</label>
+                        <div class="col-sm-9">
+                            <select class="form-control" id="district" name="district">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address" class="col-sm-3 control-label">地址:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="address" name="address" placeholder="地址">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-3 control-label">收货人姓名:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="收货人姓名">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="col-sm-3 control-label">收货人电话:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="收货人电话">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="isDefault" class="col-sm-3 control-label"></label>
+                        <div class="col-sm-9">
+                            <input type="checkbox" id="isDefault" name="isDefault" checked>设为默认地址
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="btn_submitAdd">新增</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal AddAddress End-->
+
+<!-- JavaScript Files -->
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/jquery-migrate-1.2.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/bootstrap-hover-dropdown.min.js"></script>
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/jquery.cookie.min.js"></script>
+<script src="/js/md5.js"></script>
+<script src="/js/qrProduct.js"></script>
+<script type="text/javascript">
+    //    var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    //    document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fc6d84b7be621a560c430ca83888e843b' type='text/javascript'%3E%3C/script%3E"));
+</script>
+</body>
+</html>

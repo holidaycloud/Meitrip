@@ -3,6 +3,7 @@ var session = require('cookie-session')
 var path = require('path');
 var favicon = require('static-favicon');
 var DomainCtrl = require('./control/domainCtrl');
+var CustomerCtrl = require('./control/customerCtrl');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var flash = require('connect-flash');
@@ -19,6 +20,7 @@ var logger = log4js.getLogger('normal');
 
 var index = require('./routes/index');
 var ajax = require('./routes/ajax');
+var qr = require('./routes/qr');
 var app = express();
 global.ents={};
 // view engine setup
@@ -49,9 +51,12 @@ app.use(session({
     secret:'meitrip'
 }));
 app.use(function(req,res,next){
+    var userAgent = req.header('user-agent');
+    //console.log(userAgent.match(/(iPhone|iPod|Android|ios)/i));
     res.set('X-Powered-By','Server');
     next();
 });
+
 app.use(function(req,res,next){
     if(req.hostname=='meitrip.net'){
         res.redirect('http://www.meitrip.net');
@@ -60,15 +65,8 @@ app.use(function(req,res,next){
     }
 });
 app.use(flash());
-app.use(function(req,res,next){
-    if(req.session.user){
-        res.locals.user = req.session.user;
-    } else {
-        res.locals.user = null;
-    }
-    next();
-});
 
+//获取网站配置
 app.use(function(req,res,next){
     var domain = req.hostname=='test.meitrip.net'?'www.meitrip.net':req.hostname;
     //var domain = 'www.meitrip.net';
@@ -83,8 +81,35 @@ app.use(function(req,res,next){
     });
 });
 
+//自动登陆
+app.use(function(req,res,next){
+    if((!req.session.user)&&req.cookies.pt!=null){
+        console.log('----开始自动登陆----',req.cookies.pt);
+        CustomerCtrl.detail(req.cookies.pt,function(err,result){
+            if(!err){
+                res.cookie('lgi','1');
+                req.session.user = result;
+            }
+            next();
+        });
+    } else {
+        next();
+    }
+});
+
+//写入user到res.locals
+app.use(function(req,res,next){
+    if(req.session.user){
+        res.locals.user = req.session.user;
+    } else {
+        res.locals.user = null;
+    }
+    next();
+});
+
 app.use('/', index);
 app.use('/ajax', ajax);
+app.use('/qr', qr);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {

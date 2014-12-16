@@ -328,7 +328,7 @@ exports.cart = function(req,res){
         'getAddress':function(cb){
             AddressCtrl.get(req.session.user._id,function(err,result){
                 cb(err,result);
-            })
+            });
         }
     },function(err,results){
         var isWeixin = false;
@@ -404,6 +404,21 @@ exports.alipayNotify = function(req,res){
     });
 };
 
+exports.alipayWapNotify = function(req,res){
+    AlipayCtrl.wapNotify(res.locals.domain.alipay.pid,res.locals.domain.alipay.key,req.body,function(err,result){
+        if(err){
+            console.log('alipayWapNotify error',false);
+            res.send('');
+        } else if(!result){
+            console.log('alipayWapNotify',false);
+            res.send('');
+        } else {
+            console.log('alipayWapNotify',true);
+            res.send('success');
+        }
+    });
+};
+
 exports.alipayScanOrderNotify = function(req,res){
     var pid=res.locals.domain.alipay.pid;
     var key = res.locals.domain.alipay.key;
@@ -434,16 +449,33 @@ exports.alipayScanPayNotify = function(req,res){
 };
 
 exports.alipay = function(req,res){
-    var url = AlipayCtrl.createUrl(
+    var userAgent = req.header('user-agent');
+    if(userAgent.match(/(iPhone|iPod|Android|ios)/i)){
+        AlipayCtrl.wapCreateUrl(
         res.locals.domain.alipay.pid,
         res.locals.domain.alipay.key,
-        'http://www.meitrip.net/alipay/notify',
+        'http://www.meitrip.net/alipay/wapnotify',
         'http://www.meitrip.net/orderDetails/'+res.locals.order._id,
         res.locals.order.orderID,
         res.locals.productName,
         res.locals.order.totalPrice,
-        res.locals.order._id);
-    res.redirect(url);
+        res.locals.order._id,
+        function(err,result){
+            res.redirect(result);
+        });
+    } else {
+        var url = AlipayCtrl.createUrl(
+            res.locals.domain.alipay.pid,
+            res.locals.domain.alipay.key,
+            'http://www.meitrip.net/alipay/notify',
+            'http://www.meitrip.net/orderDetails/'+res.locals.order._id,
+            res.locals.order.orderID,
+            res.locals.productName,
+            res.locals.order.totalPrice,
+            res.locals.order._id);
+        res.redirect(url);
+    }
+
 };
 
 exports.coupons = function(req,res){
