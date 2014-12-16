@@ -8,6 +8,11 @@
         var timeStamp = getTimeStamp();
         var nonceStr = getNonceStr();
         var package = "prepay_id=<%=prepay_id%>";
+        WeixinJSBridge.invoke('getNetworkType',{},
+                function(e){
+                    alert(e);
+                    WeixinJSBridge.log(e.err_msg);
+                });
         //调用支付方法
         function jsApiCall(){
             alert('jsApiCall');
