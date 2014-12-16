@@ -307,7 +307,6 @@ exports.weixinpay = function(req,res){
                         cb(new Error(result.errMsg))
                     }
                 }
-                cb(err,res);
             })
         },
         'getOpenId':function(cb){
@@ -600,8 +599,12 @@ exports.orderDetailPay = function(req,res,next){
         res.locals.order = order;
         res.locals.productName = productName;
         next();
+    } else if(payway==4&&res.locals.domain.weixin) {
+        var appID = res.locals.domain.weixin.appID;
+        var orderID = order._id;
+        res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid='+appID+'&redirect_uri=http://test.meitrip.net/weixinPay?orderID='+orderID+'&showwxpaytitle=1&response_type=code&scope=snsapi_base&state=pay#wechat_redirect');
     } else {
-        res.redirect('/orderDetails/'+result.data._id);
+        res.redirect('/orderDetails/'+order._id);
     }
 };
 
