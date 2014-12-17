@@ -380,13 +380,21 @@ exports.weixinpay = function(req,res){
 };
 
 exports.weixinNotify = function(req,res){
+    var partnerKey = res.locals.domain.weixin.partnerKey;
     var _data = "";
     req.on('data',function(chunk){
         _data+=chunk;
     });
     req.on('end',function(){
-        console.log(_data);
-        res.send('');
+        WeiXinCtrl.notify(_data,partnerKey,function(err,result){
+            if(err||!result){
+                console.log('weixinNotify',false);
+                res.send({'return_code':'FAIL','return_msg':'签名失败'});
+            }else {
+                console.log('weixinNotify',true);
+                res.send({'return_code':'SUCCESS'});
+            }
+        });
     });
 };
 
@@ -521,7 +529,6 @@ exports.doWeixinBind = function(req,res){
 
 exports.alipayNotify = function(req,res){
     AlipayCtrl.notify(res.locals.domain.alipay.pid,res.locals.domain.alipay.key,req.body,function(err,result){
-        console.log(err,result);
         if(err||!result){
             console.log('alipayNotify',false);
             res.send('');
