@@ -285,7 +285,6 @@ exports.weixinpay = function(req,res){
             }
         }
         str +="&key="+pk;
-        console.log('------------------------str',str);
         var crypto = require('crypto');
         var shasum = crypto.createHash('md5');
         shasum.update(str,"utf8");

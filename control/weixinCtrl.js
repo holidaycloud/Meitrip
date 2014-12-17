@@ -77,7 +77,6 @@ WeiXinCtrl.generateSign = function(params,pk){
         }
     }
     str +="&key="+pk;
-    console.log('------------------------str',str);
     var crypto = require('crypto');
     var shasum = crypto.createHash('md5');
     shasum.update(str,"utf8");
@@ -89,7 +88,6 @@ WeiXinCtrl.notify = function(data,partnerKey,fn){
     async.auto({
         'parseXml':function(cb){
             parseString(data,function(err,res){
-                console.log(res);
                 if(err){
                     cb(err,null);
                 } else {
@@ -144,7 +142,6 @@ WeiXinCtrl.notify = function(data,partnerKey,fn){
             }
         }]
     },function(err,results){
-        console.log(err,results);
         if(err){
             fn(err,null);
         } else {
