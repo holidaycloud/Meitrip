@@ -89,6 +89,7 @@ WeiXinCtrl.notify = function(data,partnerKey,fn){
     async.auto({
         'parseXml':function(cb){
             parseString(data,function(err,res){
+                console.log(data);
                 if(err){
                     cb(err,null);
                 } else {
