@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
+    <title> 订单支付 </title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+</body>
+<script src="/js/md5.js"></script>
+<script src="/js/wxTool.js"></script>
+<script>
+    var timeStamp = getTimeStamp();
+    var nonceStr = getNonceStr();
+    var package = "prepay_id=<%=prepay_id%>";
+    var sign = getSign('<%=appID%>','MD5',nonceStr,package,timeStamp,'<%=partnerKey%>');
+
+    //调用支付方法
+    function jsApiCall(){
+        WeixinJSBridge.invoke(
+                'getBrandWCPayRequest',
+                {
+                    "appId" : '<%=appID%>', //公众号名称，由商户传入
+                    "timeStamp" : timeStamp, //时间戳
+                    "nonceStr" : nonceStr, //随机串
+                    "package" : package,//扩展包
+                    "signType" : 'MD5', //微信签名方式:1.sha1
+                    "paySign" :  sign//微信签名
+                },
+                function(res){
+                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                        document.location.href = "/orderDetails/<%=orderID%>"
+                    }
+                }
+        );
+    }
+
+    //监听微信支付
+    function callpay(){
+        if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        }else{
+            jsApiCall();
+        }
+    }
+    callpay();
+</script>
+</html>

@@ -48,6 +48,16 @@ OrderCtrl.list = function(page,pageSize,customer,fn){
     });
 };
 
+OrderCtrl.get = function(id,fn){
+    var url = config.inf.host+":"+config.inf.port+"/api/order/detail?id="+id;
+    request({
+        url:url,
+        timeout:3000
+    },function(err,response,body){
+        fn(err,body?JSON.parse(body):{});
+    });
+};
+
 OrderCtrl.detail = function(id,customer,fn){
     var url = config.inf.host+":"+config.inf.port+"/api/order/cusDetail?id="+id+"&customer="+customer;
     request({
