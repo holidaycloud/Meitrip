@@ -350,7 +350,7 @@ exports.weixinpay = function(req,res){
             xml_params.out_trade_no = order.orderID;
             xml_params.body = order.product.name;
             xml_params.total_fee = order.totalPrice*100;
-            xml_params.notify_url = "http://www.meitrip.net/weixinpay/notify";
+            xml_params.notify_url = "http://www.meitrip.net/weixinPay/notify";
             xml_params.trade_type = "JSAPI";
             xml_params.appid = appID;
             xml_params.mch_id = partnerId;
@@ -377,6 +377,17 @@ exports.weixinpay = function(req,res){
         }
     });
 
+};
+
+exports.weixinNotify = function(req,res){
+    var _data = "";
+    req.on('data',function(chunk){
+        _data+=chunk;
+    });
+    req.on('end',function(){
+        console.log(_data);
+        res.send('');
+    });
 };
 
 exports.cart = function(req,res){
