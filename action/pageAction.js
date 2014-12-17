@@ -254,7 +254,7 @@ exports.saveOrder = function(req,res,next){
                 } else if(payway==4&&res.locals.domain.weixin) {
                     var appID = res.locals.domain.weixin.appID;
                     var orderID = result.data._id;
-                    res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid='+appID+'&redirect_uri=http://test.meitrip.net/weixinPay/cao?orderID='+orderID+'&response_type=code&scope=snsapi_base&state=pay#wechat_redirect');
+                    res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid='+appID+'&redirect_uri=http://www.meitrip.net/weixinPay/pay?orderID='+orderID+'&response_type=code&scope=snsapi_base&state=pay#wechat_redirect');
                 } else {
                     res.redirect('/orderDetails/'+result.data._id);
                 }
@@ -349,7 +349,7 @@ exports.weixinpay = function(req,res){
             xml_params.out_trade_no = order.orderID;
             xml_params.body = order.product.name;
             xml_params.total_fee = order.totalPrice*100;
-            xml_params.notify_url = "http://test.meitrip.net/weixinPay/notify";
+            xml_params.notify_url = "http://www.meitrip.net/weixinPay/notify";
             xml_params.trade_type = "JSAPI";
             xml_params.appid = appID;
             xml_params.mch_id = partnerId;
@@ -639,7 +639,7 @@ exports.orderDetailPay = function(req,res,next){
     } else if(payway==4&&res.locals.domain.weixin) {
         var appID = res.locals.domain.weixin.appID;
         var orderID = order._id;
-        res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid='+appID+'&redirect_uri=http://test.meitrip.net/weixinPay/cao?orderID='+orderID+'&response_type=code&scope=snsapi_base&state=pay#wechat_redirect');
+        res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid='+appID+'&redirect_uri=http://www.meitrip.net/weixinPay/pay?orderID='+orderID+'&response_type=code&scope=snsapi_base&state=pay#wechat_redirect');
     } else {
         res.redirect('/orderDetails/'+order._id);
     }
