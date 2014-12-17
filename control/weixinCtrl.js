@@ -93,8 +93,8 @@ WeiXinCtrl.notify = function(data,partnerKey,fn){
                     cb(err,null);
                 } else {
                     var params = {};
-                    for(var key in d){
-                        params[key] = d[key][0];
+                    for(var key in data.xml){
+                        params[key] = data.xml[key][0];
                     }
                     cb(null,params);
                 }
