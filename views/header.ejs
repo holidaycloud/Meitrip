@@ -56,7 +56,7 @@
                         <a href="/userInfo">
                             <span>
                                 <%if(user.headimgurl){%>
-                                <img src="<%=user.headimgurl%>" alt="头像" class="img-circle" style="width: 19px;height: 19px; ">
+                                <img src="<%=user.headimgurl?user.headimgurl:'http://images.meitrip.net/54912ac9f5632b1b9de40720.jpg'%>" alt="头像" class="img-circle" style="width: 19px;height: 19px; ">
                                 <%}%>
                                 <%=user.mobile%>
                             </span>
