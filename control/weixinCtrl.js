@@ -89,13 +89,13 @@ WeiXinCtrl.notify = function(data,partnerKey,fn){
     async.auto({
         'parseXml':function(cb){
             parseString(data,function(err,res){
-                console.log(data);
+                console.log(res);
                 if(err){
                     cb(err,null);
                 } else {
                     var params = {};
-                    for(var key in data.xml){
-                        params[key] = data.xml[key][0];
+                    for(var key in res.xml){
+                        params[key] = res.xml[key][0];
                     }
                     cb(null,params);
                 }
