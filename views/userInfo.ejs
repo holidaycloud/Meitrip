@@ -25,7 +25,7 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label">头像:</label>
                     <div class="col-sm-9">
-                        <p class="form-control-static"><img src="<%=user.headimgurl%>" alt="头像" class="img-circle" style="width:80px;height: 80px; "></p>
+                        <p class="form-control-static"><img src="<%=user.headimgurl?user.headimgurl:'http://images.meitrip.net/54912ac9f5632b1b9de40720.jpg'%>" alt="头像" class="img-circle" style="width:80px;height: 80px; "></p>
                     </div>
                 </div>
                 <div class="form-group">
@@ -62,7 +62,7 @@
                 <div class="form-group">
                     <label for="address" class="col-sm-3 control-label">个人账户余额:</label>
                     <div class="col-sm-9">
-                        <p class="form-control-static">￥<%=user.cardBalance%></p>
+                        <p class="form-control-static">￥<%=user.cardBalance?user.cardBalance:''%></p>
                     </div>
                 </div>
                 <div class="form-group">
