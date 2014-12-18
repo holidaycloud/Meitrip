@@ -26,7 +26,8 @@ router.post('/weixinPay/notify', PageAction.weixinNotify);
 router.get('/weixinPay/cao', PageAction.weixinpay);
 router.get('/coupons',PageAction.checkLogin,PageAction.coupons);
 router.get('/address',PageAction.checkLogin,PageAction.address);
-
+router.get('/news',PageAction.news);
+router.get('/newsDetail/:id',PageAction.newsDetail);
 router.post('/alipay/notify',PageAction.alipayNotify);
 router.post('/alipay/wapnotify',PageAction.alipayWapNotify);
 router.post('/alipay/scan/order',PageAction.alipayScanOrderNotify);

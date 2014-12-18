@@ -1,0 +1,28 @@
+<%include header%>
+<!-- Main Container Starts -->
+<div id="main-container" class="container">
+    <!-- Breadcrumb Starts -->
+    <ol class="breadcrumb">
+        <li><a href="/">首页</a></li>
+        <li><a href="/news">新闻资讯</a></li>
+        <li class="active"><%=news.title%></li>
+    </ol>
+    <!-- Breadcrumb Ends -->
+
+    <section class="news-box">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3><strong><%=news.title%></strong></h3>
+                <%=new Date(news.createDate).Format('yyyy-MM-dd hh:mm:ss')%>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <%-news.content%>
+            </div>
+        </div>
+    </section>
+</div>
+<!-- Main Container Ends -->
+
+<%include footer%>

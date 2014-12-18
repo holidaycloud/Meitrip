@@ -11,6 +11,7 @@ var WeiXinCtrl = require('./../control/weixinCtrl');
 var AlipayCtrl = require('./../control/alipayCtrl');
 var CouponCtrl = require('./../control/couponCtrl');
 var AddressCtrl = require('./../control/addressCtrl');
+var NewsCtrl = require('./../control/newsCtrl');
 exports.home = function(req,res){
     var ent = res.locals.domain.ent;
     async.auto({
@@ -653,6 +654,30 @@ exports.address = function(req,res){
         }  else {
             console.log(err,result);
             res.send('');
+        }
+    });
+};
+
+exports.news = function(req,res){
+    var ent = res.locals.domain.ent;
+    var page = req.query.page||0;
+    var pageSize = req.query.pageSize||9;
+    NewsCtrl.list(page,pageSize,ent,function(err,result){
+        if(err){
+            res.render('500');
+        }  else {
+            res.render('news',{'newses':result.data.news,'page':parseInt(page),'totalPage':Math.ceil(result.data.totalSize/pageSize)});
+        }
+    });
+};
+
+exports.newsDetail = function(req,res){
+    var id = req.params.id;
+    NewsCtrl.detail(id,function(err,result){
+        if(err){
+            res.render('500');
+        }  else {
+            res.render('newsDetail',{'news':result.data});
         }
     });
 };
