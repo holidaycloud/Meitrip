@@ -68,7 +68,7 @@ app.use(flash());
 
 //获取网站配置
 app.use(function(req,res,next){
-    var domain = req.hostname=='test.meitrip.net'?'www.meitrip.net':req.hostname;
+    var domain = req.hostname=='test.meitrip.net'||req.hostname=='mall.holidaycloud.cn'?'www.meitrip.net':req.hostname;
     //var domain = 'www.meitrip.net';
     //var domain = 'pinyuan.holidaycloud.cn'
     DomainCtrl.getEnt(domain,function(err,result){
