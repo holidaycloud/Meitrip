@@ -119,7 +119,7 @@
         </div>
         <!-- Main Header Ends -->
         <!-- Main Menu Starts -->
-        <nav id="main-menu" class="navbar" role="navigation">
+        <nav id="main-menu" class="navbar  hidden-sm hidden-xs" role="navigation">
             <!-- Nav Header Starts -->
             <div class="navbar-header">
                 <button type="button" class="btn btn-navbar navbar-toggle" data-toggle="collapse" data-target=".navbar-cat-collapse">
@@ -139,6 +139,34 @@
                     <li><a href="/news">新闻资讯</a></li>
                 </ul>
             </div>
+            <!-- Navbar Cat collapse Ends -->
+        </nav>
+        <!-- Main Menu Ends -->
+        <!-- Main Menu Starts -->
+        <nav id="main-menu" class="navbar hidden-lg hidden-md" role="navigation">
+            <!-- Nav Header Starts -->
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="btn btn-navbar navbar-toggle" data-toggle="collapse" data-target=".navbar-cat-collapse">
+                        <span class="sr-only">Toggle Navigation</span>
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <a class="navbar-brand" href="#"><img src="<%=domain.logo%>" title="logo" alt="logo" class="img-responsive" style="height: 35px;" /></a>
+                </div>
+                <!-- Nav Header Ends -->
+                <!-- Navbar Cat collapse Starts -->
+                <div class="collapse navbar-collapse navbar-cat-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="/">首页</a></li>
+                        <%domain.classify.forEach(function(c){%>
+                        <li><a href="/category/<%=c._id%>"><%=c.name%></a></li>
+                        <%});%>
+                        <li><a href="/category/default">所有产品</a></li>
+                        <li><a href="/news">新闻资讯</a></li>
+                    </ul>
+                </div>
+            </div>
+
             <!-- Navbar Cat collapse Ends -->
         </nav>
         <!-- Main Menu Ends -->
