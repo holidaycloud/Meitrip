@@ -76,6 +76,7 @@ CustomerCtrl.chagePasswd = function(id,oldPasswd,newPasswd,fn){
 
 CustomerCtrl.weixinBind = function(ent,mobile,passwd,openID,fn){
     async.auto({
+        //TODO 转移至后端接口调用
         'getUserInfo':function(cb){
             var url = config.weixin.host+':'+config.weixin.port+'/weixin/userInfo/'+ent+'?openid='+openID;
             request({
@@ -105,7 +106,7 @@ CustomerCtrl.weixinBind = function(ent,mobile,passwd,openID,fn){
                     passwd:passwd,
                     openId:openID,
                     headimgurl:results.getUserInfo.headimgurl,
-                    loginName:results.getUserInfo.nickname,
+                    loginName: results.getUserInfo.nickname,
                     sex:parseInt(results.getUserInfo.sex)
                 },
                 timeout:3000
