@@ -26,7 +26,13 @@ exports.home = function(req,res){
             });
         }
     },function(err,results){
-        res.render('index',{'hot':results.getHot.data,'recommend':results.getRecommend.data});
+        var userAgent = req.header('user-agent');
+        if(userAgent.match(/(iPhone|iPod|Android|ios)/i)){
+            res.render('./wap/index',{'hot':results.getHot.data,'recommend':results.getRecommend.data});
+        } else {
+            res.render('index',{'hot':results.getHot.data,'recommend':results.getRecommend.data});
+        }
+
     });
 };
 
