@@ -590,6 +590,7 @@ exports.alipay = function(req,res){
         AlipayCtrl.wapCreateUrl(
         res.locals.domain.alipay.pid,
         res.locals.domain.alipay.key,
+        res.locals.domain.alipay.account,
         'http://www.meitrip.net/alipay/wapnotify',
         'http://www.meitrip.net/orderDetails/'+res.locals.order._id,
         res.locals.order.orderID,
