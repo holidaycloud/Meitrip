@@ -698,7 +698,19 @@ exports.weixinAutoLogin = function(req,res,next){
                         });
                     },
                     'login':["getOpenid",function(cb,results){
-                        cb(null,null);
+                        var authData = results.getOpenid;
+                        if(authData.error==0&&authData.data){
+                            var openid = authData.data.openid;
+                            CustomerCtrl.weixinAutoLogin(ent,openid,function(err,res){
+                                if(!err&&res.error==0&&res.data){
+                                    cb(null,res.data);
+                                } else {
+                                    cb(null,null);
+                                }
+                            })
+                        } else {
+                            cb(null,null);
+                        }
                     }]
                 },function(err,results){
                     console.log(err,results);

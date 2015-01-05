@@ -140,4 +140,14 @@ CustomerCtrl.detail = function(id,fn){
         }
     });
 };
+
+CustomerCtrl.weixinAutoLogin = function(ent,openid,fn){
+    var url = config.inf.host+':'+config.inf.port+'/api/customer/weixinLogin?ent='+ent+'&openId='+openid;
+    request({
+        url:url,
+        timeout:3000
+    },function(err,response,body){
+        fn(err,body?JSON.parse(body):{});
+    });
+};
 module.exports = CustomerCtrl;
