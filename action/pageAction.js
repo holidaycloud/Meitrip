@@ -688,7 +688,23 @@ exports.weixinAutoLogin = function(req,res,next){
     var ent = res.locals.domain.ent;
     if(req.headers['user-agent'].indexOf('MicroMessenger')>-1){
         if(req.query.code||req.query.openid){
-            next();
+            var code = req.query.code;
+            var openid = req.query.openid;
+            if(code){
+                async.auto({
+                    'getOpenid':function(cb){
+                        WeiXinCtrl.codeAccessToken(ent,code,"",function(err,res){
+                            cb(err,res);
+                        });
+                    },
+                    'login':["getOpenid",function(cb,results){
+                        cb(null,null);
+                    }]
+                },function(err,results){
+                    console.log(err,results);
+                    next();
+                });
+            }
         } else {
             async.auto({
                 getWeixinConf:function(cb){
@@ -709,7 +725,6 @@ exports.weixinAutoLogin = function(req,res,next){
                 } else {
                     var url = results.createUrl;
                     if(url){
-                        console.log(url);
                         res.redirect(url);
                     } else {
                         next();
