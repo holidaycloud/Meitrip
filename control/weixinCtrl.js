@@ -8,7 +8,24 @@ var parseString = require('xml2js').parseString;
 var PayLogCtrl = require('./payLogCtrl');
 var OrderCtrl = require('./orderCtrl');
 var WeiXinCtrl = function(){};
-
+WeiXinCtrl.config = function(ent,fn){
+    var url = config.weixin.host+':'+config.weixin.port+'/weixin/configDetail/'+ent;
+    request({
+        url:url,
+        timeout:3000
+    },function(err,response,body){
+        if(err){
+            fn(null,null);
+        } else {
+            obj = body?JSON.parse(body):null;
+            if(obj&&obj.error==0){
+                fn(null,obj.data);
+            } else {
+                fn(null,null);
+            }
+        }
+    });
+};
 WeiXinCtrl.codeAccessToken = function(ent,code,state,fn){
     var url = config.weixin.host+':'+config.weixin.port+'/weixin/codeAccesstoken/'+ent+'?code='+code;
     request({

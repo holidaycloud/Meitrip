@@ -105,7 +105,6 @@
 </div>
 <!-- Main Container Ends -->
 <%include footer%>
-<script src="http://api.map.baidu.com/api?v2.0&ak=E9b1d1d455c5f4e47cdfe7b3c3966e93"></script>
 <script>
     $(function(){
         var map = new BMap.Map('map_canvas');
@@ -114,6 +113,18 @@
         map.centerAndZoom(point,17);
         var marker = new BMap.Marker(point);
         map.addOverlay(marker);
+
+//        var geolocation = new BMap.Geolocation();
+//        geolocation.getCurrentPosition(function(r){
+//            if(this.getStatus() == BMAP_STATUS_SUCCESS){
+//                var mk = new BMap.Marker(r.point);
+//                map.addOverlay(mk);
+//                map.panTo(r.point);
+//            }
+//            else {
+//                console.log('failed'+this.getStatus());
+//            }
+//        },{enableHighAccuracy: true})
 
         $('#contactForm').submit(function(event){
             event.preventDefault();

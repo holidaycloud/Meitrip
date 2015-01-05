@@ -17,7 +17,7 @@ log4js.configure({
     replaceConsole : true
 });
 var logger = log4js.getLogger('normal');
-
+var PageAction = require("./action/pageAction");
 var index = require('./routes/index');
 var ajax = require('./routes/ajax');
 var qr = require('./routes/qr');
@@ -80,6 +80,9 @@ app.use(function(req,res,next){
         }
     });
 });
+
+//微信浏览器
+app.use(PageAction.weixinAutoLogin);
 
 //自动登陆
 app.use(function(req,res,next){

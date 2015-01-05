@@ -683,3 +683,41 @@ exports.newsDetail = function(req,res){
         }
     });
 };
+
+exports.weixinAutoLogin = function(req,res,next){
+    var ent = res.locals.domain.ent;
+    if(req.headers['user-agent'].indexOf('MicroMessenger')>-1){
+        if(req.query.code||req.query.openid){
+            next();
+        } else {
+            async.auto({
+                getWeixinConf:function(cb){
+                    WeiXinCtrl.config(ent,function(err,res){
+                        cb(err,res);
+                    });
+                },
+                createUrl:["getWeixinConf",function(cb,results){
+                    var conf = results.getWeixinConf;
+                    if(conf){
+                        var url = encodeURIComponent("http://"+req.hostname+req.url);
+                        cb(null,"https://open.weixin.qq.com/connect/oauth2/authorize?appid="+conf.appID+"&redirect_uri="+url+"&response_type=code&scope=snsapi_base&state=weixinLogin#wechat_redirect")
+                    }
+                }]
+            },function(err,results){
+                if(err){
+                    next();
+                } else {
+                    var url = results.createUrl;
+                    if(url){
+                        console.log(url);
+                        res.redirect(url);
+                    } else {
+                        next();
+                    }
+                }
+            });
+        }
+    } else {
+        next();
+    }
+};
