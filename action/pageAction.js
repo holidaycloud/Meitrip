@@ -713,7 +713,8 @@ exports.weixinAutoLogin = function(req,res,next){
                         }
                     }]
                 },function(err,results){
-                    console.log(err,results);
+                    var customer = results.login;
+                    req.session.user = customer;
                     next();
                 });
             }
