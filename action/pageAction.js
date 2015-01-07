@@ -488,25 +488,25 @@ exports.cart = function(req,res){
 };
 
 exports.weixinBind = function(req,res){
-    var code = req.query.code;
-    var state = req.query.state;
+    var openid = req.query.openid;
+    var url = req.query.url;
     var ent = res.locals.domain.ent;
-    WeiXinCtrl.codeAccessToken(ent,code,state,function(err,result){
-        if(err){
-            res.redirect('/500.html');
-        } else {
-            if(result&&result.error==0){
-                var obj = {
-                    'lgn_msg':'',
-                    'openID':result.data.openid
-                }
-                res.render('weixinBind',obj);
-            } else {
-                res.redirect('/500.html');
-            }
-        }
-
-    });
+    //WeiXinCtrl.codeAccessToken(ent,code,state,function(err,result){
+    //    if(err){
+    //        res.redirect('/500.html');
+    //    } else {
+    //        if(result&&result.error==0){
+    //            var obj = {
+    //                'lgn_msg':'',
+    //                'openID':result.data.openid
+    //            }
+                res.render('weixinBind',{'lgn_msg':'','openID':openid});
+    //        } else {
+    //            res.redirect('/500.html');
+    //        }
+    //    }
+    //
+    //});
 };
 
 exports.doWeixinBind = function(req,res){
@@ -685,7 +685,7 @@ exports.newsDetail = function(req,res){
 };
 exports.isBind = function(req,res,next){
     console.log("url is",req.url);
-    if(req.url == "/customerWeixinBind"){
+    if(req.url.indexOf('/customerWeixinBind')>-1){
         res.locals.isBind = true;
     }
     next();
