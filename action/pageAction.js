@@ -683,7 +683,7 @@ exports.weixinAutoLogin = function(req,res,next){
     var isBind =  res.locals.isBind;
     var isWeixin = req.headers['user-agent'].indexOf('MicroMessenger')>-1;
     var isLogined = req.session.user!==null;
-
+    console.log(isBind,isWeixin,isLogined);
     if(isWeixin&&!isLogined&&!isBind){
         //微信跳转回来的页面
         if(req.query.code||req.query.openid){
