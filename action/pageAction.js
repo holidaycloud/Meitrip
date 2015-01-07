@@ -670,7 +670,7 @@ exports.newsDetail = function(req,res){
 };
 exports.isBind = function(req,res,next){
     console.log("url is",req.url);
-    if(req.url.indexOf('/customerWeixinBind')>-1){
+    if(req.url.indexOf('/customerWeixinBind')>-1||req.url.indexOf('/weixinBind')>-1){
         res.locals.isBind = true;
     }
     next();
