@@ -724,13 +724,13 @@ exports.weixinAutoLogin = function(req,res,next){
                         }
                     }]
                 },function(err,results){
-                    console.log(err,results);
+                    var authData = results.getOpenid;
                     var customer = results.login;
                     if(customer){
                         req.session.user = customer;
                         next();
                     } else {
-                        res.redirect("/customerWeixinBind");
+                        res.redirect("/customerWeixinBind?openid="+authData.openid+"&url="+req.url);
                     }
                 });
             }
