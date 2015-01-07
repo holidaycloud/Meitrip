@@ -82,7 +82,7 @@ app.use(function(req,res,next){
 });
 
 //微信浏览器
-app.use(PageAction.weixinAutoLogin);
+app.use(PageAction.isBind,PageAction.weixinAutoLogin);
 
 //自动登陆
 app.use(function(req,res,next){
