@@ -737,7 +737,7 @@ exports.weixinAutoLogin = function(req,res,next){
                     var conf = results.getWeixinConf;
                     if(conf){
                         var url = encodeURIComponent("http://"+req.hostname+req.url);
-                        cb(null,"https://open.weixin.qq.com/connect/oauth2/authorize?appid="+conf.appID+"&redirect_uri="+url+"&response_type=code&scope=snsapi_base&state=weixinLogin#wechat_redirect")
+                        cb(null,"https://open.weixin.qq.com/connect/oauth2/authorize?appid="+conf.appID+"&redirect_uri="+url+"&response_type=code&scope=snsapi_userinfo&state=weixinLogin#wechat_redirect")
                     }
                 }]
             },function(err,results){
