@@ -28,6 +28,7 @@
                         <!-- Login Form Starts -->
                         <form class="form-form-horizontal" role="form" action="/weixinBind" method="post" id="loginForm">
                             <input type="hidden" name="openID" value="<%=openID?openID:''%>" />
+                            <input type="hidden" name="url" value="<%=url?url:''%>" />
                             <div class="form-group">
                                 <label class="sr-only" for="mobile">手机号</label>
                                 <input type="text" class="form-control" id="mobile" name="mobile" placeholder="手机号">

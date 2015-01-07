@@ -490,28 +490,13 @@ exports.cart = function(req,res){
 exports.weixinBind = function(req,res){
     var openid = req.query.openid;
     var url = req.query.url;
-    var ent = res.locals.domain.ent;
-    //WeiXinCtrl.codeAccessToken(ent,code,state,function(err,result){
-    //    if(err){
-    //        res.redirect('/500.html');
-    //    } else {
-    //        if(result&&result.error==0){
-    //            var obj = {
-    //                'lgn_msg':'',
-    //                'openID':result.data.openid
-    //            }
-                res.render('weixinBind',{'lgn_msg':'','openID':openid});
-    //        } else {
-    //            res.redirect('/500.html');
-    //        }
-    //    }
-    //
-    //});
+    res.render('weixinBind',{'lgn_msg':'','openID':openid,'url':url});
 };
 
 exports.doWeixinBind = function(req,res){
     var ent = res.locals.domain.ent;
     var openID = req.body.openID;
+    var url = req.body.url;
     var mobile = req.body.mobile;
     var passwd = req.body.passwd;
     CustomerCtrl.weixinBind(ent,mobile,passwd,openID,function(err,result){
@@ -520,7 +505,7 @@ exports.doWeixinBind = function(req,res){
         } else {
             if(result&&result.error==0){
                 req.session.user = result.data;
-                res.render('weixinBindSuccess');
+                res.redirect(url);
             } else {
                 res.redirect('/500.html');
             }
@@ -730,7 +715,7 @@ exports.weixinAutoLogin = function(req,res,next){
                         req.session.user = customer;
                         next();
                     } else {
-                        res.redirect("/customerWeixinBind?openid="+authData.openid+"&url="+req.url);
+                        res.redirect("/customerWeixinBind?openid="+authData.data.openid+"&url="+req.url);
                     }
                 });
             }
