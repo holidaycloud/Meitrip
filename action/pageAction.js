@@ -688,10 +688,8 @@ exports.weixinAutoLogin = function(req,res,next){
     var isLogined = req.session.user != null;
     console.log(isBind,isWeixin,isLogined,isWeixin&&!isLogined&&!isBind);
     if(isWeixin&&!isLogined&&!isBind){
-        console.log('微信进来，需要登录');
         //微信跳转回来的页面
         if(req.query.code||req.query.openid){
-            console.log('微信跳回来的');
             var code = req.query.code;
             var openid = req.query.openid;
             if(code){
@@ -717,8 +715,9 @@ exports.weixinAutoLogin = function(req,res,next){
                         }
                     }]
                 },function(err,results){
+                    console.log(err,results);
                     var authData = results.getOpenid;
-                    var customer = results.login;
+                    var customer = results.weixinlogin;
                     if(customer){
                         req.session.user = customer;
                         next();
@@ -728,7 +727,6 @@ exports.weixinAutoLogin = function(req,res,next){
                 });
             }
         } else { //请求微信页面，然后跳转
-            console.log('跳转到微信认证页面');
             async.auto({
                 getWeixinConf:function(cb){
                     WeiXinCtrl.config(ent,function(err,res){
@@ -757,7 +755,6 @@ exports.weixinAutoLogin = function(req,res,next){
             });
         }
     } else {
-        console.log('微信进来，不需要登录');
         next();
     }
 };
