@@ -97,7 +97,7 @@
                 <!-- Logo Starts -->
                 <div class="col-md-6 hidden-sm hidden-xs">
                     <div id="logo">
-                        <a href="/"><img src="<%=domain.logo%>" title="logo" alt="logo" class="img-responsive" /></a>
+                        <a href="/"><img src="<%=domain.logo?domain.logo:''%>" title="logo" alt="logo" class="img-responsive" /></a>
                     </div>
                 </div>
                 <!-- Logo Starts -->
@@ -154,7 +154,7 @@
                     <span class="sr-only">Toggle Navigation</span>
                     <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="javascript:void(0)"><img src="<%=domain.logo%>" title="logo" alt="logo" class="img-responsive" style="height: 35px;" /></a>
+                <a class="navbar-brand" href="javascript:void(0)"><img src="<%=domain.logo?domain.logo:''%>" title="logo" alt="logo" class="img-responsive" style="height: 35px;" /></a>
             </div>
             <!-- Nav Header Ends -->
             <!-- Navbar Cat collapse Starts -->
