@@ -500,7 +500,6 @@ exports.doWeixinBind = function(req,res){
     var mobile = req.body.mobile;
     var passwd = req.body.passwd;
 
-    console.log(openID,url,mobile,passwd);
     CustomerCtrl.weixinBind(ent,mobile,passwd,openID,function(err,result){
         console.log(err,result);
         if(err){
@@ -510,7 +509,7 @@ exports.doWeixinBind = function(req,res){
                 req.session.user = result.data;
                 res.redirect(url);
             } else {
-                res.redirect('/500.html');
+                res.render('weixinBind',{'lgn_msg':result.errMsg,'openID':openID,'url':url});
             }
         }
     });
