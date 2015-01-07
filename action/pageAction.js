@@ -684,6 +684,7 @@ exports.weixinAutoLogin = function(req,res,next){
     var ent = res.locals.domain.ent;
     var isBind =  res.locals.isBind;
     var isWeixin = req.headers['user-agent'].indexOf('MicroMessenger')>-1;
+    console.log("user is",req.session.user);
     var isLogined = req.session.user!==null;
     console.log(isBind,isWeixin,isLogined,isWeixin&&!isLogined&&!isBind);
     if(isWeixin&&!isLogined&&!isBind){
