@@ -10,13 +10,13 @@
                 <%if(i==0){%>
                 <div class="item active">
                     <a href="/product/<%=recommend[i]._id%>">
-                        <img src="<%=recommend[i].images.length>0?recommend[i].images[0].url:''%>!silde" alt="<%=recommend[i].name%>" style="height: 240px;"  class="img-responsive" />
+                        <img src="<%=recommend[i].images.length>0?recommend[i].images[0].url:''%>!silde" alt="<%=recommend[i].name%>" style="height: 200px;"  class="img-responsive" />
                     </a>
                 </div>
                 <%} else {%>
                 <div class="item">
                     <a href="/product/<%=recommend[i]._id%>">
-                        <img src="<%=recommend[i].images.length>0?recommend[i].images[0].url:''%>!silde" alt="<%=recommend[i].name%>" style="height: 240px;"  class="img-responsive" />
+                        <img src="<%=recommend[i].images.length>0?recommend[i].images[0].url:''%>!silde" alt="<%=recommend[i].name%>" style="height: 200px;"  class="img-responsive" />
                     </a>
                 </div>
                 <%}%>
@@ -68,7 +68,7 @@
                 <div class="product-col">
                     <div class="image">
                         <a href="/product/<%=product._id%>">
-                        <img src="<%=product.images.length>0?product.images[0].url:''%>" alt="product" style="height: 100px;" class="img-responsive" />
+                        <img src="<%=product.images.length>0?product.images[0].url:''%>" alt="product" class="img-responsive" />
                         </a>
                     </div>
                     <div class="caption">
