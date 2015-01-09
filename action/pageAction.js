@@ -27,7 +27,12 @@ exports.home = function(req,res){
         }
     },function(err,results){
         var userAgent = req.header('user-agent');
-        res.render('index',{'hot':results.getHot.data,'recommend':results.getRecommend.data});
+        if(userAgent.match(/(iPhone|iPod|Android|ios)/i)){
+            res.render('wapindex',{'hot':results.getHot.data,'recommend':results.getRecommend.data});
+        } else {
+            res.render('index',{'hot':results.getHot.data,'recommend':results.getRecommend.data});
+        }
+
     });
 };
 
@@ -488,41 +493,28 @@ exports.cart = function(req,res){
 };
 
 exports.weixinBind = function(req,res){
-    var code = req.query.code;
-    var state = req.query.state;
-    var ent = res.locals.domain.ent;
-    WeiXinCtrl.codeAccessToken(ent,code,state,function(err,result){
-        if(err){
-            res.redirect('/500.html');
-        } else {
-            if(result&&result.error==0){
-                var obj = {
-                    'lgn_msg':'',
-                    'openID':result.data.openid
-                }
-                res.render('weixinBind',obj);
-            } else {
-                res.redirect('/500.html');
-            }
-        }
-
-    });
+    var openid = req.query.openid;
+    var url = req.query.url;
+    res.render('weixinBind',{'lgn_msg':'','openID':openid,'url':url});
 };
 
 exports.doWeixinBind = function(req,res){
     var ent = res.locals.domain.ent;
     var openID = req.body.openID;
+    var url = req.body.url;
     var mobile = req.body.mobile;
     var passwd = req.body.passwd;
+
     CustomerCtrl.weixinBind(ent,mobile,passwd,openID,function(err,result){
+        console.log(err,result);
         if(err){
             res.redirect('/500.html');
         } else {
             if(result&&result.error==0){
                 req.session.user = result.data;
-                res.render('weixinBindSuccess');
+                res.redirect(url);
             } else {
-                res.redirect('/500.html');
+                res.render('weixinBind',{'lgn_msg':result.errMsg,'openID':openID,'url':url});
             }
         }
     });
@@ -682,4 +674,88 @@ exports.newsDetail = function(req,res){
             res.render('newsDetail',{'news':result.data});
         }
     });
+};
+exports.isBind = function(req,res,next){
+    if(req.url.indexOf('/customerWeixinBind')>-1||req.url.indexOf('/weixinBind')>-1){
+        res.locals.isBind = true;
+    } else {
+        res.locals.isBind = false;
+    }
+    next();
+};
+exports.weixinAutoLogin = function(req,res,next){
+    var ent = res.locals.domain.ent;
+    var isBind =  res.locals.isBind;
+    var isWeixin = req.headers['user-agent'].indexOf('MicroMessenger')>-1;
+    var isLogined = req.session.user != null;
+    if(isWeixin&&!isLogined&&!isBind){
+        //微信跳转回来的页面
+        if(req.query.code||req.query.openid){
+            var code = req.query.code;
+            var openid = req.query.openid;
+            if(code){
+                async.auto({
+                    'getOpenid':function(cb){
+                        WeiXinCtrl.codeAccessToken(ent,code,"",function(err,res){
+                            cb(err,res);
+                        });
+                    },
+                    'weixinlogin':["getOpenid",function(cb,results){
+                        var authData = results.getOpenid;
+                        if(authData.error==0&&authData.data){
+                            var openid = authData.data.openid;
+                            CustomerCtrl.weixinAutoLogin(ent,openid,function(err,res){
+                                if(!err&&res.error==0&&res.data){
+                                    cb(null,res.data);
+                                } else {
+                                    cb(null,null);
+                                }
+                            });
+                        } else {
+                            cb(null,null);
+                        }
+                    }]
+                },function(err,results){
+                    console.log(err,results);
+                    var authData = results.getOpenid;
+                    var customer = results.weixinlogin;
+                    if(customer){
+                        req.session.user = customer;
+                        next();
+                    } else {
+                        res.redirect("/customerWeixinBind?openid="+authData.data.openid+"&url="+req.url);
+                    }
+                });
+            }
+        } else { //请求微信页面，然后跳转
+            async.auto({
+                getWeixinConf:function(cb){
+                    WeiXinCtrl.config(ent,function(err,res){
+                        cb(err,res);
+                    });
+                },
+                createUrl:["getWeixinConf",function(cb,results){
+                    var conf = results.getWeixinConf;
+                    if(conf){
+                        var url = encodeURIComponent("http://"+req.hostname+req.url);
+                        cb(null,"https://open.weixin.qq.com/connect/oauth2/authorize?appid="+conf.appID+"&redirect_uri="+url+"&response_type=code&scope=snsapi_base&state=weixinLogin#wechat_redirect")
+                    }
+                }]
+            },function(err,results){
+                console.log(err,results);
+                if(err){
+                    next();
+                } else {
+                    var url = results.createUrl;
+                    if(url){
+                        res.redirect(url);
+                    } else {
+                        next();
+                    }
+                }
+            });
+        }
+    } else {
+        next();
+    }
 };

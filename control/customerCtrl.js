@@ -76,26 +76,7 @@ CustomerCtrl.chagePasswd = function(id,oldPasswd,newPasswd,fn){
 
 CustomerCtrl.weixinBind = function(ent,mobile,passwd,openID,fn){
     async.auto({
-        //TODO 转移至后端接口调用
-        'getUserInfo':function(cb){
-            var url = config.weixin.host+':'+config.weixin.port+'/weixin/userInfo/'+ent+'?openid='+openID;
-            request({
-                url:url,
-                timeout:3000
-            },function(err,response,body){
-                if(err){
-                    cb(err,null);
-                } else {
-                    var res = body?JSON.parse(body):{};
-                    if(res.error==0&&res.data){
-                        cb(null,res.data);
-                    } else {
-                        cb(new Error(res.errMsg),null);
-                    }
-                }
-            });
-        },
-        'bindCustomer':['getUserInfo',function(cb,results){
+        'bindCustomer':function(cb){
             var url = config.inf.host+':'+config.inf.port+'/api/customer/weixinBind';
             request({
                 url:url,
@@ -104,21 +85,17 @@ CustomerCtrl.weixinBind = function(ent,mobile,passwd,openID,fn){
                     ent:ent,
                     mobile:mobile,
                     passwd:passwd,
-                    openId:openID,
-                    headimgurl:results.getUserInfo.headimgurl,
-                    loginName: results.getUserInfo.nickname,
-                    sex:parseInt(results.getUserInfo.sex)
+                    openId:openID
                 },
                 timeout:3000
             },function(err,response,body){
                 cb(err,body?JSON.parse(body):{});
             });
-        }]
+        }
     },function(err,results){
         console.log(err,results);
         fn(err,results.bindCustomer);
     });
-
 };
 
 CustomerCtrl.detail = function(id,fn){
@@ -138,6 +115,16 @@ CustomerCtrl.detail = function(id,fn){
                 fn(new Error(res.errMsg),null);
             }
         }
+    });
+};
+
+CustomerCtrl.weixinAutoLogin = function(ent,openid,fn){
+    var url = config.inf.host+':'+config.inf.port+'/api/customer/weixinLogin?ent='+ent+'&openId='+openid;
+    request({
+        url:url,
+        timeout:3000
+    },function(err,response,body){
+        fn(err,body?JSON.parse(body):{});
     });
 };
 module.exports = CustomerCtrl;
