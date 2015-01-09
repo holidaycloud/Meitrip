@@ -31,7 +31,7 @@ OrderCtrl.save = function(token, startDate, quantity, remark, product, liveName,
     request({
         url:url,
         method:'POST',
-        timeout:3000,
+        timeout:5000,
         form: form
     }, function(err,response,body){
         fn(err,body?JSON.parse(body):{});
