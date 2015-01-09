@@ -199,14 +199,14 @@ exports.alipay = function(err,res){
     AlipayCtrl.wapCreateUrl(
         res.locals.domain.alipay.pid,
         res.locals.domain.alipay.key,
+        res.locals.domain.alipay.account,
         'http://www.meitrip.net/alipay/wapnotify',
         'http://www.meitrip.net/orderDetails/'+res.locals.order._id,
         res.locals.order.orderID,
         res.locals.productName,
         res.locals.order.totalPrice,
-        res.locals.order._id,function(err,results){
-            res.json({error:0,data:results});
+        res.locals.order._id,
+        function(err,result){
+            res.json({error:0,data:result});
         });
-
-
 };
