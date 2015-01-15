@@ -229,5 +229,40 @@ $(() ->
       else
         $("#district").append "<option value='#{district.did}'>#{district.districtName}</option>" for district in msg.data
     )
+
+  #点击注册按钮弹注册框
+  $("#btn_register").click () ->
+    $("#myModal").modal("hide")
+    $("#modal_reg").modal("show")
+
+  #点击登录按钮跳回登录框
+  $("#btn_tologin").click () ->
+    $("#myModal").modal("show")
+    $("#modal_reg").modal("hide")
+
+  #点击执行注册
+  $("#btn_doregister").click () ->
+    mobile = $("#reg_mobile").val()
+    passwd = $("#reg_passwd").val()
+    repasswd = $("#reg_repasswd").val()
+    if passwd is repasswd
+      $.ajax(
+        type:"POST"
+        url:"/ajax/register"
+        data:
+          mobile:mobile
+          passwd:faultylabs.MD5(passwd)
+      ).done((data) ->
+        if data.error is 1
+          alert data.errMsg
+        else
+          cid = data.data._id
+          $("#user_mobile").text data.data.mobile
+          $("#contact").val if data.data.name then data.data.name else ""
+          $("#contactMobile").val data.data.mobile
+          $(".user-box").removeClass "hidden"
+          $("#modal_reg").modal("hide")
+          getAddress()
+      )
   return
 )

@@ -226,6 +226,42 @@
         }
       });
     });
+    $("#btn_register").click(function() {
+      $("#myModal").modal("hide");
+      return $("#modal_reg").modal("show");
+    });
+    $("#btn_tologin").click(function() {
+      $("#myModal").modal("show");
+      return $("#modal_reg").modal("hide");
+    });
+    $("#btn_doregister").click(function() {
+      var mobile, passwd, repasswd;
+      mobile = $("#reg_mobile").val();
+      passwd = $("#reg_passwd").val();
+      repasswd = $("#reg_repasswd").val();
+      if (passwd === repasswd) {
+        return $.ajax({
+          type: "POST",
+          url: "/ajax/register",
+          data: {
+            mobile: mobile,
+            passwd: faultylabs.MD5(passwd)
+          }
+        }).done(function(data) {
+          if (data.error === 1) {
+            return alert(data.errMsg);
+          } else {
+            cid = data.data._id;
+            $("#user_mobile").text(data.data.mobile);
+            $("#contact").val(data.data.name ? data.data.name : "");
+            $("#contactMobile").val(data.data.mobile);
+            $(".user-box").removeClass("hidden");
+            $("#modal_reg").modal("hide");
+            return getAddress();
+          }
+        });
+      }
+    });
   });
 
 }).call(this);

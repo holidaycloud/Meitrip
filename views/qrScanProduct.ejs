@@ -147,7 +147,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">登陆/注册</h4>
+                <h4 class="modal-title" id="myModalLabel">登陆</h4>
             </div>
             <div class="modal-body">
                 <input type="text" class="form-control" id="mobile" placeholder="手机号">
@@ -156,11 +156,34 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <button type="button" class="btn btn-primary" id="btn_login">登陆</button>
+                <button type="button" class="btn btn-warning" id="btn_register">注册</button>
             </div>
         </div>
     </div>
 </div>
-<!-- Modal Login Ent -->
+<!-- Modal Login End -->
+<!-- Modal Register Start -->
+<div class="modal fade" id="modal_reg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">注册</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control" id="reg_mobile" placeholder="手机号">
+                <input type="password" class="form-control" id="reg_passwd" placeholder="密码">
+                <input type="password" class="form-control" id="reg_repasswd" placeholder="重复密码">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btn_tologin">登陆</button>
+                <button type="button" class="btn btn-warning" id="btn_doregister">注册</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Register Ent -->
 <!-- Modal Address List Start -->
 <div class="modal fade" id="modal_add_list" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
