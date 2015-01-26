@@ -29,7 +29,8 @@
                     id: o._id,
                     price: o.price,
                     inventory: o.inventory,
-                    date: new Date(o.date).Format("yyyy-MM-dd")
+                    date: (o.date ? new Date(o.date).Format("yyyy-MM-dd") : ""),
+                    spec: (o.spec ? o.spec.name : "")
                   });
                 }
               }
@@ -39,6 +40,7 @@
               price: price,
               pid: result.product._id,
               name: result.product.name,
+              productType: result.product.productType,
               content: result.product.content,
               image: result.product.images.length > 0 ? result.product.images[0].url : ""
             };

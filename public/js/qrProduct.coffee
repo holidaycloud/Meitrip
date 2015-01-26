@@ -1,14 +1,14 @@
 $(() ->
-  priceID=$(".active").attr "data-price"
-  cid=null
-  addressID=null
-  addressList=null
+  priceID = $(".active").attr "data-price"
+  cid = null
+  addressID = null
+  addressList = null
   startDate = $(".active").attr "data-startDate"
   #获取地址
   getAddress = () ->
     $.ajax(
-      type:"GET"
-      url:"/ajax/address"
+      type: "GET"
+      url: "/ajax/address"
     ).done((data) ->
       $("#address_list").html ""
       addressList = data.data
@@ -56,16 +56,16 @@ $(() ->
   #保存地址点击
   $("#btn_submitAdd").click ()->
     $.ajax(
-      url:"/ajax/address/save"
-      method:"POST"
+      url: "/ajax/address/save"
+      method: "POST"
       data:
-        province:$("#province").val()
-        city:$("#city").val()
-        district:$("#district").val()
-        address:$("#address").val()
-        name:$("#name").val()
-        phone:$("#phone").val()
-        isDefault:$("#isDefault").attr("checked") is "checked"
+        province: $("#province").val()
+        city: $("#city").val()
+        district: $("#district").val()
+        address: $("#address").val()
+        name: $("#name").val()
+        phone: $("#phone").val()
+        isDefault: $("#isDefault").attr("checked") is "checked"
     ).done((data) ->
       addressList.push data
       addressID = data._id
@@ -92,7 +92,7 @@ $(() ->
     )
 
   #地址radioChange
-  $("#address_list").on("change","input:radio",() ->
+  $("#address_list").on("change", "input:radio", () ->
     addressID = $(this).val()
     addObj = null
     for address in addressList
@@ -124,26 +124,26 @@ $(() ->
     priceID = $(this).attr "data-price"
     startDate = $(this).attr "data-startDate"
     $.ajax({
-      type:"GET"
-      url:"/ajax/getPrice?id=#{priceID}"
+      type: "GET"
+      url: "/ajax/getPrice?id=#{priceID}"
     }).done((data) ->
       $("#qty").html ""
-      count = if data.data.inventory<=10 then data.data.inventory else 10;
+      count = if data.data.inventory <= 10 then data.data.inventory else 10;
       $("#qty").append("<option value='#{i}'>#{i}</option>") for i in [1..count]
       $("#price").text data.data.price
-      $("#totalPrice").text data.data.price*parseFloat($("#qty").val())
+      $("#totalPrice").text data.data.price * parseFloat($("#qty").val())
       $("#inventory_text").text data.data.inventory
     )
 
   #数量变化
   $("#qty").change () ->
-    $("#totalPrice").text parseFloat($("#price").text())*parseFloat($(this).val())
+    $("#totalPrice").text parseFloat($("#price").text()) * parseFloat($(this).val())
 
   #注销
   $("#logout").click () ->
     $.ajax(
-      type:"POST"
-      url:"/ajax/logout"
+      type: "POST"
+      url: "/ajax/logout"
     ).done(() ->
       cid = null
       $("#user_mobile").text ""
@@ -155,35 +155,62 @@ $(() ->
     if $.cookie("lgi") isnt "1"
       $("#myModal").modal("show")
     else
-      $(this).attr "disabled","disabled"
+      $(this).attr "disabled", "disabled"
+
+      if $("#contact").val().trim() is ""
+        alert "请输入联系人姓名"
+        $(this).attr "disabled", false
+        return false
+
+      if $("#contactMobile").val().trim() is ""
+        alert "请输入联系人手机号"
+        $(this).attr "disabled", false
+        return false
+
       $.ajax(
-        type:"POST"
-        url:"/ajax/saveOrder"
+        type: "POST"
+        url: "/ajax/saveOrder"
         data:
-          startDate:startDate
-          quantity:$("#qty").val()
-          product:$("#btn_proDetail").attr "data-pid"
-          productName:$("#btn_proDetail").attr "data-pname"
-          contactName:$("#contact").val()
-          contactMobile:$("#contactMobile").val()
-          priceID:priceID
-          deliveryAddress:addressID
-      ).done( (data) ->
-        console.log data
+          startDate: startDate
+          quantity: $("#qty").val()
+          product: $("#btn_proDetail").attr "data-pid"
+          productName: $("#btn_proDetail").attr "data-pname"
+          contactName: $("#contact").val()
+          contactMobile: $("#contactMobile").val()
+          priceID: priceID
+          deliveryAddress: addressID
+      ).done((data) ->
         if data.error is 1
           alert data.errMsg
         else
           location.href = data.data
       )
 
-  #点击登陆
-  $("#btn_login").click () ->
+  #弹注册框
+  $("#a_create").click () ->
+     $("#myModal").modal("hide")
+     $("#myRegModal").modal("show")
+
+  #弹登录框
+  $("#a_login").click () ->
+    $("#myModal").modal("show")
+    $("#myRegModal").modal("hide")
+
+  #点击注册
+  $("#btn_reg").click () ->
+    if $("#reg_mobile").val().trim() is ""
+      alert "请输入登录的手机号"
+      return false
+
+    if $("#reg_passwd").val().trim() is ""
+      alert "请输入登录的密码"
+      return false
     $.ajax(
-      type:"POST"
-      url:"/ajax/login"
+      type: "POST"
+      url: "/ajax/register"
       data:
-        mobile:$("#mobile").val()
-        passwd:faultylabs.MD5($("#passwd").val())
+        mobile: $("#reg_mobile").val()
+        passwd: faultylabs.MD5($("#reg_passwd").val())
     ).done((data) ->
       if data.error is 1
         alert data.errMsg
@@ -193,41 +220,68 @@ $(() ->
         $("#contact").val if data.data.name then data.data.name else ""
         $("#contactMobile").val data.data.mobile
         $(".user-box").removeClass "hidden"
-        $("#myModal").modal("hide")
+        $("#myRegModal").modal("hide")
         getAddress()
     )
 
-  #选择省
-  $("#province").change () ->
-    $("#city").html ""
-    $("#district").html ""
-    $.ajax(
-      url:"/ajax/getCities"
-      method:"GET"
-      data:
-        pid:$(this).val()
-    ).done((msg) ->
-      $("#city").append "<option>- 请选择 -</option>"
-      if msg.error is 1
-        alert "网络异常"
-      else
-        $("#city").append "<option value='#{city.cid}'>#{city.cityName}</option>" for city in msg.data
-    )
+#点击登陆
+$("#btn_login").click () ->
+  if $("#mobile").val().trim() is ""
+    alert "请输入登录的手机号"
+    return false
 
-  #选择市
-  $("#city").change () ->
-    $("#district").html ""
-    $.ajax(
-      url:"/ajax/getDistricts"
-      method:"GET"
-      data:
-        cid:$(this).val()
-    ).done((msg) ->
-      $("#district").append "<option>- 请选择 -</option>"
-      if msg.error is 1
-        alert "网络异常"
-      else
-        $("#district").append "<option value='#{district.did}'>#{district.districtName}</option>" for district in msg.data
-    )
-  return
+  if $("#passwd").val().trim() is ""
+    alert "请输入登录的密码"
+    return false
+  $.ajax(
+    type: "POST"
+    url: "/ajax/login"
+    data:
+      mobile: $("#mobile").val()
+      passwd: faultylabs.MD5($("#passwd").val())
+  ).done((data) ->
+    if data.error is 1
+      alert data.errMsg
+    else
+      cid = data.data._id
+      $("#user_mobile").text data.data.mobile
+      $("#contact").val if data.data.name then data.data.name else ""
+      $("#contactMobile").val data.data.mobile
+      $(".user-box").removeClass "hidden"
+      $("#myModal").modal("hide")
+      getAddress()
+  )
+
+#选择省
+$("#province").change () ->
+  $("#city").html ""
+  $("#district").html ""
+  $.ajax(
+    url: "/ajax/getCities"
+    method: "GET"
+    data:
+      pid: $(this).val()
+  ).done((msg) ->
+    $("#city").append "<option>- 请选择 -</option>"
+    if msg.error is 1
+      alert "网络异常"
+    else
+      $("#city").append "<option value='#{city.cid}'>#{city.cityName}</option>" for city in msg.data
+  )
+
+#选择市
+$("#city").change () ->
+  $("#district").html ""
+  $.ajax(
+    url: "/ajax/getDistricts"
+    method: "GET"
+    data:
+      cid: $(this).val()
+  ).done((msg) ->
+    $("#district").append "<option>- 请选择 -</option>"
+    if msg.error is 1
+      alert "网络异常"
+    else
+      $("#district").append "<option value='#{district.did}'>#{district.districtName}</option>" for district in msg.data
+  )
 )

@@ -60,9 +60,9 @@
                 <%for(var i in price){
                 var p = price[i];
                 if(i==0){%>
-                <button class="btn btn-sm btn-default kind active" style="margin-bottom: 5px;" type="button" data-startDate="<%=p.date%>" data-price="<%=p.id%>"><%=p.date%></button>
+                <button class="btn btn-sm btn-default kind active" style="margin-bottom: 5px;" type="button" data-startDate="<%=p.date%>" data-price="<%=p.id%>"><%=(productType==3?p.spec:p.date)%></button>
                 <%} else {%>
-                <button class="btn btn-sm btn-default kind" style="margin-bottom: 5px;" type="button" data-startDate="<%=p.date%>" data-price="<%=p.id%>"><%=p.date%></button>
+                <button class="btn btn-sm btn-default kind" style="margin-bottom: 5px;" type="button" data-startDate="<%=p.date%>" data-price="<%=p.id%>"><%=(productType==3?p.spec:p.date)%></button>
                 <%}}%>
             </div>
             <div class="form-group">
@@ -94,7 +94,7 @@
                 </div>
             </div>
             <div class="form-group" style="padding-right: 10px;padding-left: 10px;">
-                <input type="text" class="form-control" id="contact" placeholder="联系人" value="<%=user?user.name:''%>">
+                <input type="text" class="form-control" id="contact" placeholder="联系人" value="<%=user?(user.name?user.name:''):''%>">
             </div>
             <div class="form-group" style="padding-right: 10px;padding-left: 10px;">
                 <input type="text" class="form-control" id="contactMobile" placeholder="联系电话" value="<%=user?user.mobile:''%>">
@@ -147,20 +147,44 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">登陆/注册</h4>
+                <h4 class="modal-title" id="myModalLabel">登录</h4>
             </div>
             <div class="modal-body">
                 <input type="text" class="form-control" id="mobile" placeholder="手机号">
                 <input type="password" class="form-control" id="passwd" placeholder="密码">
+                <a href="#" id="a_create">没有账号?注册点我</a>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" id="btn_login">登陆</button>
+                <button type="button" class="btn btn-primary" id="btn_login">登录</button>
             </div>
         </div>
     </div>
 </div>
-<!-- Modal Login Ent -->
+<!-- Modal Login End -->
+
+<!-- Modal Register Start -->
+<div class="modal fade" id="myRegModal" tabindex="-1" role="dialog" aria-labelledby="myRegModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myRegModalLabel">注册</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control" id="reg_mobile" placeholder="手机号">
+                <input type="password" class="form-control" id="reg_passwd" placeholder="密码">
+                <a href="#" id="a_login">我有账号,去登录</a>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="btn_reg">注册</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Register End -->
+
 <!-- Modal Address List Start -->
 <div class="modal fade" id="modal_add_list" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -174,7 +198,7 @@
         </div>
     </div>
 </div>
-<!-- Modal Address List Ent -->
+<!-- Modal Address List End -->
 <!-- Modal AddAddress Start-->
 <div class="modal fade" id="modal_address" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">

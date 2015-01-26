@@ -132,6 +132,16 @@
         return $("#myModal").modal("show");
       } else {
         $(this).attr("disabled", "disabled");
+        if ($("#contact").val().trim() === "") {
+          alert("请输入联系人姓名");
+          $(this).attr("disabled", false);
+          return false;
+        }
+        if ($("#contactMobile").val().trim() === "") {
+          alert("请输入联系人手机号");
+          $(this).attr("disabled", false);
+          return false;
+        }
         return $.ajax({
           type: "POST",
           url: "/ajax/saveOrder",
@@ -146,7 +156,6 @@
             deliveryAddress: addressID
           }
         }).done(function(data) {
-          console.log(data);
           if (data.error === 1) {
             return alert(data.errMsg);
           } else {
@@ -155,13 +164,29 @@
         });
       }
     });
-    $("#btn_login").click(function() {
+    $("#a_create").click(function() {
+      $("#myModal").modal("hide");
+      return $("#myRegModal").modal("show");
+    });
+    $("#a_login").click(function() {
+      $("#myModal").modal("show");
+      return $("#myRegModal").modal("hide");
+    });
+    return $("#btn_reg").click(function() {
+      if ($("#reg_mobile").val().trim() === "") {
+        alert("请输入登录的手机号");
+        return false;
+      }
+      if ($("#reg_passwd").val().trim() === "") {
+        alert("请输入登录的密码");
+        return false;
+      }
       return $.ajax({
         type: "POST",
-        url: "/ajax/login",
+        url: "/ajax/register",
         data: {
-          mobile: $("#mobile").val(),
-          passwd: faultylabs.MD5($("#passwd").val())
+          mobile: $("#reg_mobile").val(),
+          passwd: faultylabs.MD5($("#reg_passwd").val())
         }
       }).done(function(data) {
         if (data.error === 1) {
@@ -172,61 +197,89 @@
           $("#contact").val(data.data.name ? data.data.name : "");
           $("#contactMobile").val(data.data.mobile);
           $(".user-box").removeClass("hidden");
-          $("#myModal").modal("hide");
+          $("#myRegModal").modal("hide");
           return getAddress();
         }
       });
     });
-    $("#province").change(function() {
-      $("#city").html("");
-      $("#district").html("");
-      return $.ajax({
-        url: "/ajax/getCities",
-        method: "GET",
-        data: {
-          pid: $(this).val()
-        }
-      }).done(function(msg) {
-        var city, _i, _len, _ref, _results;
-        $("#city").append("<option>- 请选择 -</option>");
-        if (msg.error === 1) {
-          return alert("网络异常");
-        } else {
-          _ref = msg.data;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            city = _ref[_i];
-            _results.push($("#city").append("<option value='" + city.cid + "'>" + city.cityName + "</option>"));
-          }
-          return _results;
-        }
-      });
+  }, $("#btn_login").click(function() {
+    if ($("#mobile").val().trim() === "") {
+      alert("请输入登录的手机号");
+      return false;
+    }
+    if ($("#passwd").val().trim() === "") {
+      alert("请输入登录的密码");
+      return false;
+    }
+    return $.ajax({
+      type: "POST",
+      url: "/ajax/login",
+      data: {
+        mobile: $("#mobile").val(),
+        passwd: faultylabs.MD5($("#passwd").val())
+      }
+    }).done(function(data) {
+      var cid;
+      if (data.error === 1) {
+        return alert(data.errMsg);
+      } else {
+        cid = data.data._id;
+        $("#user_mobile").text(data.data.mobile);
+        $("#contact").val(data.data.name ? data.data.name : "");
+        $("#contactMobile").val(data.data.mobile);
+        $(".user-box").removeClass("hidden");
+        $("#myModal").modal("hide");
+        return getAddress();
+      }
     });
-    $("#city").change(function() {
-      $("#district").html("");
-      return $.ajax({
-        url: "/ajax/getDistricts",
-        method: "GET",
-        data: {
-          cid: $(this).val()
+  }), $("#province").change(function() {
+    $("#city").html("");
+    $("#district").html("");
+    return $.ajax({
+      url: "/ajax/getCities",
+      method: "GET",
+      data: {
+        pid: $(this).val()
+      }
+    }).done(function(msg) {
+      var city, _i, _len, _ref, _results;
+      $("#city").append("<option>- 请选择 -</option>");
+      if (msg.error === 1) {
+        return alert("网络异常");
+      } else {
+        _ref = msg.data;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          city = _ref[_i];
+          _results.push($("#city").append("<option value='" + city.cid + "'>" + city.cityName + "</option>"));
         }
-      }).done(function(msg) {
-        var district, _i, _len, _ref, _results;
-        $("#district").append("<option>- 请选择 -</option>");
-        if (msg.error === 1) {
-          return alert("网络异常");
-        } else {
-          _ref = msg.data;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            district = _ref[_i];
-            _results.push($("#district").append("<option value='" + district.did + "'>" + district.districtName + "</option>"));
-          }
-          return _results;
-        }
-      });
+        return _results;
+      }
     });
-  });
+  }), $("#city").change(function() {
+    $("#district").html("");
+    return $.ajax({
+      url: "/ajax/getDistricts",
+      method: "GET",
+      data: {
+        cid: $(this).val()
+      }
+    }).done(function(msg) {
+      var district, _i, _len, _ref, _results;
+      $("#district").append("<option>- 请选择 -</option>");
+      if (msg.error === 1) {
+        return alert("网络异常");
+      } else {
+        _ref = msg.data;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          district = _ref[_i];
+          _results.push($("#district").append("<option value='" + district.did + "'>" + district.districtName + "</option>"));
+        }
+        return _results;
+      }
+    });
+  }));
 
 }).call(this);
 

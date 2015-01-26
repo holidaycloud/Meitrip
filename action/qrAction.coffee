@@ -9,11 +9,12 @@ exports.product = (req,res)->
         if err?
           cb err
         else
-          price = ( {id:o._id,price:o.price,inventory:o.inventory,date:new Date(o.date).Format("yyyy-MM-dd")} for o in result.price when o.inventory>0)
+          price = ( {id:o._id,price:o.price,inventory:o.inventory,date:(if o.date then new Date(o.date).Format("yyyy-MM-dd") else ""),spec: (if o.spec then o.spec.name else "")} for o in result.price when o.inventory>0)
           obj =
             price:price
             pid:result.product._id
             name:result.product.name
+            productType: result.product.productType
             content:result.product.content
             image: if result.product.images.length>0 then result.product.images[0].url else ""
           cb null,obj

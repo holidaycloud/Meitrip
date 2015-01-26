@@ -9,7 +9,6 @@ OrderCtrl.save = function(token, startDate, quantity, remark, product, liveName,
     var url = config.inf.host+':'+config.inf.port+'/api/order/save';
     var form = {
         token:token,
-        startDate:startDate?new Date(startDate.substr(0,10)+timeZone).getTime():Date.now(),
         quantity:quantity,
         remark:remark,
         product:product,
@@ -19,6 +18,9 @@ OrderCtrl.save = function(token, startDate, quantity, remark, product, liveName,
         customer:customer,
         payway:payway
     };
+    if(startDate){
+        form.startDate = new Date(startDate.substr(0,10)+timeZone).getTime();
+    }
     if(deliveryAddress){
         form.deliveryAddress = deliveryAddress;
     }

@@ -137,6 +137,26 @@ exports.login = function(req,res){
     });
 };
 
+exports.register = function(req,res){
+    var mobile = req.body.mobile;
+    var passwd = req.body.passwd;
+    var ent = res.locals.domain.ent;
+    CustomerCtrl.register(mobile,passwd,ent,function(err,result){
+        if(err){
+            res.json({'error':1,'errMsg':err.message});
+        } else {
+            if(result.error==0&&result.data){
+                res.cookie('pt',result.data._id,{'maxAge':604800000});
+                res.cookie('lgi','1');
+                req.session.user = result.data;
+                res.json({'error':0,'data':result.data});
+            } else {
+                res.json({'error':1,'errMsg':result.errMsg});
+            }
+        }
+    });
+};
+
 exports.getAddress = function(req,res){
     if(req.session.user){
         AddressCtrl.get(req.session.user._id,function(err,result){
